@@ -1,0 +1,27 @@
+<h1>Listing edges</h1>
+
+<table>
+  <tr>
+    <th>Node id a</th>
+    <th>Node id b</th>
+    <th>Edgetype</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @edges.each do |edge| %>
+  <tr>
+    <td><%= edge.node_id_A %></td>
+    <td><%= edge.node_id_B %></td>
+    <td><%= edge.edgetype_id %></td>
+    <td><%= link_to 'Show', edge %></td>
+    <td><%= link_to 'Edit', edit_edge_path(edge) %></td>
+    <td><%= link_to 'Destroy', edge, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Edge', new_edge_path %>

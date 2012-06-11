@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  node_id_A: 1
+  node_id_B: 1
+  edgetype_id: 1
+
+two:
+  node_id_A: 1
+  node_id_B: 1
+  edgetype_id: 1

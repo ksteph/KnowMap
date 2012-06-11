@@ -1,0 +1,9 @@
+<div class="field">
+  <%= f.label :node_id_A %>
+  <%= f.select :node_id_A, Node.all.collect { |n| [n.title, n.id] }.insert(0, '') %>
+  <%= f.label :node_id_B %>
+  <%= f.select :node_id_B, Node.all.collect { |n| [n.title, n.id] }.insert(0, '') %>
+  <%= f.label :edgetype_id %>
+  <%= f.select :edgetype_id, Edgetype.all.collect { |et| [et.name, et.id] }.insert(0, '') %>
+  <%= link_to_remove_fields "remove", f %>
+</div>

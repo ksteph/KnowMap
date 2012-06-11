@@ -1,0 +1,5 @@
+<div class="field">
+  <%= f.label :node_id %>
+  <%= f.select :node_id, Node.all.collect { |n| [n.title, n.id] }.insert(0, '') %>
+  <%= link_to_remove_fields "remove", f %>
+</div>

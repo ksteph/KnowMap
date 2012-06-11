@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @node.title %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @node.content %>
+</p>
+
+<h2>Related nodes</h2>
+<ul>
+  <% @node.related_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
+</ul>
+
+<h2>Previous nodes</h2>
+<ul>
+  <% @node.previous_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
+</ul>
+
+<h2>Next nodes</h2>
+<ul>
+  <% @node.next_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
+</ul>
+
+<%= link_to 'Edit', edit_node_path(@node) %> |
+<%= link_to 'Back', nodes_path %>

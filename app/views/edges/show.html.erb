@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Node id a:</b>
+  <%= @edge.node_id_A %>
+</p>
+
+<p>
+  <b>Node id b:</b>
+  <%= @edge.node_id_B %>
+</p>
+
+<p>
+  <b>Edgetype:</b>
+  <%= @edge.edgetype_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_edge_path(@edge) %> |
+<%= link_to 'Back', edges_path %>

@@ -1,0 +1,30 @@
+<h1>Welcome, what graph would you like to see?</h1>
+
+<ul>
+  <% @graphs.each do |graph| %><li><%= link_to graph.name, graph %></li><% end %>
+</ul>
+<!--
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Content</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @graphs.each do |graph| %>
+  <tr>
+    <td><%= graph.name %></td>
+    <td><%= graph.content %></td>
+    <td><%= link_to 'Show', graph %></td>
+    <td><%= link_to 'Edit', edit_graph_path(graph) %></td>
+    <td><%= link_to 'Destroy', graph, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+-->
+
+<br />
+
+<%= link_to 'New Graph', new_graph_path %> - <%= link_to 'New Node', new_node_path %>

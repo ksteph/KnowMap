@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @graph.name %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @graph.content %>
+</p>
+
+<h2>Subgraphs</h2>
+<ul>
+  <% @graph.subgraphs.each do |subgraph| %><li><%= link_to subgraph.name, subgraph %></li><% end %>
+</ul>
+
+<h2>Nodes</h2>
+<ul>
+  <% @graph.nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
+</ul>
+
+<%= render 'graph_window' %><br /><br />
+
+<%= link_to 'Edit', edit_graph_path(@graph) %> |
+<%= link_to 'Back', graphs_path %>

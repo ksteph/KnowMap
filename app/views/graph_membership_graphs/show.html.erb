@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Graph:</b>
+  <%= @graph_membership_graph.graph_id %>
+</p>
+
+<p>
+  <b>Subgraph:</b>
+  <%= @graph_membership_graph.subgraph_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_graph_membership_graph_path(@graph_membership_graph) %> |
+<%= link_to 'Back', graph_membership_graphs_path %>

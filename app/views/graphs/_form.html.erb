@@ -1,0 +1,38 @@
+<%= form_for(@graph) do |f| %>
+  <% if @graph.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@graph.errors.count, "error") %> prohibited this graph from being saved:</h2>
+
+      <ul>
+      <% @graph.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :content %><br />
+    <%= f.text_area :content, :rows => 5 %>
+  </div>
+  <h2>Subgraphs</h2>
+  <%= f.fields_for :graph_membership_graphs do |builder| %>
+    <%= render "graph_membership_graph_fields", :f => builder %>
+  <% end %>
+  <%= link_to_add_fields "Add Subgraphs", f, :graph_membership_graphs %>
+  
+  <h2>Nodes</h2>
+  <%= f.fields_for :graph_membership_nodes do |builder| %>
+    <%= render "graph_membership_node_fields", :f => builder %>
+  <% end %>
+  <%= link_to_add_fields "Add Nodes", f, :graph_membership_nodes %>
+  
+  <br /><br />
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
