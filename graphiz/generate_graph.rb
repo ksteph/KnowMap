@@ -247,8 +247,21 @@ outMap.puts "  rankdir=\"LR\""
     printSubGraph(outMap, gId, "")
   end
 }
-#printSubGraph(outMap, 5, "")
-#printSubGraph(outMap, 13, "")
+outMap.puts "  subgraph cluster_groups {"
+outMap.puts "    label=\"Group dependencies\""
+outMap.puts "    style=filled"
+outMap.puts "    color=lightgrey"
+outMap.puts "    node [style=filled,color=white]"
+@hshGroup.each{|gId,group|
+  outMap.puts "    group#{gId} [label=\"#{group.title}\"]"
+}
+@hshGId2Hsh2AryId.each{|gId,hsh2AryId|
+  aryGroup = hsh2AryId[GROUP_TYPE_GROUP]
+  aryGroup.each{|gId2|
+    outMap.puts "  group#{gId} -> group#{gId2}"
+  }
+}
+outMap.puts "  }"
 outMap.puts "}"
 outMap.close
 
