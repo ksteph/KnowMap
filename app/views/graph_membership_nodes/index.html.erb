@@ -1,0 +1,25 @@
+<h1>Listing graph_membership_nodes</h1>
+
+<table>
+  <tr>
+    <th>Graph</th>
+    <th>Node</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @graph_membership_nodes.each do |graph_membership_node| %>
+  <tr>
+    <td><%= graph_membership_node.graph_id %></td>
+    <td><%= graph_membership_node.node_id %></td>
+    <td><%= link_to 'Show', graph_membership_node %></td>
+    <td><%= link_to 'Edit', edit_graph_membership_node_path(graph_membership_node) %></td>
+    <td><%= link_to 'Destroy', graph_membership_node, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Graph membership node', new_graph_membership_node_path %>

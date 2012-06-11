@@ -1,0 +1,5 @@
+<div class="field">
+  <%= f.label :subgraph_id %>
+  <%= f.select :subgraph_id, Graph.all.collect { |g| [g.name, g.id] }.insert(0, '') %>
+  <%= link_to_remove_fields "remove", f %>
+</div>

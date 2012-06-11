@@ -1,4 +1,19 @@
 KnowledgeMap::Application.routes.draw do
+
+  root :to => "graphs#index"
+  
+  resources :graph_membership_graphs
+
+  resources :graph_membership_nodes
+
+  resources :edgetypes
+
+  resources :edges
+
+  resources :graphs
+
+  resources :nodes
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -1,0 +1,25 @@
+<%= form_for(@graph_membership_node) do |f| %>
+  <% if @graph_membership_node.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@graph_membership_node.errors.count, "error") %> prohibited this graph_membership_node from being saved:</h2>
+
+      <ul>
+      <% @graph_membership_node.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :graph_id %><br />
+    <%= f.number_field :graph_id %>
+  </div>
+  <div class="field">
+    <%= f.label :node_id %><br />
+    <%= f.number_field :node_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

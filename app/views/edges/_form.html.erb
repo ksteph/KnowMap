@@ -1,0 +1,29 @@
+<%= form_for(@edge) do |f| %>
+  <% if @edge.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@edge.errors.count, "error") %> prohibited this edge from being saved:</h2>
+
+      <ul>
+      <% @edge.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :node_id_A %><br />
+    <%= f.number_field :node_id_A %>
+  </div>
+  <div class="field">
+    <%= f.label :node_id_B %><br />
+    <%= f.number_field :node_id_B %>
+  </div>
+  <div class="field">
+    <%= f.label :edgetype_id %><br />
+    <%= f.select :edgetype_id, Edgetype.all.collect { |et| [et.name, et.id] }.insert(0, '') %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
