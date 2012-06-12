@@ -1,5 +1,5 @@
 <div class="field">
   <%= f.label :previous_node %>
   <%= f.select :node_id_A, Node.all.delete_if{|n| n==@node}.collect { |n| [n.title, n.id] }.insert(0, '') %>
-  <%= link_to_remove_fields "remove", f %>
+  <%= link_to_remove_fields t('actions.remove'), f %>
 </div>

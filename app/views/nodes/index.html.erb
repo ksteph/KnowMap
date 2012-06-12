@@ -13,13 +13,13 @@
   <tr>
     <td><%= node.title %></td>
     <td><%= node.content %></td>
-    <td><%= link_to 'Show', node %></td>
-    <td><%= link_to 'Edit', edit_node_path(node) %></td>
-    <td><%= link_to 'Destroy', node, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= link_to t('actions.show'), node %></td>
+    <td><%= link_to t('actions.edit'), edit_node_path(node) %></td>
+    <td><%= link_to t('actions.destroy'), node, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New Node', new_node_path %>
+<%= link_to t('nodes.new'), new_node_path %>

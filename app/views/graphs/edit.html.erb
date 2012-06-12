@@ -1,6 +1,6 @@
-<h1>Editing graph</h1>
+<h1><%= t 'graphs.editing' %></h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @graph %> |
-<%= link_to 'Back', graphs_path %>
+<%= link_to t('actions.show'), @graph %> |
+<%= link_to t('actions.back'), graphs_path %>

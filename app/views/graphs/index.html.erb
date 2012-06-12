@@ -1,4 +1,4 @@
-<h1>Welcome, what graph would you like to see?</h1>
+<h1><%= t 'welcome' %></h1>
 
 <ul>
   <% @graphs.each do |graph| %><li><%= link_to graph.name, graph %></li><% end %>
@@ -27,4 +27,4 @@
 
 <br />
 
-<%= link_to 'New Graph', new_graph_path %> - <%= link_to 'New Node', new_node_path %>
+<%= link_to t('graphs.new'), new_graph_path %> - <%= link_to t('nodes.new'), new_node_path %>

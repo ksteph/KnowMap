@@ -2,4 +2,33 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  welcome: "Welcome, what graph would you like to see?"
+  actions:
+    new: "New"
+    edit: "Edit"
+    remove: "Remove"
+    destroy: "Destroy"
+    show: "Show"
+    back: "Back"
+  graphs:
+    add: "Add graph"
+    new: "New graph"
+    editing: "Editing graph"
+    one: "Graph"
+    many: "Graphs"
+  subgraphs:
+    add: "Add subgraph"
+    one: "Subgraph"
+    many: "Subgraphs"
+  nodes:
+    add: "Add node"
+    new: "New node"
+    editing: "Editing node"
+    one: "Node"
+    many: "Nodes"
+    related: "Related Nodes"
+    previous: "Previous Nodes"
+    next: "Next Nodes"
+    add_related: "Add related node"
+    add_previous: "Add previous node"
+    add_next: "Add next node"
