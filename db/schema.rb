@@ -14,26 +14,17 @@
 ActiveRecord::Schema.define(:version => 20120612181857) do
 
   create_table "edges", :force => true do |t|
-    t.integer  "node_id_A",   :null => false
-    t.integer  "node_id_B",   :null => false
-    t.integer  "edgetype_id", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
-
-  add_index "edges", ["edgetype_id"], :name => "index_Edges_on_edgetype_id"
-  add_index "edges", ["node_id_A", "node_id_B"], :name => "index_Edges_on_node_id_A_and_node_id_B", :unique => true
-  add_index "edges", ["node_id_A"], :name => "index_Edges_on_node_id_A"
-  add_index "edges", ["node_id_B"], :name => "index_Edges_on_node_id_B"
-
-  create_table "edgetypes", :force => true do |t|
-    t.string   "name"
-    t.text     "desc"
+    t.integer  "node_id_A",  :null => false
+    t.integer  "node_id_B",  :null => false
+    t.string   "type",       :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
-  add_index "edgetypes", ["id"], :name => "index_Edgetypes_on_id"
+  add_index "edges", ["node_id_A", "node_id_B", "type"], :name => "index_Edges_on_node_id_A_and_node_id_B_and_type", :unique => true
+  add_index "edges", ["node_id_A"], :name => "index_Edges_on_node_id_A"
+  add_index "edges", ["node_id_B"], :name => "index_Edges_on_node_id_B"
+  add_index "edges", ["type"], :name => "index_Edges_on_type"
 
   create_table "graph_membership_graphs", :force => true do |t|
     t.integer  "graph_id",    :null => false
