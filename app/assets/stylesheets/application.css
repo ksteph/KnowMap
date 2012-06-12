@@ -11,3 +11,14 @@
  *= require_self
  *= require_tree .
 */
+
+#header {
+  width: 75%;
+  margin: 0 auto;
+}
+
+#header .title a {
+  color: #FFF;
+  text-decoration: none;
+  font-size: 3em;
+}

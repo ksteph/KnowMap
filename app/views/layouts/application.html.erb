@@ -7,8 +7,11 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<div id="container">
-<%= yield %>
-</div>
+  <div id="header">
+    <div class="title"><%= link_to 'Knowledge Map', :root %></div>
+  </div>
+  <div id="body">
+    <%= yield %>
+  </div>
 </body>
 </html>

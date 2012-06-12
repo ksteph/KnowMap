@@ -57,6 +57,9 @@ class NodesController < ApplicationController
   # PUT /nodes/1.json
   def update
     @node = Node.find(params[:id])
+    
+    #params[:incoming_edges_attributes] and params[:incoming_edges_attributes].each { |i| i[:node_id_B] = @node.id and i[:edgetype] = Edgetype.find_by_name('dependent') }
+    #params[:outgoing_edges_attributes] and params[:outgoing_edges_attributes].each { |i| i[:node_id_A] = @node.id and i[:edgetype] = Edgetype.find_by_name('dependent') }
 
     respond_to do |format|
       if @node.update_attributes(params[:node])

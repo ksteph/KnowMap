@@ -20,11 +20,26 @@
     <%= f.text_area :content %>
   </div>
   
-  <h2>Nodes</h2>
+  <h2>Related Nodes</h2>
+  <%= f.fields_for :related_edges_A do |builder| %>
+    <%= render "related_edges_A_fields", :f => builder %>
+  <% end %>
+  <%= f.fields_for :related_edges_B do |builder| %>
+    <%= render "related_edges_B_fields", :f => builder %>
+  <% end %>
+  <%= link_to_add_fields "Add related node", f, :related_edges_B %>
+  
+  <h2>Previous Nodes</h2>
   <%= f.fields_for :incoming_edges do |builder| %>
     <%= render "incoming_edge_fields", :f => builder %>
   <% end %>
-  <%= link_to_add_fields "Add Nodes", f, :incoming_edges %>
+  <%= link_to_add_fields "Add previous node", f, :incoming_edges %>
+  
+  <h2>Next Nodes</h2>
+  <%= f.fields_for :outgoing_edges do |builder| %>
+    <%= render "outgoing_edge_fields", :f => builder %>
+  <% end %>
+  <%= link_to_add_fields "Add next node", f, :outgoing_edges %>
   
   <br /><br />
   <div class="actions">
