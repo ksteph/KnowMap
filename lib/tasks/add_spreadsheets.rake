@@ -6,18 +6,6 @@ namespace :csv do
     puts "You gave node file: #{args.nodefile}"
     puts "You gave group file: #{args.graphfile}"
 
-    edgeTypeDep = Edgetype.find_by_name('dependent')
-    if edgeTypeDep == nil
-      edgeTypeDep = Edgetype.create({ name: 'dependent',
-                                      desc: 'A->B, A is a prereq for B'})
-    end
-
-    edgeTypeRel = Edgetype.find_by_name('related')
-    if edgeTypeRel == nil
-      edgeTypeRel = Edgetype.create({ name: 'related',
-                                      desc: 'A<=>B, A and B are related'})
-    end
-
     require "csv"
 
     # Handle the nodes
@@ -69,19 +57,16 @@ namespace :csv do
         end
 
         # Double check for both possibilities regardless though.
-        ary1to2 = Edge.find_by_sql("select * from edges"+
+        ary1to2 = RelatedEdge.find_by_sql("select * from edges"+
                                    " where node_id_A=#{nodeId1}"+
-                                   " and node_id_B=#{nodeId2}"+
-                                   " and edgetype_id=#{edgeTypeRel.id}")
-        ary2to1 = Edge.find_by_sql("select * from edges"+
+                                   " and node_id_B=#{nodeId2}")
+        ary2to1 = RelatedEdge.find_by_sql("select * from edges"+
                                    " where node_id_A=#{nodeId2}"+
-                                   " and node_id_B=#{nodeId1}"+
-                                   " and edgetype_id=#{edgeTypeRel.id}")
+                                   " and node_id_B=#{nodeId1}")
 
         # If the edge doesn't exist add
         if (ary1to2.size == 0) && (ary2to1.size == 0)
-          Edge.create({node_id_A: nodeId1, node_id_B: nodeId2,
-                        edgetype_id: edgeTypeRel.id})
+          RelatedEdge.create({node_id_A: nodeId1, node_id_B: nodeId2})
         end
       }
 
@@ -89,15 +74,13 @@ namespace :csv do
         id1 = id
         nodeId1 = nodeId
         nodeId2 = hshId2Node[id2].id
-        aryEdgeDep = Edge.find_by_sql("select * from edges"+
+        aryEdgeDep = DependentEdge.find_by_sql("select * from edges"+
                                    " where node_id_A=#{nodeId2}"+
-                                   " and node_id_B=#{nodeId1}"+
-                                   " and edgetype_id=#{edgeTypeDep.id}")
+                                   " and node_id_B=#{nodeId1}")
 
         # If the edge doesn't exist add
         if (aryEdgeDep.size == 0)
-          Edge.create({node_id_A: nodeId2, node_id_B: nodeId1,
-                        edgetype_id: edgeTypeDep.id})
+          DependentEdge.create({node_id_A: nodeId2, node_id_B: nodeId1})
         end
       }
 
@@ -106,15 +89,13 @@ namespace :csv do
         id1 = id
         nodeId1 = nodeId
         nodeId2 = hshId2Node[id2].id
-        aryEdgeDep = Edge.find_by_sql("select * from edges"+
+        aryEdgeDep = DependentEdge.find_by_sql("select * from edges"+
                                    " where node_id_A=#{nodeId1}"+
-                                   " and node_id_B=#{nodeId2}"+
-                                   " and edgetype_id=#{edgeTypeDep.id}")
+                                   " and node_id_B=#{nodeId2}")
 
         # If the edge doesn't exist add
         if (aryEdgeDep.size == 0)
-          Edge.create({node_id_A: nodeId1, node_id_B: nodeId2,
-                        edgetype_id: edgeTypeDep.id})
+          DependentEdge.create({node_id_A: nodeId1, node_id_B: nodeId2})
         end
       }
     }
