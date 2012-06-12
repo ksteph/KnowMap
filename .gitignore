@@ -13,3 +13,11 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Other stuff
+*~
+*.rbc
+*.sassc
+.sass-cache
+capybara-*.html
+.rspec
