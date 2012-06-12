@@ -193,6 +193,7 @@ outMap.puts "  nodeN [label=\"Node\", group=\"sample\", #{strSampleFormat}]"
 outMap.puts "  next [label=\"Next\", group=\"sample\", #{strSampleFormat}]"
 
 outMap.puts "  subgraph cluster_sample {"
+outMap.puts "    label=\"Example\""
 outMap.puts "    subgraph cluster_relate {"
 outMap.puts "      label = \"SubGraph: Related Nodes\""
 outMap.puts "      relateA"
