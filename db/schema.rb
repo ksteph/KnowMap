@@ -11,15 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120611192856) do
+ActiveRecord::Schema.define(:version => 20120612181857) do
 
   create_table "edges", :force => true do |t|
-    t.integer  "node_id_A"
-    t.integer  "node_id_B"
-    t.integer  "edgetype_id"
+    t.integer  "node_id_A",   :null => false
+    t.integer  "node_id_B",   :null => false
+    t.integer  "edgetype_id", :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
+
+  add_index "edges", ["edgetype_id"], :name => "index_Edges_on_edgetype_id"
+  add_index "edges", ["node_id_A", "node_id_B"], :name => "index_Edges_on_node_id_A_and_node_id_B", :unique => true
+  add_index "edges", ["node_id_A"], :name => "index_Edges_on_node_id_A"
+  add_index "edges", ["node_id_B"], :name => "index_Edges_on_node_id_B"
 
   create_table "edgetypes", :force => true do |t|
     t.string   "name"
@@ -28,19 +33,29 @@ ActiveRecord::Schema.define(:version => 20120611192856) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "edgetypes", ["id"], :name => "index_Edgetypes_on_id"
+
   create_table "graph_membership_graphs", :force => true do |t|
-    t.integer  "graph_id"
-    t.integer  "subgraph_id"
+    t.integer  "graph_id",    :null => false
+    t.integer  "subgraph_id", :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
 
+  add_index "graph_membership_graphs", ["graph_id", "subgraph_id"], :name => "index_Graph_Membership_Graphs_on_graph_id_and_subgraph_id", :unique => true
+  add_index "graph_membership_graphs", ["graph_id"], :name => "index_Graph_Membership_Graphs_on_graph_id"
+  add_index "graph_membership_graphs", ["subgraph_id"], :name => "index_Graph_Membership_Graphs_on_subgraph_id"
+
   create_table "graph_membership_nodes", :force => true do |t|
-    t.integer  "graph_id"
-    t.integer  "node_id"
+    t.integer  "graph_id",   :null => false
+    t.integer  "node_id",    :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "graph_membership_nodes", ["graph_id", "node_id"], :name => "index_Graph_Membership_Nodes_on_graph_id_and_node_id", :unique => true
+  add_index "graph_membership_nodes", ["graph_id"], :name => "index_Graph_Membership_Nodes_on_graph_id"
+  add_index "graph_membership_nodes", ["node_id"], :name => "index_Graph_Membership_Nodes_on_node_id"
 
   create_table "graphs", :force => true do |t|
     t.string   "name"
@@ -49,11 +64,15 @@ ActiveRecord::Schema.define(:version => 20120611192856) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "graphs", ["id"], :name => "index_Graphs_on_id"
+
   create_table "nodes", :force => true do |t|
     t.string   "title"
     t.text     "content"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "nodes", ["id"], :name => "index_Nodes_on_id"
 
 end
