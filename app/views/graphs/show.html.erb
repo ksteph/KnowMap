@@ -20,5 +20,6 @@
   <% @graph.nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
 </ul>
 
+<%= render 'graph_window' %><br /><br />
 <%= link_to 'Edit', edit_graph_path(@graph) %> |
 <%= link_to 'Back', graphs_path %>
