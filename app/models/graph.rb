@@ -10,4 +10,11 @@ class Graph < ActiveRecord::Base
   
   # Validations
   validates :name, :presence => true, :uniqueness => true
+  
+  def all_subgraphs
+    return [] if subgraphs.nil?
+    result = subgraphs
+    subgraphs.each { |g| result |= g.all_subgraphs }
+    result
+  end
 end
