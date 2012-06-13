@@ -5,25 +5,34 @@
   <%= @node.title %>
 </p>
 
-<p>
+<p style="min-height:300px;">
   <b>Content:</b>
   <%= @node.content %>
 </p>
 
-<h2><%= t 'nodes.related' %></h2>
-<ul>
-  <% @node.related_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
-</ul>
-
-<h2><%= t 'nodes.previous' %></h2>
-<ul>
-  <% @node.previous_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
-</ul>
-
-<h2><%= t 'nodes.next' %></h2>
-<ul>
-  <% @node.next_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
-</ul>
-
+<table class="nodesTable">
+  <tr>
+    <td><h3><%= t 'nodes.related' %></h3></td>
+    <td><h3><%= t 'nodes.previous' %></h3></td>
+    <td><h3><%= t 'nodes.next' %></h3></td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <% @node.related_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %><% if @node.related_nodes.empty? then %><i>None.</i><% end %>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <% @node.previous_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %><% if @node.previous_nodes.empty? then %><i>None.</i><% end %>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <% @node.next_nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %><% if @node.next_nodes.empty? then %><i>None.</i><% end %>
+      </ul>
+    </td>
+  </tr>
+</table>
 <%= link_to t('actions.edit'), edit_node_path(@node) %> |
 <%= link_to t('actions.back'), nodes_path %>

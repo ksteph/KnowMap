@@ -37,6 +37,8 @@ class GraphsController < ApplicationController
   # GET /graphs/1/edit
   def edit
     @graph = Graph.find(params[:id])
+    @graph.graph_membership_graphs.build
+    @graph.graph_membership_nodes.build
   end
 
   # POST /graphs

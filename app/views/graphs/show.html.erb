@@ -1,5 +1,7 @@
 <p id="notice"><%= notice %></p>
 
+<%= render 'graph_window' %>
+
 <p>
   <b>Name:</b>
   <%= @graph.name %>
@@ -20,6 +22,5 @@
   <% @graph.nodes.each do |node| %><li><%= link_to node.title, node %></li><% end %>
 </ul>
 
-<%= render 'graph_window' %><br /><br />
 <%= link_to t('actions.edit'), edit_graph_path(@graph) %> |
 <%= link_to t('actions.back'), graphs_path %>

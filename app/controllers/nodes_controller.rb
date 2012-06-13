@@ -25,6 +25,9 @@ class NodesController < ApplicationController
   # GET /nodes/new.json
   def new
     @node = Node.new
+    3.times { @node.related_edges_B.build }
+    3.times { @node.incoming_edges.build }
+    3.times { @node.outgoing_edges.build }
 
     respond_to do |format|
       format.html # new.html.erb
@@ -35,6 +38,9 @@ class NodesController < ApplicationController
   # GET /nodes/1/edit
   def edit
     @node = Node.find(params[:id])
+    @node.related_edges_B.build
+    @node.incoming_edges.build
+    @node.outgoing_edges.build
   end
 
   # POST /nodes

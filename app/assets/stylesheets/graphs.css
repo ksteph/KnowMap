@@ -1,0 +1,14 @@
+/*
+  Place all the styles related to the matching controller here.
+  They will automatically be included in application.css.
+*/
+
+#window {
+  width:25%;
+  background-color: #EAEAEA;
+  float:right;
+  min-height:400px;
+  border: 1px solid black;
+  padding: 1em;
+  margin-left:10px;
+}

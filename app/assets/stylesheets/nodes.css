@@ -1,0 +1,38 @@
+/*
+  Place all the styles related to the matching controller here.
+  They will automatically be included in application.css.
+*/
+
+.nodeslistTitle {
+  display: inline-block;
+  background-color: yellow;
+  width:200px;
+  text-align: center;
+}
+
+.nodeslist {
+  display: inline-block;
+  background-color: green;
+  line-height:100%;
+  width:200px;
+  text-align: center;
+}
+
+table.nodesTable {
+  border-spacing: 0px;
+  width: 750px;
+}
+
+table.nodesTable td {
+  width: 250px;
+  vertical-align: top;
+}
+
+table.nodesTable h3 {
+  margin: 0;
+}
+
+table.nodesTable ul {
+  padding: 0;
+  padding-left: 20px;
+}
