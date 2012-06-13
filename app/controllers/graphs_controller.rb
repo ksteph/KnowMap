@@ -67,6 +67,8 @@ class GraphsController < ApplicationController
         format.html { redirect_to @graph, notice: 'Graph was successfully updated.' }
         format.json { head :no_content }
       else
+        @graph.graph_membership_graphs.build
+        @graph.graph_membership_nodes.build
         format.html { render action: "edit" }
         format.json { render json: @graph.errors, status: :unprocessable_entity }
       end

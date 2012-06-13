@@ -1,7 +1,7 @@
 <%= form_for(@graph) do |f| %>
   <% if @graph.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@graph.errors.count, "error") %> prohibited this graph from being saved:</h2>
+      <h2><%= pluralize(@graph.errors.count, "error") %> prohibited this <%= t('graphs.one').downcase %> from being saved:</h2>
 
       <ul>
       <% @graph.errors.full_messages.each do |msg| %>
@@ -10,14 +10,14 @@
       </ul>
     </div>
   <% end %>
-
+  
   <div class="field">
     <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <%= f.text_field :name, :class => (@graph.errors[:name].blank? ? "" : "error") %>
   </div>
   <div class="field">
     <%= f.label :content %><br />
-    <%= f.text_area :content, :rows => 5 %>
+    <%= f.text_area :content, :rows => 5, :class => (@graph.errors[:content].blank? ? "" : "error") %>
   </div>
   <h2><%= t 'subgraphs.many' %></h2>
   <%= f.fields_for :graph_membership_graphs do |builder| %>

@@ -8,6 +8,6 @@ class GraphMembershipGraph < ActiveRecord::Base
   # Validations
   validates :graph_id, :presence => true
   validates :subgraph_id, :presence => true
-  validates_uniqueness_of :graph_id, scope: :subgraph_id, message: "You cannot add a #{I18n.translate('graphs.one').downcase} that has already been added."
+  validates_uniqueness_of :subgraph_id, scope: :graph_id, message: "^You can't add a #{I18n.translate('graphs.one').downcase} that has already been added."
   validates_with GraphSubgraphValidator
 end

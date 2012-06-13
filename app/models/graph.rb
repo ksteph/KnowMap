@@ -1,4 +1,4 @@
-class Graph < ActiveRecord::Base
+class Graph < ActiveRecord::Base  
   attr_accessible :name, :content, :graph_membership_graphs_attributes, :graph_membership_nodes_attributes
   has_many :subgraphs, :through => :graph_membership_graphs, :class_name => 'Graph', :source => 'subgraph'
   has_many :nodes, :through => :graph_membership_nodes

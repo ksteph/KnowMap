@@ -11,6 +11,10 @@
     <div class="title"><%= link_to 'Knowledge Map', :root %></div>
   </div>
   <div id="body">
+    <% if flash[:error] %><div id="flash_error"><%= flash[:error] %></div><% end %>
+    <% if flash[:warning] %><div id="flash_warning"><%= flash[:warning] %></div><% end %>
+    <% if flash[:info] %><div id="flash_info"><%= flash[:info] %></div><% end %>
+    <% if flash[:success] %><div id="flash_success"><%= flash[:success] %></div><% end %>
     <%= yield %>
     <div class="clear"></div>
   </div>
