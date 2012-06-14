@@ -21,3 +21,4 @@
 .sass-cache
 capybara-*.html
 .rspec
+bundler_stubs/
