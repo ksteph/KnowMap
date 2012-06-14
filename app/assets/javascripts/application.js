@@ -26,3 +26,22 @@ function add_fields(link, association, content) {
   var regexp = new RegExp("new_" + association, "g")
   $(link).before(content.replace(regexp, new_id));
 }
+
+jQuery(function($) {
+  ajax();
+});
+
+function ajax() {
+  //alert('hooking graph');
+  $('a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
+    //alert('its a success yo');
+    // save history
+    //history.pushState(null, document.title, this.href);
+    
+    // update DOM with ajax response
+    $(this).parents('div#content').html(data);
+    
+    // attach ajax:success event
+    ajax();
+  });
+}

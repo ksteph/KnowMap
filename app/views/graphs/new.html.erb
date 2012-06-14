@@ -2,4 +2,4 @@
 
 <%= render 'form' %>
 
-<%= link_to t('actions.back'), graphs_path %>
+<%= link_to t('actions.back'), graphs_path, :remote => true, "data-type" => "html" %>

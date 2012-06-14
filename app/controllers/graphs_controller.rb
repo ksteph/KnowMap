@@ -5,7 +5,7 @@ class GraphsController < ApplicationController
     @graphs = Graph.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { render :layout => !request.xhr? } # index.html.erb
       format.json { render json: @graphs }
     end
   end
@@ -16,7 +16,7 @@ class GraphsController < ApplicationController
     @graph = Graph.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render :layout => !request.xhr? } # show.html.erb
       format.json { render json: @graph }
     end
   end
@@ -29,7 +29,7 @@ class GraphsController < ApplicationController
     3.times { @graph.graph_membership_nodes.build }
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render :layout => !request.xhr? } # new.html.erb
       format.json { render json: @graph }
     end
   end
@@ -39,6 +39,7 @@ class GraphsController < ApplicationController
     @graph = Graph.find(params[:id])
     @graph.graph_membership_graphs.build
     @graph.graph_membership_nodes.build
+    render :layout => !request.xhr?
   end
 
   # POST /graphs
