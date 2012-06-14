@@ -19,20 +19,20 @@
   <tr>
     <td>
       <ul>
-        <% @node.related_nodes.each do |node| %><li><%= link_to node.title, node, :remote => true, "data-type" => "html" %></li><% end %><% if @node.related_nodes.empty? then %><i>None.</i><% end %>
+        <% @node.related_nodes.each do |node| %><li><%= link_to node.title, node, :remote => Rails.configuration.remote, "data-type" => "html" %></li><% end %><% if @node.related_nodes.empty? then %><i>None.</i><% end %>
       </ul>
     </td>
     <td>
       <ul>
-        <% @node.previous_nodes.each do |node| %><li><%= link_to node.title, node, :remote => true, "data-type" => "html" %></li><% end %><% if @node.previous_nodes.empty? then %><i>None.</i><% end %>
+        <% @node.previous_nodes.each do |node| %><li><%= link_to node.title, node, :remote => Rails.configuration.remote, "data-type" => "html" %></li><% end %><% if @node.previous_nodes.empty? then %><i>None.</i><% end %>
       </ul>
     </td>
     <td>
       <ul>
-        <% @node.next_nodes.each do |node| %><li><%= link_to node.title, node, :remote => true, "data-type" => "html" %></li><% end %><% if @node.next_nodes.empty? then %><i>None.</i><% end %>
+        <% @node.next_nodes.each do |node| %><li><%= link_to node.title, node, :remote => Rails.configuration.remote, "data-type" => "html" %></li><% end %><% if @node.next_nodes.empty? then %><i>None.</i><% end %>
       </ul>
     </td>
   </tr>
 </table>
-<%= link_to t('actions.edit'), edit_node_path(@node), :remote => true, "data-type" => "html" %> |
-<%= link_to t('actions.back'), nodes_path, :remote => true, "data-type" => "html" %>
+<%= link_to t('actions.edit'), edit_node_path(@node), :remote => Rails.configuration.remote, "data-type" => "html" %> |
+<%= link_to t('actions.back'), nodes_path, :remote => Rails.configuration.remote, "data-type" => "html" %>

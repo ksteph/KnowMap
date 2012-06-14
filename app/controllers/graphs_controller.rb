@@ -52,7 +52,7 @@ class GraphsController < ApplicationController
         format.html { redirect_to @graph, notice: 'Graph was successfully created.' }
         format.json { render json: @graph, status: :created, location: @graph }
       else
-        format.html { render action: "new" }
+        format.html { render action: "new", :layout => !request.xhr? }
         format.json { render json: @graph.errors, status: :unprocessable_entity }
       end
     end
@@ -70,7 +70,7 @@ class GraphsController < ApplicationController
       else
         @graph.graph_membership_graphs.build
         @graph.graph_membership_nodes.build
-        format.html { render action: "edit" }
+        format.html { render action: "edit", :layout => !request.xhr? }
         format.json { render json: @graph.errors, status: :unprocessable_entity }
       end
     end

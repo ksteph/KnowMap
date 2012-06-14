@@ -14,13 +14,13 @@
 
 <h2><%= t 'subgraphs.many' %></h2>
 <ul>
-  <% @graph.subgraphs.each do |subgraph| %><li><%= link_to subgraph.name, subgraph, :remote => true, "data-type" => "html" %></li><% end %>
+  <% @graph.subgraphs.each do |subgraph| %><li><%= link_to subgraph.name, subgraph, :remote => Rails.configuration.remote, "data-type" => "html" %></li><% end %>
 </ul>
 
 <h2><%= t 'nodes.many' %></h2>
 <ul>
-  <% @graph.nodes.each do |node| %><li><%= link_to node.title, node, :remote => true, "data-type" => "html" %></li><% end %>
+  <% @graph.nodes.each do |node| %><li><%= link_to node.title, node, :remote => Rails.configuration.remote, "data-type" => "html" %></li><% end %>
 </ul>
 
-<%= link_to t('actions.edit'), edit_graph_path(@graph), :remote => true, "data-type" => "html" %> |
-<%= link_to t('actions.back'), graphs_path, :remote => true, "data-type" => "html" %>
+<%= link_to t('actions.edit'), edit_graph_path(@graph), :remote => Rails.configuration.remote, "data-type" => "html" %> |
+<%= link_to t('actions.back'), graphs_path, :remote => Rails.configuration.remote, "data-type" => "html" %>

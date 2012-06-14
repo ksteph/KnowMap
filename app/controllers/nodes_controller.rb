@@ -57,7 +57,7 @@ class NodesController < ApplicationController
         @node.related_edges_B.build
         @node.incoming_edges.build
         @node.outgoing_edges.build
-        format.html { render action: "new" }
+        format.html { render action: "new", :layout => !request.xhr? }
         format.json { render json: @node.errors, status: :unprocessable_entity }
       end
     end
@@ -76,7 +76,7 @@ class NodesController < ApplicationController
         format.html { redirect_to @node, notice: 'Node was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
+        format.html { render action: "edit", :layout => !request.xhr? }
         format.json { render json: @node.errors, status: :unprocessable_entity }
       end
     end

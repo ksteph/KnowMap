@@ -1,0 +1,14 @@
+# config/config.yml
+
+defaults: &defaults
+  remote: true
+  remote_form: true
+
+development:
+  <<: *defaults
+ 
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

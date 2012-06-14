@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require history_jquery_html5
 //= require_tree .
 
 function remove_fields(link) {
@@ -28,15 +29,25 @@ function add_fields(link, association, content) {
 }
 
 jQuery(function($) {
+  $(window).bind("popstate", function() {
+    /*alert('its a popstate yo!');*/
+    $.ajax({
+      url: location.href,
+      dataType: 'html'
+    }).done(function(data) { 
+      $('div#content').html(data);
+      ajax();
+    });
+    ajax();
+  });
   ajax();
 });
 
 function ajax() {
-  //alert('hooking graph');
-  $('a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
-    //alert('its a success yo');
+  $('[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
     // save history
-    //history.pushState(null, document.title, this.href);
+    var State = History.getState();
+    History.pushState(null, document.title, this.href);
     
     // update DOM with ajax response
     $(this).parents('div#content').html(data);

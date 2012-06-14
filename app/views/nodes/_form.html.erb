@@ -1,4 +1,4 @@
-<%= form_for(@node) do |f| %>
+<%= form_for(@node, :remote => Rails.configuration.remote_form) do |f| %>
   <% if @node.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@node.errors.count, "error") %> prohibited this node from being saved:</h2>
