@@ -1,1 +1,106 @@
-graph window goes here
+<div id="chart"></div>
+<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+<script type="text/javascript">
+  <% nodes = Node.all %>
+  <% edges = Edge.all%>
+  <% edgeStyles = {2=>"9,5", 1=>"1,0"} %>
+  <% edgeMarkerEnd = {2=>"none", 1=>"url(#arrowhead)"} %>
+  <% subgraph = @graph.nodes %>
+  <% hshNId2I = Hash.new %>
+  <% i = -1 %>
+  var nodes = [
+  <% nodes.each do |n|%>
+    { label: "<%= if n.title.size > 15 then "#{n.title[0,12]}..." else n.title end %>",
+      title: "<%= n.title %>",
+      color: "<%= if subgraph.include?(n) then "lightblue" else "pink" end %>"},
+  <% hshNId2I[n.id] = i+=1 %>
+  <% end %>
+  ];
+  var links = [
+    <% edges.each do |e| %>
+    {source: <%= hshNId2I[e.node_id_A] %>,
+     target: <%= hshNId2I[e.node_id_B] %>,
+     stroke_style: "<%= edgeStyles[e.edgetype_id] %>",
+     marker_end: "<%= edgeMarkerEnd[e.edgetype_id] %>",
+    },
+    <% end %>
+  ];
+
+  var width = 960, height = 500, cRadius = 30, linkDist = cRadius*4;
+      
+  var color = d3.scale.category20();
+  
+  var force = d3.layout.force()
+  .charge(-250)
+  .linkDistance(linkDist)
+  .size([width, height]);
+  
+  var svg = d3.select("#chart").append("svg")
+  .attr("width", width)
+  .attr("height", height);
+  
+  force
+  .nodes(nodes)
+  .links(links)
+  .start();
+
+  svg.append("defs").append("marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", cRadius*1.4)
+    .attr("refY", "5")
+    .attr("markerUnits", "strokeWidth")
+    .attr("markerWidth", 10)
+    .attr("markerHeight", 9)
+    .attr("orient", "auto")
+    .append("path")
+      .attr("d", "M 0 0 L 10 5 L 0 10 Z");
+  
+  var link = svg.selectAll("link.link")
+  .data(links)
+  .enter().append("line")
+  .attr("class","link")
+  .style("stroke","black")
+  .style("stroke-dasharray", function(d){return d.stroke_style})
+  .style("marker-end", function(d){return d.marker_end});
+
+  var node = svg.selectAll("g.node")
+      .data(nodes)
+    .enter().append("g")
+      .attr("class", "node");
+
+  node.on("dblclick", onDblClick);
+
+  node.append("circle")
+          .attr("r", cRadius)
+  .style("fill", function(d){return d.color});
+  node.append("text").text(function(d){return d.label})
+  .attr("text-anchor","middle")
+  .attr("dy",".35em")
+  .attr("font-size", "8pt");
+  node.call(force.drag);
+  
+  node.append("title").text(function(d){return d.title;});
+  
+  force.on("tick", function() {
+  link.attr("x1", function(d) { return d.source.x; })
+  .attr("y1", function(d) { return d.source.y; })
+  .attr("x2", function(d) { return d.target.x; })
+  .attr("y2", function(d) { return d.target.y; });
+  
+  node.attr("transform", function(d){return "translate("+d.x+","+d.y+")";});
+  });
+  
+  function onDblClick() {
+    <!-- Code to change to the clicked on node's content information. -->
+    var e = d3.select(this).select("text")
+    var t = e.text();
+    e.text(function(d) {
+      if (t == d.title)
+        {return d.label;}
+      else
+        {return d.title;}
+      }
+    );
+  }
+</script>
