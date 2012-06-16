@@ -55,5 +55,8 @@ module KnowledgeMap
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+    
+    # Load config/config.yml
+    YAML.load_file("#{Rails.root}/config/config.yml")[Rails.env].each { |k,v| config.send "#{k}=", v }
   end
 end

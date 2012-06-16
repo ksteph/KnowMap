@@ -5,7 +5,7 @@ class NodesController < ApplicationController
     @nodes = Node.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { render :layout => !request.xhr? } # index.html.erb
       format.json { render json: @nodes }
     end
   end
@@ -16,7 +16,7 @@ class NodesController < ApplicationController
     @node = Node.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render :layout => !request.xhr? } # show.html.erb
       format.json { render json: @node }
     end
   end
@@ -30,7 +30,7 @@ class NodesController < ApplicationController
     3.times { @node.outgoing_edges.build }
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render :layout => !request.xhr? } # new.html.erb
       format.json { render json: @node }
     end
   end
@@ -41,6 +41,7 @@ class NodesController < ApplicationController
     @node.related_edges_B.build
     @node.incoming_edges.build
     @node.outgoing_edges.build
+    render :layout => !request.xhr?
   end
 
   # POST /nodes
@@ -56,7 +57,7 @@ class NodesController < ApplicationController
         @node.related_edges_B.build
         @node.incoming_edges.build
         @node.outgoing_edges.build
-        format.html { render action: "new" }
+        format.html { render action: "new", :layout => !request.xhr? }
         format.json { render json: @node.errors, status: :unprocessable_entity }
       end
     end
@@ -78,7 +79,7 @@ class NodesController < ApplicationController
         @node.related_edges_B.build
         @node.incoming_edges.build
         @node.outgoing_edges.build
-        format.html { render action: "edit" }
+        format.html { render action: "edit", :layout => !request.xhr? }
         format.json { render json: @node.errors, status: :unprocessable_entity }
       end
     end

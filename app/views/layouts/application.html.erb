@@ -4,7 +4,6 @@
   <title>KnowledgeMap</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
 </head>
 <body>
   <div id="header">
@@ -15,7 +14,8 @@
     <% if flash[:warning] %><div id="flash_warning"><%= flash[:warning] %></div><% end %>
     <% if flash[:info] %><div id="flash_info"><%= flash[:info] %></div><% end %>
     <% if flash[:success] %><div id="flash_success"><%= flash[:success] %></div><% end %>
-    <%= yield %>
+    <%= render 'graphs/graph_window' %>
+    <div id="content"><%= yield %></div>
     <div class="clear"></div>
   </div>
 </body>

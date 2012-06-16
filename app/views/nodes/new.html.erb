@@ -2,4 +2,4 @@
 
 <%= render 'form' %>
 
-<%= link_to t('actions.back'), nodes_path %>
+<%= link_to t('actions.back'), nodes_path, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %>

@@ -1,0 +1,13 @@
+# config/config.yml
+
+defaults: &defaults
+  remote: true
+
+development:
+  <<: *defaults
+ 
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

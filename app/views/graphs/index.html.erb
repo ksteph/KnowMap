@@ -1,7 +1,7 @@
 <h1><%= t 'welcome' %></h1>
 
 <ul>
-  <% @graphs.each do |graph| %><li><%= link_to graph.name, graph %></li><% end %>
+  <% @graphs.each do |graph| %><li><%= link_to graph.name, graph, :remote => Rails.configuration.remote, "data-type" => "html" %></li><% end %>
 </ul>
 <!--
 <table>
@@ -27,4 +27,4 @@
 
 <br />
 
-<%= link_to t('graphs.new'), new_graph_path %> - <%= link_to t('nodes.new'), new_node_path %>
+<%= link_to t('graphs.new'), new_graph_path, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %> - <%= link_to t('nodes.new'), new_node_path, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %>

@@ -1,4 +1,4 @@
-<%= form_for(@graph) do |f| %>
+<%= form_for(@graph, :remote => Rails.configuration.remote && cookies[:remote]) do |f| %>
   <% if @graph.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@graph.errors.count, "error") %> prohibited this <%= t('graphs.one').downcase %> from being saved:</h2>
