@@ -42,8 +42,6 @@ GEM
     execjs (1.4.0)
       multi_json (~> 1.0)
     hike (1.2.1)
-    historyjs-rails (1.0.0)
-      railties (~> 3.0)
     i18n (0.6.0)
     journey (1.0.3)
     jquery-rails (2.0.2)
@@ -111,7 +109,6 @@ PLATFORMS
 DEPENDENCIES
   coffee-rails (~> 3.2.1)
   dynamic_form
-  historyjs-rails
   jquery-rails
   rails (= 3.2.3)
   sass-rails (~> 3.2.3)

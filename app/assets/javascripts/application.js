@@ -12,12 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require history_jquery_html5
+//          history_jquery_html5
 //= require_tree .
 
 function remove_fields(link) {
-  //$(link).prev("input[type=hidden]").val("1");
-  //$(link).closest(".fields").hide();
   $(link).prev().attr('value', true);
   $(link).parent().hide('fast');
 }
@@ -29,30 +27,52 @@ function add_fields(link, association, content) {
 }
 
 jQuery(function($) {
-  $(window).bind("popstate", function() {
-    /*alert('its a popstate yo!');*/
-    $.ajax({
-      url: location.href,
-      dataType: 'html'
-    }).done(function(data) { 
-      $('div#content').html(data);
-      ajax();
+  if ( history && history.pushState) {
+    $(window).bind("popstate", function() {
+      $.ajax({
+        url: location.href,
+        dataType: 'html'
+      }).done(function(data) {
+        $('div#content').html(data);
+        ajax();
+      });
     });
     ajax();
-  });
-  ajax();
+
+    if ( ! $.cookie("remote") ) {
+      $.cookie("remote", "true", { path: '/'});
+      $.ajax({
+        url: window.location.pathname,
+        dataType: 'html'
+      }).done(function(data) { 
+        $('div#content').html(data);
+        ajax();
+      });
+    }
+  }
 });
 
 function ajax() {
-  $('[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
+  $('a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
     // save history
-    var State = History.getState();
-    History.pushState(null, document.title, this.href);
+    history.pushState(null, document.title, this.href);
     
     // update DOM with ajax response
     $(this).parents('div#content').html(data);
     
     // attach ajax:success event
+    ajax();
+  });
+  
+  $('form[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
+    // save history
+    if(window.location.pathname!==this.getAttribute('action'))
+      history.pushState(null, document.title, this.getAttribute('action'));
+    
+    // update DOM with ajax response
+    $(this).parents('div#content').html(data);
+    
+    // attach ajax:success events
     ajax();
   });
 }

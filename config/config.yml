@@ -2,7 +2,6 @@
 
 defaults: &defaults
   remote: true
-  remote_form: true
 
 development:
   <<: *defaults
