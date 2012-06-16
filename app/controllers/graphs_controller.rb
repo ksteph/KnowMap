@@ -51,6 +51,8 @@ class GraphsController < ApplicationController
         format.html { redirect_to @graph, notice: 'Graph was successfully created.' }
         format.json { render json: @graph, status: :created, location: @graph }
       else
+        @graph.graph_membership_graphs.build
+        @graph.graph_membership_nodes.build
         format.html { render action: "new" }
         format.json { render json: @graph.errors, status: :unprocessable_entity }
       end
