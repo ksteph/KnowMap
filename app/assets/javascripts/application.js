@@ -26,28 +26,30 @@ function add_fields(link, association, content) {
   $(link).before(content.replace(regexp, new_id));
 }
 
+function updateView(url) {
+  $.ajax({
+    url: url,
+    dataType: 'html'
+  }).done(function(data) { 
+    $('div#content').html(data);
+    if(history.state && history.state.node_id) {
+      uncolor_nodes();
+      color_node(history.state.node_id);
+    }
+    ajax();
+  });
+}
+
 jQuery(function($) {
   if ( history && history.pushState) {
     $(window).bind("popstate", function() {
-      $.ajax({
-        url: location.href,
-        dataType: 'html'
-      }).done(function(data) {
-        $('div#content').html(data);
-        ajax();
-      });
+      updateView(location.href);
     });
     ajax();
 
     if ( ! $.cookie("remote") ) {
       $.cookie("remote", "true", { path: '/'});
-      $.ajax({
-        url: window.location.pathname,
-        dataType: 'html'
-      }).done(function(data) { 
-        $('div#content').html(data);
-        ajax();
-      });
+      updateView(window.location.pathname);
     }
   }
 });
@@ -74,5 +76,16 @@ function ajax() {
     
     // attach ajax:success events
     ajax();
+  });
+}
+
+function color_node(id) {
+  $('title[data-id='+id+']').prev().prev().attr('style', 'fill: #4B7399');
+}
+
+function uncolor_nodes() {
+  if($('[style="fill: #4B7399"]').length)
+  $('[style="fill: #4B7399"]').each(function(i, v){
+    v.setAttribute('style', 'fill: pink');
   });
 }
