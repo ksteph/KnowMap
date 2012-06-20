@@ -58,11 +58,11 @@ namespace :csv do
 
         # Double check for both possibilities regardless though.
         ary1to2 = RelatedEdge.find_by_sql("select * from edges"+
-                                   " where node_id_A=#{nodeId1}"+
-                                   " and node_id_B=#{nodeId2}")
+                                   " where \"node_id_A\"=#{nodeId1}"+
+                                   " and \"node_id_B\"=#{nodeId2}")
         ary2to1 = RelatedEdge.find_by_sql("select * from edges"+
-                                   " where node_id_A=#{nodeId2}"+
-                                   " and node_id_B=#{nodeId1}")
+                                   " where \"node_id_A\"=#{nodeId2}"+
+                                   " and \"node_id_B\"=#{nodeId1}")
 
         # If the edge doesn't exist add
         if (ary1to2.size == 0) && (ary2to1.size == 0)
@@ -75,8 +75,8 @@ namespace :csv do
         nodeId1 = nodeId
         nodeId2 = hshId2Node[id2].id
         aryEdgeDep = DependentEdge.find_by_sql("select * from edges"+
-                                   " where node_id_A=#{nodeId2}"+
-                                   " and node_id_B=#{nodeId1}")
+                                   " where \"node_id_A\"=#{nodeId2}"+
+                                   " and \"node_id_B\"=#{nodeId1}")
 
         # If the edge doesn't exist add
         if (aryEdgeDep.size == 0)
@@ -90,8 +90,8 @@ namespace :csv do
         nodeId1 = nodeId
         nodeId2 = hshId2Node[id2].id
         aryEdgeDep = DependentEdge.find_by_sql("select * from edges"+
-                                   " where node_id_A=#{nodeId1}"+
-                                   " and node_id_B=#{nodeId2}")
+                                   " where \"node_id_A\"=#{nodeId1}"+
+                                   " and \"node_id_B\"=#{nodeId2}")
 
         # If the edge doesn't exist add
         if (aryEdgeDep.size == 0)
