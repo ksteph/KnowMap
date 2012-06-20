@@ -1,7 +1,7 @@
 class AddIndexToGraphMembershipGraph < ActiveRecord::Migration
   def change
-    add_index 'Graph_Membership_Graphs', 'graph_id'
-    add_index 'Graph_Membership_Graphs', 'subgraph_id'
-    add_index 'Graph_Membership_Graphs', ['graph_id', 'subgraph_id'], :unique => true
+    add_index 'graph_membership_graphs', 'graph_id'
+    add_index 'graph_membership_graphs', 'subgraph_id'
+    add_index 'graph_membership_graphs', ['graph_id', 'subgraph_id'], :unique => true
   end
 end

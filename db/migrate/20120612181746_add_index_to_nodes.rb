@@ -1,5 +1,5 @@
 class AddIndexToNodes < ActiveRecord::Migration
   def change
-    add_index 'Nodes', 'id'
+    add_index 'nodes', 'id'
   end
 end
