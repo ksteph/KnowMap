@@ -32,8 +32,8 @@ function updateView(url) {
     dataType: 'html'
   }).done(function(data) { 
     $('div#content').html(data);
+    uncolor_nodes();
     if(history.state && history.state.node_id) {
-      uncolor_nodes();
       color_node(history.state.node_id);
     }
     ajax();
@@ -56,23 +56,39 @@ jQuery(function($) {
 
 function ajax() {
   $('a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
+    id = this.href.search("node") > 0 ? this.href.substr(this.href.lastIndexOf('/')+1) : null;
     // save history
-    history.pushState(null, document.title, this.href);
+    history.pushState({'node_id': id}, document.title, this.href);
+    
+    // uncolor nodes
+    uncolor_nodes();
     
     // update DOM with ajax response
-    $(this).parents('div#content').html(data);
+    $('div#content').html(data);
+    
+    // color node
+    color_node(id);
     
     // attach ajax:success event
     ajax();
   });
   
   $('form[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
+    url = this.getAttribute('action');
+    id = url.search("node") > 0 ? url.substr(url.lastIndexOf('/')+1) : null;
+    
     // save history
     if(window.location.pathname!==this.getAttribute('action'))
-      history.pushState(null, document.title, this.getAttribute('action'));
+      history.pushState({'node_id': id}, document.title, this.getAttribute('action'));
+    
+    // uncolor nodes
+    uncolor_nodes();
     
     // update DOM with ajax response
     $(this).parents('div#content').html(data);
+    
+    // color node
+    color_node(id);
     
     // attach ajax:success events
     ajax();
