@@ -6,7 +6,7 @@
   <% edges = Edge.all%>
   <% edgeStyles = {"RelatedEdge"=>"9,5", "DependentEdge"=>"1,0"} %>
   <% edgeMarkerEnd = {2=>"none", 1=>"url(#arrowhead)"} %>
-  <% subgraph = @graph.nodes %>
+  <% subgraph = [] #@graph.nodes %>
   <% hshNId2I = Hash.new %>
   <% i = -1 %>
   var nodes = [
@@ -72,7 +72,6 @@
       .attr("class", "node");
 
   node.on("dblclick", onDblClick);
-  node.on("click", function(){alert('sd');});
   node.on("mouseenter", showTitle);
   node.on("mouseleave", hideTitle);
 
