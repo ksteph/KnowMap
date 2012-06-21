@@ -5,15 +5,14 @@
   <% nodes = Node.all %>
   <% edges = Edge.all%>
   <% edgeStyles = {"RelatedEdge"=>"9,5", "DependentEdge"=>"1,0"} %>
-  <% edgeMarkerEnd = {2=>"none", 1=>"url(#arrowhead)"} %>
-  <% subgraph = [] #@graph.nodes %>
+  <% edgeMarkerEnd = {"RelatedEdge"=>"none", "DependentEdge"=>"url(#arrowhead)"} %>
   <% hshNId2I = Hash.new %>
   <% i = -1 %>
   var nodes = [
   <% nodes.each do |n|%>
     { label: "<%= if n.title.size > 15 then "#{n.title[0,12]}..." else n.title end %>",
       title: "<%= n.title %>",
-      color: "<%= if subgraph.include?(n) then "lightblue" else "pink" end %>",
+      color: "pink",
       id:    "<%= n.id %>"},
   <% hshNId2I[n.id] = i+=1 %>
   <% end %>

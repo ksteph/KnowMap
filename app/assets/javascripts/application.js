@@ -32,10 +32,7 @@ function updateView(url) {
     dataType: 'html'
   }).done(function(data) { 
     $('div#content').html(data);
-    uncolor_nodes();
-    if(history.state && history.state.node_id) {
-      color_node(history.state.node_id);
-    }
+    updateGraph();
     ajax();
   });
 }
@@ -46,10 +43,13 @@ jQuery(function($) {
       updateView(location.href);
     });
     ajax();
+    // updateGraph
+    updateGraph();
     $('.title a').on('ajax:success', function(event, data, status, xhr) {
       history.pushState(null, document.title, this.href);
-      uncolor_nodes();
       $('div#content').html(data);
+      // updateGraph
+      updateGraph();
       ajax();
     });
 
@@ -63,52 +63,31 @@ jQuery(function($) {
 
 function ajax() {
   $('#content a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
-    id = this.href.search("node") > 0 ? this.href.substr(this.href.lastIndexOf('/')+1) : null;
     // save history
-    history.pushState({'node_id': id}, document.title, this.href);
-    
-    // uncolor nodes
-    uncolor_nodes();
+    history.pushState(null, document.title, this.href);
     
     // update DOM with ajax response
     $('div#content').html(data);
     
-    // color node
-    color_node(id);
+    // updateGraph
+    updateGraph();
     
     // attach ajax:success event
     ajax();
   });
   
   $('#content form[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
-    url = this.getAttribute('action');
-    id = url.search("node") > 0 ? url.substr(url.lastIndexOf('/')+1) : null;
-    
     // save history
     if(window.location.pathname!==this.getAttribute('action'))
-      history.pushState({'node_id': id}, document.title, this.getAttribute('action'));
-    
-    // uncolor nodes
-    uncolor_nodes();
+      history.pushState(null, document.title, this.getAttribute('action'));
     
     // update DOM with ajax response
-    $(this).parents('div#content').html(data);
+    $('div#content').html(data);
     
-    // color node
-    color_node(id);
+    // updateGraph
+    updateGraph();
     
     // attach ajax:success events
     ajax();
-  });
-}
-
-function color_node(id) {
-  $('title[data-id='+id+']').prev().prev().attr('style', 'fill: #4B7399');
-}
-
-function uncolor_nodes() {
-  if($('[style="fill: #4B7399"]').length)
-  $('[style="fill: #4B7399"]').each(function(i, v){
-    v.setAttribute('style', 'fill: pink');
   });
 }
