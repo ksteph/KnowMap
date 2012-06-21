@@ -46,16 +46,23 @@ jQuery(function($) {
       updateView(location.href);
     });
     ajax();
+    $('.title a').on('ajax:success', function(event, data, status, xhr) {
+      history.pushState(null, document.title, this.href);
+      uncolor_nodes();
+      $('div#content').html(data);
+      ajax();
+    });
 
     if ( ! $.cookie("remote") ) {
       $.cookie("remote", "true", { path: '/'});
       updateView(window.location.pathname);
+      $('.title a').attr('data-remote', true);
     }
   }
 });
 
 function ajax() {
-  $('a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
+  $('#content a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
     id = this.href.search("node") > 0 ? this.href.substr(this.href.lastIndexOf('/')+1) : null;
     // save history
     history.pushState({'node_id': id}, document.title, this.href);
@@ -73,7 +80,7 @@ function ajax() {
     ajax();
   });
   
-  $('form[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
+  $('#content form[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
     url = this.getAttribute('action');
     id = url.search("node") > 0 ? url.substr(url.lastIndexOf('/')+1) : null;
     
