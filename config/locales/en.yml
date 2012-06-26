@@ -4,6 +4,7 @@
 en:
   welcome: "Welcome, what graph would you like to see?"
   actions:
+    home: "Home"
     new: "New"
     edit: "Edit"
     remove: "Remove"

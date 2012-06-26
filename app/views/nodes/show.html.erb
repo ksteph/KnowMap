@@ -36,5 +36,7 @@
     </td>
   </tr>
 </table>
+
+<%= link_to t('actions.home'), :root, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %> |
 <%= link_to t('actions.edit'), edit_node_path(@node), :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %> |
-<%= link_to t('actions.back'), nodes_path, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %>
+<%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>

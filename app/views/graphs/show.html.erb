@@ -24,5 +24,6 @@
   <% @graph.nodes.each do |node| %><li><%= link_to node.title, node, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %></li><% end %>
 </ul>
 
+<%= link_to t('actions.home'), :root, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %> |
 <%= link_to t('actions.edit'), edit_graph_path(@graph), :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %> |
-<%= link_to t('actions.back'), graphs_path, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %>
+<%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>
