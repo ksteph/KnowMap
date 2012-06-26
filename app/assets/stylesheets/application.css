@@ -50,6 +50,7 @@ a {
   padding: 20px 40px;
   border: solid 1px black;
   margin-top: 20px;
+  min-width: 530px;
 }
 
 #flash_notice, #flash_error {
