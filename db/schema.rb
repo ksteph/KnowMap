@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(:version => 20120612181857) do
 
   add_index "graph_membership_graphs", ["graph_id", "subgraph_id"], :name => "index_graph_membership_graphs_on_graph_id_and_subgraph_id", :unique => true
   add_index "graph_membership_graphs", ["graph_id"], :name => "index_graph_membership_graphs_on_graph_id"
+  add_index "graph_membership_graphs", ["id"], :name => "index_graph_membership_graphs_on_id"
   add_index "graph_membership_graphs", ["subgraph_id"], :name => "index_graph_membership_graphs_on_subgraph_id"
 
   create_table "graph_membership_nodes", :force => true do |t|
@@ -46,6 +47,7 @@ ActiveRecord::Schema.define(:version => 20120612181857) do
 
   add_index "graph_membership_nodes", ["graph_id", "node_id"], :name => "index_graph_membership_nodes_on_graph_id_and_node_id", :unique => true
   add_index "graph_membership_nodes", ["graph_id"], :name => "index_graph_membership_nodes_on_graph_id"
+  add_index "graph_membership_nodes", ["id"], :name => "index_graph_membership_nodes_on_id"
   add_index "graph_membership_nodes", ["node_id"], :name => "index_graph_membership_nodes_on_node_id"
 
   create_table "graphs", :force => true do |t|
