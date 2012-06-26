@@ -4,6 +4,6 @@
 
 <%= render 'form' %>
 
-<%= link_to t('actions.home'), :root, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %> |
-<%= link_to t('actions.show'), @graph, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %> |
+<%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
+<%= link_to t('actions.show'), @graph, :remote => remote?, "data-type" => "html" %> |
 <%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>

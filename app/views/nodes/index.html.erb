@@ -15,8 +15,8 @@
   <tr>
     <td><%= node.title %></td>
     <td><%= node.content %></td>
-    <td><%= link_to t('actions.show'), node, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %></td>
-    <td><%= link_to t('actions.edit'), edit_node_path(node), :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %></td>
+    <td><%= link_to t('actions.show'), node, :remote => remote?, "data-type" => "html" %></td>
+    <td><%= link_to t('actions.edit'), edit_node_path(node), :remote => remote?, "data-type" => "html" %></td>
     <td><%= link_to t('actions.destroy'), node, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>
@@ -24,4 +24,4 @@
 
 <br />
 
-<%= link_to t('nodes.new'), new_node_path, :remote => Rails.configuration.remote && cookies[:remote], "data-type" => "html" %>
+<%= link_to t('nodes.new'), new_node_path, :remote => remote?, "data-type" => "html" %>

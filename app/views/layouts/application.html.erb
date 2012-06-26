@@ -9,7 +9,7 @@
 </head>
 <body>
   <div id="header">
-    <div class="title"><%= link_to 'Knowledge Map', :root, :remote => Rails.configuration.remote && cookies[:remote] %></div>
+    <div class="title"><%= link_to 'Knowledge Map', :root, :remote => remote? %></div>
   </div>
   <div id="body">
     <% if flash[:error] %><div id="flash_error"><%= flash[:error] %></div><% end %>
