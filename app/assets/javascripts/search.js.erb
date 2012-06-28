@@ -1,0 +1,49 @@
+// Place all the behaviors and hooks related to the matching controller here.
+// All this logic will automatically be available in application.js.
+$(function(){
+  $("div.search input[type=submit]").remove();
+  
+  $('div.search form').submit(function() {
+    return false;
+  });
+  
+  $('div.search input[type=text]').keyup(function() {
+    timestamp = new Date().getTime();
+    if ($("div.search input[type=text]").attr('value') == "") return;
+    //url = 'http://' + document.location.host + '/search/' + $("div.search input[type=text]").attr('value');
+    $(".search-box").attr('data-timestamp', timestamp);
+    url = 'http://' + document.location.host + '/search?' + $("div.search form").serialize();
+    xhr = $.ajax({
+      url: url,
+      dataType: 'html'
+    })
+    xhr.timestamp = timestamp;
+    xhr.done(function(data) {
+      if(xhr.timestamp < $(".search-box").attr('data-timestamp')) return;
+      if(history.state && history.state.replace)
+        history.replaceState({replace: true, search:search_term()}, document.title, url);
+      else
+        history.pushState({replace: true, search:search_term()}, document.title, url);
+      $('div#content').html(data);
+      updateGraph();
+      ajax();
+    });
+    return false;
+  }).focus(function() {
+    if($(".search-box").attr('value')==="<%= I18n.t 'search_box.default_text' %>") {
+      $(".search-box").attr('value', "").removeClass("blank-search-box")
+    }
+  }).blur(function() {
+    if($(".search-box").attr('value')=="" || $(".search-box").attr('value')==="<%= I18n.t 'search_box.default_text' %>") {
+      $(".search-box").attr('value', "<%= I18n.t 'search_box.default_text' %>").addClass("blank-search-box")
+    }
+  });
+});
+
+function search_term() {
+  q = $("div.search input[type=text]").attr('value');
+  if (q === undefined)
+    return "";
+  else
+    return q;
+}

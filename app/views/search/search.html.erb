@@ -1,0 +1,18 @@
+<h1>Search results</h1>
+<p>
+  <%= @total %> results found.
+</p>
+
+<% if @graphs.count > 0 then %>
+<h2>Graphs</h2>
+<ul>
+  <% @graphs.each do |graph| %><li><%= link_to highlight_matches(graph.name, params[:q]), graph, :remote => remote?, "data-type" => "html" %></li><% end %>
+</ul>
+<% end %>
+
+<% if @nodes.count > 0 then %>
+<h2>Nodes</h2>
+<ul>
+  <% @nodes.each do |node| %><li><%= link_to highlight_matches(node.title, params[:q]), node, :remote => remote?, "data-type" => "html" %></li><% end %>
+</ul>
+<% end %>

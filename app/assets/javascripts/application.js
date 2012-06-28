@@ -41,22 +41,30 @@ jQuery(function($) {
   if ( history && history.pushState) {
     $(window).bind("popstate", function() {
       updateView(location.href);
+      if(history.state)
+        $("div.search input[type=text]").attr('value', history.state.search);
     });
     ajax();
     // updateGraph
     updateGraph();
+    history.replaceState({search: search_term()}, document.title, document.location.href);
     $('.title a').on('ajax:success', function(event, data, status, xhr) {
-      history.pushState(null, document.title, this.href);
+      history.pushState({search: search_term()}, document.title, this.href);
       $('div#content').html(data);
       // updateGraph
       updateGraph();
       ajax();
     });
+    
+      //$("div.search form").hide();
+      $("div.search input").show();
 
     if ( ! $.cookie("remote") ) {
       $.cookie("remote", "true", { path: '/'});
       updateView(window.location.pathname);
       $('.title a').attr('data-remote', true);
+      //$("div.search form").hide();
+      $("div.search input").show();
     }
   }
 });
@@ -64,7 +72,7 @@ jQuery(function($) {
 function ajax() {
   $('#content a[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
     // save history
-    history.pushState(null, document.title, this.href);
+    history.pushState({search: search_term()}, document.title, this.href);
     
     // update DOM with ajax response
     $('div#content').html(data);
@@ -79,7 +87,7 @@ function ajax() {
   $('#content form[data-remote=true]').on('ajax:success', function(event, data, status, xhr) {
     // save history
     if(window.location.pathname!==this.getAttribute('action'))
-      history.pushState(null, document.title, this.getAttribute('action'));
+      history.pushState({search: search_term()}, document.title, this.getAttribute('action'));
     
     // update DOM with ajax response
     $('div#content').html(data);

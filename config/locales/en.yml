@@ -33,3 +33,5 @@ en:
     add_related: "Add related node"
     add_previous: "Add previous node"
     add_next: "Add next node"
+  search_box:
+    default_text: "Search..."

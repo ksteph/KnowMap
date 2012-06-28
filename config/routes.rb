@@ -13,6 +13,8 @@ KnowledgeMap::Application.routes.draw do
   resources :graphs
 
   resources :nodes
+  
+  get 'search/(:q)' => "search#search", :as => "search"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

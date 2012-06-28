@@ -101,7 +101,7 @@
     var url = '/nodes/' + id;
     updateView(url);
     // save history
-    history.pushState({'node_id': id}, document.title, url);
+    history.pushState({'node_id': id, search:search_term()}, document.title, url);
     // uncolor prev circle
     uncolor_nodes();
     // color selected circle
