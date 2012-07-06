@@ -62,7 +62,7 @@ jQuery(function($) {
 });
 
 function ajax() {
-  $('[data-remote=true]').not(".user_nav *").one('ajax:success', function(event, data, status, xhr) {
+  $('[data-remote=true]').not(".user_nav a,#login_form").one('ajax:success', function(event, data, status, xhr) {
     // save history
     if(this.tagName.toLowerCase() === "a" || (this.tagName.toLowerCase() === "form" && window.location.pathname!==this.getAttribute('action') ))
       history.pushState({search: search_term()}, document.title, xhr.getResponseHeader("X-App-Path"));
@@ -78,15 +78,20 @@ function ajax() {
   });
   
   
-  $('.user_nav a[data-remote=true]').one('ajax:success', function(event, data, status, xhr) {
+  $('.user_nav a[data-remote=true],#login_form[data-remote=true]').one('ajax:success', function(event, data, status, xhr) {
+    $.ajax({
+      url: '_partials/user_nav',
+      dataType: 'html'
+    }).done(function(data) {
+      $('div.user_nav').html(data);
+      ajax();
+    });
+    
     // save history
-    if(this.tagName.toLowerCase() === "a" || (this.tagName.toLowerCase() === "form" && window.location.pathname!==this.getAttribute('action') ))
-      history.pushState({search: search_term()}, document.title, xhr.getResponseHeader("X-App-Path"));
+    history.pushState({search: search_term()}, document.title, xhr.getResponseHeader("X-App-Path"));
     
     // update DOM with ajax response
     $('div#content').html(data);
-    
-    $.ajax('_partials/user_nav').done(function(data) { $('div.user_nav').html(data); })
     
     // updateGraph
     updateGraph();
