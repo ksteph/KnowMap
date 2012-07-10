@@ -21,6 +21,14 @@ module NavigationHelpers
       '/login'
     when /^the logout\s?page$/
       '/logout'
+    when /^the graphs\s?page$/
+      '/graphs'
+    when /^the actions\s?page$/
+      '/actions'
+    when /^the "(.*)" graph$/
+      "/graphs/#{Graph.find_by_name($1).id}"
+    when /^the edit page for the "(.*)" graph$/
+      "/graphs/#{Graph.find_by_name($1).id}/edit"
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

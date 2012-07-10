@@ -11,7 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120704000841) do
+ActiveRecord::Schema.define(:version => 20120706221534) do
+
+  create_table "actions", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "controller"
+    t.string   "action"
+    t.integer  "target_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "edges", :force => true do |t|
     t.integer  "node_id_A",  :null => false

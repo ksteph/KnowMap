@@ -24,4 +24,8 @@ class Node < ActiveRecord::Base
   def related_nodes
     related_nodes_A | related_nodes_B
   end
+  
+  def to_s
+    title
+  end
 end
