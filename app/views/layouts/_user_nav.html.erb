@@ -1,5 +1,5 @@
 <% if current_user %>
-  Logged in as <%= current_user.email %>.
+  Logged in as <%= link_to current_user, profile_path, :remote => remote? %>.
   <%= link_to "Log out", logout_path, :remote => remote? %>
 <% else %>
   <%= link_to "Sign up", sign_up_path, :remote => remote? %> or

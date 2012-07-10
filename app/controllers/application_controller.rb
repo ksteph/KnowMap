@@ -13,10 +13,10 @@ class ApplicationController < ActionController::Base
   def record_user_action
     action = params[:action].downcase
     controller = params[:controller].downcase.classify
-    logger.info "##### controller: #{controller}"
-    logger.info "##### action: #{action}"
-    logger.info "##### id: #{params[:id]}"
-    logger.info "##### user: #{current_user}"
+    #logger.info "##### controller: #{controller}"
+    #logger.info "##### action: #{action}"
+    #logger.info "##### id: #{params[:id]}"
+    #logger.info "##### user: #{current_user}"
     user = current_user
     yield
     user = current_user if not user

@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessible :email, :password, :password_confirmation
+  attr_accessible :email, :password, :password_confirmation, :first, :last
   has_many :actions
   
   attr_accessor :password
@@ -27,6 +27,6 @@ class User < ActiveRecord::Base
   end
   
   def to_s
-    email
+    "#{first} #{last}" == " " ? "#{email}" : "#{first} #{last}"
   end
 end

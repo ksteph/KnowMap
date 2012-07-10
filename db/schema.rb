@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120706221534) do
+ActiveRecord::Schema.define(:version => 20120710002223) do
 
   create_table "actions", :force => true do |t|
     t.integer  "user_id"
@@ -83,6 +83,8 @@ ActiveRecord::Schema.define(:version => 20120706221534) do
     t.string   "password_salt"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "first"
+    t.string   "last"
   end
 
 end

@@ -1,15 +1,29 @@
 <p id="notice"><%= notice %></p>
 
 <p>
+  <b>First:</b>
+  <%= @user.first %>
+</p>
+
+<p>
+  <b>Last:</b>
+  <%= @user.last %>
+</p>
+
+<p>
   <b>Email:</b>
   <%= @user.email %>
 </p>
 
-<p>
-  <b>Password:</b>
-  <%= "********" %>
-</p>
+<h2>Recent actions</h2>
+<table>
+  <tr>
+    <th>Date</th>
+    <th>Action</th>
+  </tr>
+  <%= render @user.actions %>
+</table>
 
 
-<%= link_to 'Edit', edit_user_path(@graph_membership_node) %> |
-<%= link_to 'Back', user_path %>
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

@@ -22,8 +22,18 @@ class Action < ActiveRecord::Base
       end
     when "User"
       case action
+      when "index"
+        "#{user} viewed the index page for all #{controller.pluralize}"
       when "create"
         "#{user} signed up"
+      when "show"
+        "#{user} viewed #{target}'s profile"
+      when "destroy"
+        "#{user} deleted #{target}"
+      when "edit"
+        "#{user} viewed the edit page for #{target}"
+      when "update"
+        "#{user} edited #{target}"
       end
     when "Graph", "Node"
       case action
