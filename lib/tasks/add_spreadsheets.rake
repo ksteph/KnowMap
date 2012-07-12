@@ -150,18 +150,22 @@ namespace :csv do
       }
 
       hsh2AryMembers["node"].each{|id2|
-        nodeId = hshId2Node[id2].id
-        aryNode = GraphMembershipNode
-          .find_by_sql("select * from graph_membership_nodes"+
-                       " where graph_id=#{graphId1}"+
-                       " and node_id=#{nodeId}")
-
-        if aryNode.size == 0
-          GraphMembershipNode.create({graph_id: graphId1,
-                                        node_id: nodeId})
+        if hshId2Node.include?(id2)
+          nodeId = hshId2Node[id2].id
+          aryNode = GraphMembershipNode
+            .find_by_sql("select * from graph_membership_nodes"+
+                         " where graph_id=#{graphId1}"+
+                         " and node_id=#{nodeId}")
+          
+          if aryNode.size == 0
+            GraphMembershipNode.create({graph_id: graphId1,
+                                         node_id: nodeId})
+          end
         end
       }
 
     }
+    puts "Total nodes added: #{hshId2Node.size}"
   end
 end
+

@@ -159,14 +159,16 @@ def printSubGraph(output, gId, tag)
   output.puts "subgraph cluster_#{tag} {"
   output.puts "  label=\"#{gId}-#{group.title}\""
   aryNode.each{|id1|
-    node1 = @hshNode[id1]
-    output.puts "  #{node1.nodeStr}_#{tag} [label=\"#{id1}-#{node1.title}\"]"
-    @hshRelatedEdge[node1.id].each{|id2|
-      if aryNode.include?(id2) && (id2 < id1)
-        node2 = @hshNode[id2]
-        output.puts "  #{node1.nodeStr}_#{tag} -> #{node2.nodeStr}_#{tag} [#{@strRelateEdgeFormat}]"
-      end
-    }
+    if @hshNode.include?(id1)
+      node1 = @hshNode[id1]
+      output.puts "  #{node1.nodeStr}_#{tag} [label=\"#{id1}-#{node1.title}\"]"
+      @hshRelatedEdge[node1.id].each{|id2|
+        if aryNode.include?(id2) && (id2 < id1)
+          node2 = @hshNode[id2]
+          output.puts "  #{node1.nodeStr}_#{tag} -> #{node2.nodeStr}_#{tag} [#{@strRelateEdgeFormat}]"
+        end
+      }
+    end
   }
   aryNode.each{|nId|
     node1 = @hshNode[nId]
@@ -183,42 +185,19 @@ def printSubGraph(output, gId, tag)
   output.puts "}"
 end
 
+aryUseNodes = Array.new
+@hshNextId2AryId.each{|id,ary|
+  aryUseNodes = aryUseNodes | ary
+}
+aryUseNodes = aryUseNodes | @hshNextId2AryId.keys | @hshRelatedEdge.keys
+
 outMap = File.new("#{outHeader}.map", "w+")
 
 outMap.puts "digraph g {"
-outMap.puts "  relateA [label=\"A\", group=\"sample\", #{strSampleFormat}]"
-outMap.puts "  relateB [label=\"B\", group=\"sample\", #{strSampleFormat}]"
-outMap.puts "  prereq [label=\"Prereq\", group=\"sample\", #{strSampleFormat}]"
-outMap.puts "  nodeN [label=\"Node\", group=\"sample\", #{strSampleFormat}]"
-outMap.puts "  next [label=\"Next\", group=\"sample\", #{strSampleFormat}]"
-
-outMap.puts "  subgraph cluster_sample {"
-outMap.puts "    label=\"Example\""
-outMap.puts "    subgraph cluster_relate {"
-outMap.puts "      label = \"SubGraph: Related Nodes\""
-outMap.puts "      relateA"
-outMap.puts "      relateB"
-outMap.puts "    }"
-outMap.puts "    subgraph cluster_sgO {"
-outMap.puts "      label = \"SubGraph: Outer\""
-outMap.puts "      prereq"
-outMap.puts "      nodeN"
-outMap.puts "      subgraph cluster_sgI {"
-outMap.puts "        label = \"SubGraph: Inner\""
-outMap.puts "        next"
-outMap.puts "      }"
-outMap.puts "    }"
-outMap.puts "  }"
-
-outMap.puts "  relateA -> relateB [#{@strRelateEdgeFormat}, #{strSampleFormat}]"
-outMap.puts "  prereq -> nodeN [#{@strNextEdgeFormat}"+
-  "#{if @strNextEdgeFormat == "" then '' else ',' end} "+
-  "#{strSampleFormat}]"
-outMap.puts "  nodeN -> next [#{@strNextEdgeFormat}"+
-  "#{if @strNextEdgeFormat == "" then "" else "," end} "+
-  "#{strSampleFormat}]"
 @hshNode.each{|id, node|
-  outMap.puts "  #{node.nodeStr} [label=\"#{node.title}\"]"
+  if aryUseNodes.include?(id)
+    outMap.puts "  #{node.nodeStr} [label=\"#{node.title}\"]"
+  end
 }
 
 @aryRelatedEdge.each{|rEdge|
@@ -231,7 +210,11 @@ outMap.puts "  nodeN -> next [#{@strNextEdgeFormat}"+
   node1 = @hshNode[id1]
   ary.each{|id2|
     node2 = @hshNode[id2]
-    outMap.puts "  #{node1.nodeStr} -> #{node2.nodeStr} [#{@strNextEdgeFormat}]"
+    if node1 == nil || node2 == nil
+      puts "Warning: Non-existent node in dependency node1(#{id1}) node2(#{id2})"
+    else
+      outMap.puts "  #{node1.nodeStr} -> #{node2.nodeStr} [#{@strNextEdgeFormat}]"
+    end
   }
 }
 
