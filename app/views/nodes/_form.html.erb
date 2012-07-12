@@ -19,6 +19,14 @@
     <%= f.label :content %><br />
     <%= f.text_area :content %>
   </div>
+  <div class="field">
+    <%= f.label :pos_x %><br />
+    <%= f.text_field :pos_x %>
+  </div>
+  <div class="field">
+    <%= f.label :pos_y %><br />
+    <%= f.text_field :pos_y %>
+  </div>
   
   <h2><%= t 'nodes.related' %></h2>
   <%= f.fields_for :related_edges_A do |builder| %>
