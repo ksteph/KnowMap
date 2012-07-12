@@ -13,7 +13,10 @@
     { label: "<%= if n.title.size > 15 then "#{n.title[0,12]}..." else n.title end %>",
       title: "<%= n.title %>",
       color: "pink",
-      id:    "<%= n.id %>"},
+      id:    "<%= n.id %>",
+      x:    "<%= n.pos_x %>",
+      y:    "<%= n.pos_y %>",
+    },
   <% hshNId2I[n.id] = i+=1 %>
   <% end %>
   ];
@@ -28,23 +31,12 @@
   ];
 
   var width = parseInt($("#window").css("width")), height = 500, cRadius = 30, linkDist = cRadius*4;
-      
-  var color = d3.scale.category20();
-  
-  var force = d3.layout.force()
-  .charge(-250)
-  .linkDistance(linkDist)
-  .size([width, height]);
-  
-  var svg = d3.select("#chart").append("svg")
-  .attr("width", width)
-  .attr("height", height);
-  
-  force
-  .nodes(nodes)
-  .links(links)
-  .start();
 
+  var svg = d3.select("#chart").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+  <!-- Arrowhead end -->  
   svg.append("defs").append("marker")
     .attr("id", "arrowhead")
     .attr("viewBox", "0 0 10 10")
@@ -56,15 +48,21 @@
     .attr("orient", "auto")
     .append("path")
       .attr("d", "M 0 0 L 10 5 L 0 10 Z");
-  
+
+  <!-- Insert Edges -->  
   var link = svg.selectAll("link.link")
   .data(links)
   .enter().append("line")
   .attr("class","link")
+  .attr("x1", function(d){return nodes[d.source].x;})
+  .attr("y1", function(d){return nodes[d.source].y;})
+  .attr("x2", function(d){return nodes[d.target].x;})
+  .attr("y2", function(d){return nodes[d.target].y;})
   .style("stroke","black")
   .style("stroke-dasharray", function(d){return d.stroke_style})
   .style("marker-end", function(d){return d.marker_end});
 
+  <!-- Insert Nodes -->  
   var node = svg.selectAll("g.node")
       .data(nodes)
     .enter().append("g")
@@ -75,25 +73,20 @@
   //node.on("mouseleave", hideTitle);
 
   node.append("circle")
-          .attr("r", cRadius)
-  .style("fill", function(d){return d.color});
+      .attr("r", cRadius)
+      .attr("cx", function(d){return d.x;})
+      .attr("cy", function(d){return d.y;})
+      .style("fill", function(d){return d.color});
+
   node.append("text").text(function(d){return d.label})
-  .attr("text-anchor","middle")
-  .attr("dy",".35em")
-  .attr("font-size", "8pt");
-  node.call(force.drag);
-  
+      .attr("text-anchor","middle")
+      .attr("x", function(d){return d.x;})
+      .attr("y", function(d){return d.y;})
+      .attr("dy",".35em")
+      .attr("font-size", "8pt");
+
   node.append("title").attr("data-id", function(d){return d.id;}).text(function(d){return d.title;});
-  
-  force.on("tick", function() {
-  link.attr("x1", function(d) { return d.source.x; })
-  .attr("y1", function(d) { return d.source.y; })
-  .attr("x2", function(d) { return d.target.x; })
-  .attr("y2", function(d) { return d.target.y; });
-  
-  node.attr("transform", function(d){return "translate("+d.x+","+d.y+")";});
-  });
-  
+
   function onDblClick() {
     <!-- Code to change to the clicked on node's content information. -->
     var title = d3.select(this).select("title").text();
@@ -128,4 +121,5 @@
     var e = d3.select(this).select("text")
     e.text(function(d) { return d.label; } );
   }
+
 </script>
