@@ -2,28 +2,4 @@
 
 <p id="notice"><%= notice %></p>
 
-
-
-<p>
-  <b>Name:</b>
-  <%= @graph.name %>
-</p>
-
-<p>
-  <b>Content:</b>
-  <%= @graph.content %>
-</p>
-
-<h2><%= t 'subgraphs.many' %></h2>
-<ul>
-  <% @graph.subgraphs.each do |subgraph| %><li><%= link_to subgraph.name, subgraph, :remote => remote?, "data-type" => "html" %></li><% end %>
-</ul>
-
-<h2><%= t 'nodes.many' %></h2>
-<ul>
-  <% @graph.nodes.each do |node| %><li><%= link_to node.title, node, :remote => remote?, "data-type" => "html" %></li><% end %>
-</ul>
-
-<%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
-<%= link_to t('actions.edit'), edit_graph_path(@graph), :remote => remote?, "data-type" => "html" %> |
-<%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>
+<%= render 'new_graph_window' %>
