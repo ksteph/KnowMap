@@ -3,9 +3,9 @@ class NodesController < ApplicationController
   # GET /nodes.json
   def index
     if params[:id] then
-      @nodes = Node.find_all_by_id(params[:id].split(',')) if params[:id]
+      @nodes = Node.find_all_by_id(params[:id].split(','), :include => [:previous_nodes, :next_nodes, :related_nodes_A, :related_nodes_B])
     else
-      @nodes = Node.all
+      @nodes = Node.all :include => [:previous_nodes, :next_nodes, :related_nodes_A, :related_nodes_B]
     end
 
     respond_to do |format|

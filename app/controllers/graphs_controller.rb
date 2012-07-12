@@ -3,9 +3,9 @@ class GraphsController < ApplicationController
   # GET /graphs.json
   def index
     if params[:id] then
-      @graphs = Graph.find_all_by_id(params[:id].split(','))
+      @graphs = Graph.find_all_by_id(params[:id].split(','), :include => [:subgraphs, :nodes])
     else
-      @graphs = Graph.all
+      @graphs = Graph.all :include => [:subgraphs, :nodes]
     end
 
     respond_to do |format|
