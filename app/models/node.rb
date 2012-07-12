@@ -1,5 +1,5 @@
 class Node < ActiveRecord::Base
-  attr_accessible :title, :content, :incoming_edges_attributes, :outgoing_edges_attributes, :related_edges_A_attributes, :related_edges_B_attributes
+  attr_accessible :title, :content, :pos_x, :pos_y, :incoming_edges_attributes, :outgoing_edges_attributes, :related_edges_A_attributes, :related_edges_B_attributes
   has_many :graphs, :through => :graph_membership_nodes
   has_many :graph_membership_nodes
   

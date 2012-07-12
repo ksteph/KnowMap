@@ -2,11 +2,15 @@ class NodesController < ApplicationController
   # GET /nodes
   # GET /nodes.json
   def index
-    @nodes = Node.all
+    if params[:id] then
+      @nodes = Node.find_all_by_id(params[:id].split(','), :include => [:previous_nodes, :next_nodes, :related_nodes_A, :related_nodes_B])
+    else
+      @nodes = Node.all :include => [:previous_nodes, :next_nodes, :related_nodes_A, :related_nodes_B]
+    end
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # index.html.erb
-      format.json { render json: @nodes }
+      format.json #{ render json: @nodes }
     end
   end
 
@@ -17,7 +21,7 @@ class NodesController < ApplicationController
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # show.html.erb
-      format.json { render json: @node }
+      format.json { render :partial => 'node', :locals => {:node => @node} }
     end
   end
 

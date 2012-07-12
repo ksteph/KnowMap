@@ -26,7 +26,7 @@
     <% if flash[:warning] %><div id="flash_warning"><%= flash[:warning] %></div><% end %>
     <% if flash[:info] %><div id="flash_info"><%= flash[:info] %></div><% end %>
     <% if flash[:success] %><div id="flash_success"><%= flash[:success] %></div><% end %>
-    <%= render 'graphs/graph_window' %>
+    <% render 'graphs/graph_window' %>
     <div id="content"><%= yield %></div>
     <div class="clear"></div>
   </div>

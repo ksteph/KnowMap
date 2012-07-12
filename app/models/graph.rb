@@ -17,4 +17,11 @@ class Graph < ActiveRecord::Base
     subgraphs.each { |g| result |= g.all_subgraphs }
     result
   end
+  
+  def all_nodes
+    return [] if subgraphs.nil?
+    result = nodes
+    subgraphs.each { |g| result |= g.all_nodes }
+    result
+  end
 end

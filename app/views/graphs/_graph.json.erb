@@ -1,0 +1,9 @@
+<% key ||= false; if key %>"<%= graph.id %>": <% end %>{
+  "id": <%= graph.id %>,
+  "name": "<%= graph.name %>",
+  "content": "<%= graph.content %>",
+  "subgraphs": <%= graph.subgraphs.map{|g| g.id} %>,
+  "all_subgraphs": <%= graph.all_subgraphs.map{|g| g.id} %>,
+  "nodes": <%= graph.nodes.map{|n| n.id} %>,
+  "all_nodes": <%= graph.all_nodes.map{|n| n.id} %>
+}

@@ -1,0 +1,165 @@
+<div id="chart"></div>
+<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+<script type="text/javascript">
+
+// Load all Graphs and Nodes
+var Graph;
+var Node;
+var nodes = [];
+var links = [];
+var graph_id = <%= @graph.id %>;
+
+$.getJSON("http://localhost:3000/graphs",function(data, textStatus, jqXHR){
+  Graph = data;
+  $.getJSON("http://localhost:3000/nodes",function(data, textStatus, jqXHR){
+    Node = data;
+    
+    for (i in Graph[graph_id].all_nodes) {
+      node_id = Graph[graph_id].all_nodes[i];
+      
+      nodes.push({
+        label: Node[node_id].title.length > 15 ? Node[node_id].title.substr(0,12) : Node[node_id].title ,
+        title: Node[node_id].title,
+        color: "pink",
+        id:    node_id
+      });
+    }
+  
+
+
+  <% nodes = @graph.all_nodes %>
+  <% edges = Edge.all%>
+  <% edgeStyles = {"RelatedEdge"=>"9,5", "DependentEdge"=>"1,0"} %>
+  <% edgeMarkerEnd = {"RelatedEdge"=>"none", "DependentEdge"=>"url(#arrowhead)"} %>
+  <% hshNId2I = Hash.new %>
+  <% i = -1 %>
+
+
+  <% nodes.each do |n|%>
+  <% hshNId2I[n.id] = i+=1 %>
+  <% end %>
+  
+  var links = [
+    <% edges.each do |e| %>
+    <% if hshNId2I[e.node_id_A] and hshNId2I[e.node_id_B] then %>
+    {source: <%= hshNId2I[e.node_id_A] %>,
+     target: <%= hshNId2I[e.node_id_B] %>,
+     stroke_style: "<%= edgeStyles[e.type] %>",
+     marker_end: "<%= edgeMarkerEnd[e.type] %>",
+    },
+    <% end %>
+    <% end %>
+  ];
+
+  var width = parseInt($("#chart").css("width")), height = 500, cRadius = 30, linkDist = cRadius*4;
+      
+  var color = d3.scale.category20();
+  
+  var force = d3.layout.force()
+  .charge(-250)
+  .linkDistance(linkDist)
+  .size([width, height]);
+  
+  var svg = d3.select("#chart").append("svg")
+  .attr("width", width)
+  .attr("height", height);
+  
+  force
+  .nodes(nodes)
+  .links(links)
+  .start();
+
+  svg.append("defs").append("marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", cRadius*1.4)
+    .attr("refY", "5")
+    .attr("markerUnits", "strokeWidth")
+    .attr("markerWidth", 10)
+    .attr("markerHeight", 9)
+    .attr("orient", "auto")
+    .append("path")
+      .attr("d", "M 0 0 L 10 5 L 0 10 Z");
+  
+  var link = svg.selectAll("link.link")
+  .data(links)
+  .enter().append("line")
+  .attr("class","link")
+  .style("stroke","black")
+  .style("stroke-dasharray", function(d){return d.stroke_style})
+  .style("marker-end", function(d){return d.marker_end});
+
+  var node = svg.selectAll("g.node")
+      .data(nodes)
+    .enter().append("g")
+      .attr("class", "node");
+
+  node.on("dblclick", onDblClick);
+  //node.on("mouseenter", showTitle);
+  //node.on("mouseleave", hideTitle);
+
+  node.append("circle")
+          .attr("r", cRadius)
+  .style("fill", function(d){return d.color});
+  node.append("text").text(function(d){return d.label})
+  .attr("text-anchor","middle")
+  .attr("dy",".35em")
+  .attr("font-size", "8pt");
+  node.call(force.drag);
+  
+  node.append("title").attr("data-id", function(d){return d.id;}).text(function(d){return d.title;});
+  
+  force.on("tick", function() {
+  link.attr("x1", function(d) { return d.source.x; })
+  .attr("y1", function(d) { return d.source.y; })
+  .attr("x2", function(d) { return d.target.x; })
+  .attr("y2", function(d) { return d.target.y; });
+  
+  node.attr("transform", function(d){return "translate("+d.x+","+d.y+")";});
+  });
+  
+ 
+ 
+ 
+ 
+
+  });
+});
+ 
+  
+  
+  function onDblClick() {
+    <!-- Code to change to the clicked on node's content information. -->
+    var title = d3.select(this).select("title").text();
+    var id = parseInt($('title:contains('+title+')')[0].getAttribute('data-id'));
+    var url = '/nodes/' + id;
+    updateView(url);
+    // save history
+    history.pushState({'node_id': id, search:search_term()}, document.title, url);
+    // uncolor prev circle
+    uncolor_nodes();
+    // color selected circle
+    color_node(id);
+    /*
+    var e = d3.select(this).select("text")
+    var t = e.text();
+    e.text(function(d) {
+      if (t == d.title)
+        {return d.label;}
+      else
+        {return d.title;}
+      }
+    );
+    */
+  }
+  
+  function showTitle() {
+    var e = d3.select(this).select("text")
+    e.text(function(d) { return d.title; } );
+  }
+  
+  function hideTitle() {
+    var e = d3.select(this).select("text")
+    e.text(function(d) { return d.label; } );
+  }
+</script>
