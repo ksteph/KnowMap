@@ -2,9 +2,11 @@ namespace :csv do
   desc "Adds csv spreadsheet to database"
   task :populate, [:nodefile, :graphfile] => :environment do |t,args|
     args.with_defaults(nodefile: 'spreadsheets/concepts.csv',
-                       graphfile: 'spreadsheets/groups.csv')
-    puts "You gave node file: #{args.nodefile}"
-    puts "You gave group file: #{args.graphfile}"
+                       graphfile: 'spreadsheets/groups.csv',
+                       coorfile: 'spreadsheets/coordinates.csv')
+    puts "Populating from node file: #{args.nodefile}"
+    puts "Populating from group file: #{args.graphfile}"
+    puts "Populating from coordinates file: #{args.coorfile}"
 
     require "csv"
 
@@ -165,7 +167,20 @@ namespace :csv do
       }
 
     }
-    puts "Total nodes added: #{hshId2Node.size}"
+
+    CSV.foreach(args.coorfile){|row|
+      if row[1] =~ /^\d*$/
+        title = row[0]
+        pos_x = row[1].to_f
+        pos_y = row[2].to_f
+
+        n = Node.find_by_title(title)
+        n.pos_x = pos_x
+        n.pos_y = pos_y
+        n.save
+        puts "setting: #{title} #{pos_x} #{pos_y}"
+      end
+    }
   end
 end
 

@@ -1,0 +1,113 @@
+Node Title,Pos_X,Pos_Y
+Memory Layout for a Process (Background),515,25
+Control Hijacking,515,50
+Buffer Overflow,477.5,75
+Integer Overflow,552.5,75
+Arc Injection,502.5,100
+Double Free,527.5,75
+Format String Vul,502.5,75
+Stack Smashing,452.5,100
+Heap Smashing,477.5,100
+No-Op slide,477.5,50
+Stack Canaries,415,125
+Address Space Layout Randomization,440,125
+W^X,465,125
+JMP Target Verification,490,125
+Return Address Stack,515,125
+Program Verification,640,62.5
+Syntactic Analysis,415,50
+Dataflow Methods,440,50
+Static Analysis,402.5,25
+Dynamic Analysis,390,50
+Soundness and Completeness,365,75
+Whitebox Fuzzing,390,75
+Blackbox Fuzzing,415,75
+Symbolic Execution,390,100
+Isolation in Computer Software,290,150
+VM Levels of Implementation,290,175
+HW Level Isolation,302.5,200
+VM Level Isolation,327.5,200
+Process Level Isolation,352.5,200
+Thread Level Isolation,252.5,200
+Application Level Isolation,277.5,200
+Halting Problem as an analogy to Sound and Completeness,365,50
+Physical Air Gap,302.5,225
+VM Background / Timeline,352.5,225
+VM Isolation: Isolation from host system Issues,302.5,275
+VM Isolation: Isolation from neighbor VMs,352.5,275
+VMM - The Virtual Machine Monitor,327.5,250
+Breaking Across Boundaries: Covert Channels,402.5,225
+Defense Against Compromised VMs: VMM Introspection,327.5,275
+Subverting the VM Isolation,327.5,300
+Software Fault Isolation,252.5,225
+Example: Javascript in Browser,277.5,225
+Compartmentalization & Modularity in Software Design,327.5,225
+Principle of Least Privilege,377.5,225
+Access Control,402.5,250
+Reference Monitors,465,250
+System Call Interposition,490,275
+ACL,415,275
+Capabilities,440,275
+Role-Based Access Control,390,275
+Unix as a secure system,377.5,300
+Windows as a secure system,402.5,300
+Browser (Chrome) as a secure system,427.5,300
+Janis,490,300
+systrace,502.5,325
+Ostia,515,350
+Access Control Policies Specification,465,300
+Introduction,215,25
+The HTTP Protocol,215,50
+Rendering,215,75
+Frame Isolation,202.5,100
+Communication,190,125
+Frame Navigation (Descendant Policy),177.5,150
+Cookies: intro,190,175
+Secure UI,202.5,200
+Framebusting,202.5,225
+Cookies,190,250
+Cookie Protocol,240,275
+Session Management,252.5,300
+Session Hijacking,252.5,325
+Generating Session Tokens,240,350
+Command Injection,227.5,375
+SQL Injection,215,400
+Cross Site Scripting,277.5,75
+Cross Site Request Forgery,265,100
+input validation,252.5,425
+Blacklisting,265,450
+Whitelisting,240,450
+Input escaping,202.5,425
+Less Powerful API,227.5,425
+HTTP Request,290,100
+Network Request,315,100
+Origin Header,340,100
+Nonce Based Protection,240,100
+Same Origin Policy,165,275
+Read/Write Cookies,190,275
+Scope setting rules,215,275
+cryptographic checksums,140,275
+minimal client-side state,152.5,300
+lots of client-side state,140,325
+Session Token Theft,265,350
+Session Fixation,265,375
+HTTP Authentication,202.5,300
+HTTP Referer Header,227.5,300
+HTTP Response,290,125
+DOM,590,50
+Application Market Place,77.5,25
+Unvetted,90,50
+Vetted,115,50
+Application Signing,40,50
+Kill Switch,65,50
+Mobile Security Model,77.5,75
+Isolation/Sandboxing,165,50
+Privilege/Permission Management,177.5,75
+Android Security Model,77.5,100
+APK,77.5,125
+Dalvik VM/Java,90,150
+Permissions,65,150
+Intents,37.5,100
+Intent Based Attacks,37.2,125
+Intent Hijacking,25,150
+Intent Spoofing,37.2,175
