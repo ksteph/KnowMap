@@ -4,9 +4,7 @@
 */
 
 #window {
-  width:500px;
   background-color: #EAEAEA;
-  float:right;
   min-height:400px;
   border: 1px solid black;
   margin: 1em;
