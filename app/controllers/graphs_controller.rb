@@ -2,11 +2,15 @@ class GraphsController < ApplicationController
   # GET /graphs
   # GET /graphs.json
   def index
-    @graphs = Graph.all
+    if params[:id] then
+      @graphs = Graph.find_all_by_id(params[:id].split(','))
+    else
+      @graphs = Graph.all
+    end
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # index.html.erb
-      format.json { render json: @graphs }
+      format.json #{ render json: @graphs }
     end
   end
 
@@ -17,7 +21,7 @@ class GraphsController < ApplicationController
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # show.html.erb
-      format.json { render json: @graph }
+      format.json { render :partial => 'graph', :locals => {:graph => @graph} }
     end
   end
 
