@@ -169,7 +169,7 @@ namespace :csv do
     }
 
     CSV.foreach(args.coorfile){|row|
-      if row[1] =~ /^\d*$/
+      if row[1] =~ /^[\.\d]*$/
         title = row[0]
         pos_x = row[1].to_f
         pos_y = row[2].to_f
