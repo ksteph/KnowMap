@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120712183337) do
+ActiveRecord::Schema.define(:version => 20120712193611) do
 
   create_table "edges", :force => true do |t|
     t.integer  "node_id_A",  :null => false
@@ -62,10 +62,10 @@ ActiveRecord::Schema.define(:version => 20120712183337) do
   create_table "nodes", :force => true do |t|
     t.string   "title"
     t.text     "content"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-    t.integer  "pos_x",      :default => 0
-    t.integer  "pos_y",      :default => 0
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+    t.float    "pos_x",      :default => 0.0
+    t.float    "pos_y",      :default => 0.0
   end
 
   add_index "nodes", ["id"], :name => "index_nodes_on_id"
