@@ -41,4 +41,9 @@ class ApplicationController < ActionController::Base
   def set_path_header
     response.headers["X-APP-PATH"] = request.fullpath()
   end
+  
+  rescue_from CanCan::AccessDenied do |exception|
+    flash[:error] = "Access denied."
+    redirect_to root_url
+  end
 end

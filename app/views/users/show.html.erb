@@ -15,6 +15,12 @@
   <%= @user.email %>
 </p>
 
+<h2>Assigned Roles</h2>
+<ul><% @user.roles.each { |r| %>
+  <li><%= r.name %></li>
+<% } %></ul>
+<% if @user.roles.count == 0 then %>There are no roles assigned to this user.<% end %>
+
 <h2>Recent actions</h2>
 <table>
   <tr>

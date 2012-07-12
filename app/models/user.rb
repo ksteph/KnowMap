@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
-  attr_accessible :email, :password, :password_confirmation, :first, :last
+  attr_accessible :email, :password, :password_confirmation, :first, :last, :role_ids
   has_many :actions
+  has_and_belongs_to_many :roles
   
   attr_accessor :password
   before_save :encrypt_password
@@ -24,6 +25,10 @@ class User < ActiveRecord::Base
       self.password_salt = BCrypt::Engine.generate_salt
       self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
     end
+  end
+  
+  def role?(role)
+    roles.map{|r| r.name}.include? role.to_s.titlecase
   end
   
   def to_s

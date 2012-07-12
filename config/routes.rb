@@ -1,4 +1,6 @@
 KnowledgeMap::Application.routes.draw do
+  resources :roles
+
   resources :actions
 
   root :to => "graphs#index"

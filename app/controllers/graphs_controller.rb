@@ -1,4 +1,5 @@
 class GraphsController < ApplicationController
+  load_and_authorize_resource
   # GET /graphs
   # GET /graphs.json
   def index
