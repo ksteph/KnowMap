@@ -1,4 +1,7 @@
 KnowledgeMap::Application.routes.draw do
+  resources :roles
+
+  resources :actions
 
   root :to => "graphs#index"
   
@@ -17,6 +20,17 @@ KnowledgeMap::Application.routes.draw do
   get 'search/(:q)' => "search#search", :as => "search"
   
   get 'data.json' => "application#data"
+  get "logout" => "sessions#destroy", :as => "logout"
+  get "login" => "sessions#new", :as => "login"
+  get "sign_up" => "users#new", :as => "sign_up"
+  get "profile" => "users#profile", :as => "profile"
+  root :to => "users#new"
+  resources :users
+  resources :sessions
+  
+  match "/_partials/(:partial)" => 'application#partial'
+  
+  match "/redir" => redirect("/graphs")
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

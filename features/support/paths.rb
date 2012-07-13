@@ -15,6 +15,20 @@ module NavigationHelpers
 
     when /^the home\s?page$/
       '/'
+    when /^the signup\s?page$/
+      '/sign_up'
+    when /^the login\s?page$/
+      '/login'
+    when /^the logout\s?page$/
+      '/logout'
+    when /^the graphs\s?page$/
+      '/graphs'
+    when /^the actions\s?page$/
+      '/actions'
+    when /^the "(.*)" graph$/
+      "/graphs/#{Graph.find_by_name($1).id}"
+    when /^the edit page for the "(.*)" graph$/
+      "/graphs/#{Graph.find_by_name($1).id}/edit"
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

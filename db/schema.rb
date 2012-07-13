@@ -13,6 +13,15 @@
 
 ActiveRecord::Schema.define(:version => 20120712193611) do
 
+  create_table "actions", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "controller"
+    t.string   "action"
+    t.integer  "target_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "edges", :force => true do |t|
     t.integer  "node_id_A",  :null => false
     t.integer  "node_id_B",  :null => false
@@ -69,5 +78,26 @@ ActiveRecord::Schema.define(:version => 20120712193611) do
   end
 
   add_index "nodes", ["id"], :name => "index_nodes_on_id"
+
+  create_table "roles", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "roles_users", :force => true do |t|
+    t.integer "role_id"
+    t.integer "user_id"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "email"
+    t.string   "password_hash"
+    t.string   "password_salt"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.string   "first"
+    t.string   "last"
+  end
 
 end

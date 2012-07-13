@@ -7,28 +7,22 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body><div id="container">
   <div id="header">
     <div class="title">
       <%= link_to 'Knowledge Map', :root, :remote => remote? %>
-      <div class="search" style="float:right; width:200px;">
-        <%= form_tag search_path, :method => 'get' do %>
-          <p>
-            <%= text_field_tag :q, params[:q] || t('search_box.default_text'), :class => params[:q] ? "search-box" : "search-box blank-search-box", "data-timestamp" => "0" %>
-            <%= submit_tag "Search", :name => nil %>
-          </p>
-        <% end %>
-      </div>
+    </div>
+    <div class="user_nav"><%= render 'layouts/user_nav' %></div>
+    <div class="search clear">
+      <%= form_tag search_path, :method => 'get' do %>
+        <%= text_field_tag :q, params[:q] || t('search_box.default_text'), :class => params[:q] ? "search-box" : "search-box blank-search-box", "data-timestamp" => "0" %>
+        <%= submit_tag "Search", :name => nil %>
+      <% end %>
     </div>
   </div>
   <div id="body">
-    <% if flash[:error] %><div id="flash_error"><%= flash[:error] %></div><% end %>
-    <% if flash[:warning] %><div id="flash_warning"><%= flash[:warning] %></div><% end %>
-    <% if flash[:info] %><div id="flash_info"><%= flash[:info] %></div><% end %>
-    <% if flash[:success] %><div id="flash_success"><%= flash[:success] %></div><% end %>
-    <% render 'graphs/graph_window' %>
     <div id="content"><%= yield %></div>
     <div class="clear"></div>
   </div>
-</body>
+</div></body>
 </html>
