@@ -7,6 +7,14 @@ class Action < ActiveRecord::Base
     created_at
   end
   
+  def self.log(data)
+    data[:user].actions.create(
+      :controller => data[:controller].downcase.classify,
+      :action => data[:action].downcase,
+      :target_id => data[:target_id]
+    ) if data[:user]
+  end
+  
   def target
     controller.constantize.find(target_id) if target_id
   end

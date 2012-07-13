@@ -75,7 +75,7 @@ a {
   color: #0000FF;
 }
 
-#flash_notice, #flash_error {
+#flash_notice, #flash_error, #flash_alert {
   padding: 5px 8px;
   margin: 10px 0;
 }
@@ -85,7 +85,7 @@ a {
   border: solid 1px #6C6;
 }
 
-#flash_error {
+#flash_error, #flash_alert {
   background-color: #FCC;
   border: solid 1px #C66;
 }

@@ -1,3 +1,4 @@
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
 <h1>Log in</h1>
 
 <%= form_tag sessions_path, :remote => remote?, :id => "login_form" do %>

@@ -5,6 +5,8 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     @users = User.all
+    
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # index.html.erb
@@ -16,6 +18,8 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
+
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # show.html.erb
@@ -30,6 +34,7 @@ class UsersController < ApplicationController
       redirect_to root_url
     else
       @user = User.new
+      @user.roles << Role.student
       render :layout => !request.xhr?
     end
   end
@@ -45,6 +50,7 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     
     if @user.save
+      Action.log :controller => params[:controller], :action => params[:action], :user => @user
       redirect_to root_url, :notice => "Signed up!"
     else
       render "new", :layout => !request.xhr?
@@ -58,6 +64,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
+        Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { head :no_content }
       else
@@ -73,6 +80,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.destroy
 
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
+
     respond_to do |format|
       format.html { redirect_to users_url }
       format.json { head :no_content }
@@ -81,6 +90,8 @@ class UsersController < ApplicationController
   
   def profile
     @user = current_user
+
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
     
     render "show", :layout => !request.xhr?
   end

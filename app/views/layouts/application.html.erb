@@ -11,11 +11,6 @@
   <div id="header">
     <div class="title">
       <%= link_to 'Knowledge Map', :root, :remote => remote? %>
-
-
-      <% flash.each do |name, msg| %>
-        <%= content_tag :div, msg, :id => "flash_#{name}" %>
-      <% end %>
     </div>
     <div class="user_nav"><%= render 'layouts/user_nav' %></div>
     <div class="search clear">
@@ -26,10 +21,6 @@
     </div>
   </div>
   <div id="body">
-    <% if flash[:error] %><div id="flash_error"><%= flash[:error] %></div><% end %>
-    <% if flash[:warning] %><div id="flash_warning"><%= flash[:warning] %></div><% end %>
-    <% if flash[:info] %><div id="flash_info"><%= flash[:info] %></div><% end %>
-    <% if flash[:success] %><div id="flash_success"><%= flash[:success] %></div><% end %>
     <%= render 'graphs/graph_window' %>
     <div id="content"><%= yield %></div>
     <div class="clear"></div>

@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper_method :current_user
   before_filter :set_path_header
-  around_filter :record_user_action
+  #around_filter :record_user_action
   
   def partial
     render :partial => "layouts/#{params[:partial]}"
@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
     #logger.info "##### action: #{action}"
     #logger.info "##### id: #{params[:id]}"
     #logger.info "##### user: #{current_user}"
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => sd
     user = current_user
     yield
     user = current_user if not user
