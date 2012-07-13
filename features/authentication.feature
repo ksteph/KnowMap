@@ -2,6 +2,9 @@ Feature: Authentication
   In Order to keep track of my progress
   As a student
   I want to be able to log in
+  
+  Background:
+    Given the role student exists
 
   @javascript  
   Scenario: Sign up for an account
@@ -10,7 +13,7 @@ Feature: Authentication
     And I fill in "Password" with "password"
     And I fill in "Password confirmation" with "password"
     When I press "Sign up"
-    Then I should see "Account created!"
+    Then I should see "Signed up"
     
   @javascript  
   Scenario: Log in to an account
