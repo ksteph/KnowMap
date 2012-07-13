@@ -6,7 +6,7 @@ class EdgesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @edges }
+      format.json #{ render json: @edges }
     end
   end
 

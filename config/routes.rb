@@ -15,6 +15,8 @@ KnowledgeMap::Application.routes.draw do
   resources :nodes
   
   get 'search/(:q)' => "search#search", :as => "search"
+  
+  get 'data.json' => "application#data"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

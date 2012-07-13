@@ -1,8 +1,7 @@
-<% key ||= false; if key %>"<%= node.id %>": <% end %>{
+        {
           "id": <%= node.id %>,
           "title": "<%= node.title %>",
-          "content": "<%= node.content %>",
-          "previous_nodes": <%= node.previous_nodes.map{|n| n.id} %>,
-          "next_nodes": <%= node.next_nodes.map{|n| n.id} %>,
-          "related_nodes": <%= node.related_nodes.map{|n| n.id} %>
+          "label": "<%= node.title.length > 15 ? "#{node.title[0,12]}..." : node.title %>",
+          "x": "<%= node.pos_x %>",
+          "y": "<%= node.pos_y %>"
         }
