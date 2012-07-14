@@ -1,0 +1,43 @@
+<%= form_for @user, :remote => remote? do |f| %>
+  <% if @user.errors.any? %>
+    <div class="error_messages">
+      <h2>Form is invalid</h2>
+      <ul>
+        <% for message in @user.errors.full_messages %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <p>
+    <%= f.label :first %><br />
+    <%= f.text_field :first %>
+  </p>
+  <p>
+    <%= f.label :last %><br />
+    <%= f.text_field :last %>
+  </p>
+  <p>
+    <%= f.label :email %><br />
+    <%= f.text_field :email %>
+  </p>
+  <p>
+    <%= f.label :password %><br />
+    <%= f.password_field :password %>
+  </p>
+  <p>
+    <%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation %>
+  </p>
+  <% if can? :assign_roles, User then %>
+    <h3>Roles:</h3>
+    <% for role in Role.all %>
+    <div>
+      <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role) %>
+      <%=h role.name %>
+    </div>
+    <% end %>
+    <%= hidden_field_tag "user[role_ids][]", "" %>
+  <% end %>
+  <p class="button"><%= f.submit @user.new_record? ? "Sign up" : "Update User" %></p>
+<% end %>

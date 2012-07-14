@@ -1,3 +1,4 @@
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
 <div id="graphData" style="display:none" data-graph_id="<%= @graph.id if @graph %>" data-graph_nodes="<%= @graph.nodes.map{ |n| n.id }.to_json if @graph %>" data-node_id="<%= @node.id if @node %>" ></div>
 
 <h1><%= t 'graphs.new' %></h1>

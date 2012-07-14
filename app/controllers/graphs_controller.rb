@@ -1,4 +1,5 @@
 class GraphsController < ApplicationController
+  load_and_authorize_resource
   # GET /graphs
   # GET /graphs.json
   def index
@@ -7,6 +8,8 @@ class GraphsController < ApplicationController
     else
       @graphs = Graph.all :include => [:subgraphs, :nodes]
     end
+    
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # index.html.erb
@@ -18,6 +21,8 @@ class GraphsController < ApplicationController
   # GET /graphs/1.json
   def show
     @graph = Graph.find(params[:id])
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # show.html.erb
@@ -31,6 +36,8 @@ class GraphsController < ApplicationController
     @graph = Graph.new
     3.times { @graph.graph_membership_graphs.build }
     3.times { @graph.graph_membership_nodes.build }
+    
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # new.html.erb
@@ -43,6 +50,9 @@ class GraphsController < ApplicationController
     @graph = Graph.find(params[:id])
     @graph.graph_membership_graphs.build
     @graph.graph_membership_nodes.build
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
+    
     render :layout => !request.xhr?
   end
 
@@ -53,6 +63,7 @@ class GraphsController < ApplicationController
 
     respond_to do |format|
       if @graph.save
+        Action.log :controller => params[:controller], :action => params[:action], :target_id => @graph.id, :user => current_user
         format.html { redirect_to @graph, notice: 'Graph was successfully created.' }
         format.json { render json: @graph, status: :created, location: @graph }
       else
@@ -71,6 +82,7 @@ class GraphsController < ApplicationController
 
     respond_to do |format|
       if @graph.update_attributes(params[:graph])
+        Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
         format.html { redirect_to @graph, notice: 'Graph was successfully updated.' }
         format.json { head :no_content }
       else
@@ -87,6 +99,8 @@ class GraphsController < ApplicationController
   def destroy
     @graph = Graph.find(params[:id])
     @graph.destroy
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
       format.html { redirect_to graphs_url }

@@ -1,3 +1,4 @@
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
 <div id="graphData" style="display:none" data-graph_id="<%= @graph.id if @graph %>" data-graph_nodes="<%= @graph.nodes.map{ |n| n.id }.to_json if @graph %>" data-node_id="<%= @node.id if @node %>" ></div>
 
 <h1><%= t 'welcome' %></h1>
@@ -29,4 +30,10 @@
 
 <br />
 
-<%= link_to t('graphs.new'), new_graph_path, :remote => remote?, "data-type" => "html" %> - <%= link_to t('nodes.new'), new_node_path, :remote => remote?, "data-type" => "html" %>
+<% if can?(:create, Graph)  %>
+  <%= link_to t('graphs.new'), new_graph_path, :remote => remote?, "data-type" => "html" %>
+<% end %>
+<% if can?(:create, Graph) and can?(:create, Graph) %> - <% end %>
+<% if can?(:create, Graph)  %>
+  <%= link_to t('nodes.new'), new_node_path, :remote => remote?, "data-type" => "html" %>
+<% end %>

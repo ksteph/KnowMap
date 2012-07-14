@@ -1,4 +1,6 @@
 class NodesController < ApplicationController
+  load_and_authorize_resource
+  
   # GET /nodes
   # GET /nodes.json
   def index
@@ -7,6 +9,8 @@ class NodesController < ApplicationController
     else
       @nodes = Node.all :include => [:previous_nodes, :next_nodes, :related_nodes_A, :related_nodes_B]
     end
+    
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # index.html.erb
@@ -18,6 +22,8 @@ class NodesController < ApplicationController
   # GET /nodes/1.json
   def show
     @node = Node.find(params[:id])
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # show.html.erb
@@ -32,6 +38,8 @@ class NodesController < ApplicationController
     3.times { @node.related_edges_B.build }
     3.times { @node.incoming_edges.build }
     3.times { @node.outgoing_edges.build }
+    
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # new.html.erb
@@ -45,6 +53,9 @@ class NodesController < ApplicationController
     @node.related_edges_B.build
     @node.incoming_edges.build
     @node.outgoing_edges.build
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
+    
     render :layout => !request.xhr?
   end
 
@@ -55,6 +66,7 @@ class NodesController < ApplicationController
 
     respond_to do |format|
       if @node.save
+        Action.log :controller => params[:controller], :action => params[:action], :target_id => @node.id, :user => current_user
         format.html { redirect_to @node, notice: 'Node was successfully created.' }
         format.json { render json: @node, status: :created, location: @node }
       else
@@ -77,6 +89,7 @@ class NodesController < ApplicationController
 
     respond_to do |format|
       if @node.update_attributes(params[:node])
+        Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
         format.html { redirect_to @node, notice: 'Node was successfully updated.' }
         format.json { head :no_content }
       else
@@ -94,6 +107,8 @@ class NodesController < ApplicationController
   def destroy
     @node = Node.find(params[:id])
     @node.destroy
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
       format.html { redirect_to nodes_url }

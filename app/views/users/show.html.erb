@@ -1,0 +1,35 @@
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
+
+<p>
+  <b>First:</b>
+  <%= @user.first %>
+</p>
+
+<p>
+  <b>Last:</b>
+  <%= @user.last %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @user.email %>
+</p>
+
+<h2>Assigned Roles</h2>
+<ul><% @user.roles.each { |r| %>
+  <li><%= r.name %></li>
+<% } %></ul>
+<% if @user.roles.count == 0 then %>There are no roles assigned to this user.<% end %>
+
+<h2>Recent actions</h2>
+<table>
+  <tr>
+    <th>Date</th>
+    <th>Action</th>
+  </tr>
+  <%= render @user.actions %>
+</table>
+
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

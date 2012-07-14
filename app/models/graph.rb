@@ -24,4 +24,8 @@ class Graph < ActiveRecord::Base
     subgraphs.each { |g| result |= g.all_nodes }
     result
   end
+  
+  def to_s
+    name
+  end
 end

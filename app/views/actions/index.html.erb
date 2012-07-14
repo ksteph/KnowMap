@@ -1,0 +1,16 @@
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
+<h1>Listing actions</h1>
+
+<table>
+  <tr>
+    <th>Date</th>
+    <th>Action</th>
+  </tr>
+
+<%= render @actions %>
+
+</table>
+
+<br />
+
+<%= link_to 'New Action', new_action_path %>
