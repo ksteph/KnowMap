@@ -27,8 +27,16 @@ module NavigationHelpers
       '/actions'
     when /^the "(.*)" graph$/
       "/graphs/#{Graph.find_by_name($1).id}"
+    when /^the new graph$/
+      "/graphs/new"
     when /^the edit page for the "(.*)" graph$/
       "/graphs/#{Graph.find_by_name($1).id}/edit"
+    when /^the "(.*)" node$/
+      "/nodes/#{Node.find_by_title($1).id}"
+    when /^the new node$/
+      "/nodes/new"
+    when /^the edit page for the "(.*)" node$/
+      "/nodes/#{Node.find_by_title($1).id}/edit"
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

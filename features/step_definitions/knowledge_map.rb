@@ -9,6 +9,7 @@ Given /^I am an? (.*?) with email "(.*?)" and password "(.*?)"$/ do |role, email
   else
     user.roles << Role.create(:name => role.titlecase)
   end
+  user.save
 end
 
 Given /^I have a user "(.*?)" with password "(.*?)" exists$/ do |arg1, arg2|
