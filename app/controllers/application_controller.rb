@@ -9,8 +9,14 @@ class ApplicationController < ActionController::Base
   end
   
   def data
-    @edges = Edge.all
-    @nodes = Node.all
+    if params[:id] then
+      l = params[:id].split(',').map { |x| x.to_i }
+      @nodes = Node.find_all_by_id l
+      @edges = Edge.where "node_id_A IN (?) AND node_id_B IN (?)", l, l
+    else
+      @nodes = Node.all
+      @edges = Edge.all
+    end
     render 'layouts/data.json.erb'
   end
   

@@ -4,7 +4,12 @@
 </div>
 <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 <script type="text/javascript">
-  d3.json("../data.json", function(json) {
+  url = "../data.json?id=";
+  node_ids = $("#graphData").attr("data-all_graph_nodes");
+  node_ids = node_ids.substr(1, node_ids.length-2);
+  if(node_ids) { url = url + node_ids; }
+  
+  d3.json(url, function(json) {
     var edgeStyles = {"RelatedEdge":"9,5", "DependentEdge":"1,0"};
     var edgeMarkerEnd = {"RelatedEdge":"none", "DependentEdge":"url(#arrowhead)"};
     var nodes = json.nodes;
