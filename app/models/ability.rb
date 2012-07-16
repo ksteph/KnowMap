@@ -41,7 +41,7 @@ class Ability
     def admin
       instructor
     end
-    def super
+    def super_admin
       admin
       can :manage, :all
     end
@@ -56,8 +56,8 @@ class Ability
     if user.role? :admin
       admin
     end
-    if user.role? :super
-      super
+    if user.role? :super_admin
+      super_admin
     end
   end
 end

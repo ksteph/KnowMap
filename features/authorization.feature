@@ -4,6 +4,7 @@ Feature: Authentication
   I want to 
   
   Background:
+    Given the test database is seeded
     Given the graph "sample graph" exists
     And the node "sample node" exists
   
@@ -39,9 +40,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on index graphs
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on index graphs
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the graphs page
     Then I should not see "Access denied."
   
@@ -77,9 +78,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on show graph
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on show graph
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the "sample graph" graph
     Then I should not see "Access denied."
   
@@ -115,9 +116,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on new graph
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on new graph
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the new graph page
     Then I should not see "Access denied."
   
@@ -153,11 +154,11 @@ Feature: Authentication
     Then I should see "Graph was successfully created."
 
   @javascript  
-  Scenario: Super user on create graph
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on create graph
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the new graph page
-    And I fill in "Name" with "super's new graph"
+    And I fill in "Name" with "super admin's new graph"
     And I press "Create Graph"
     Then I should see "Graph was successfully created."
   
@@ -193,9 +194,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on edit graph
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on edit graph
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the edit page for the "sample graph" graph
     Then I should not see "Access denied."
   
@@ -228,9 +229,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on update graph
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on update graph
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the edit page for the "sample graph" graph
     And I press "Update Graph"
     Then I should not see "Access denied."
@@ -267,9 +268,9 @@ Feature: Authentication
     Then I should see "Access denied."
 
   @javascript  
-  Scenario: Super user on delete graph
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on delete graph
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the asdf page
     Then I should not see "Access denied."
   
@@ -305,9 +306,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on index nodes
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on index nodes
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the nodes page
     Then I should not see "Access denied."
   
@@ -343,9 +344,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on show node
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on show node
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the "sample node" node
     Then I should not see "Access denied."
   
@@ -381,9 +382,9 @@ Feature: Authentication
     Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on new node
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on new node
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the new node page
     Then I should not see "Access denied."
   
@@ -419,9 +420,9 @@ Feature: Authentication
     Then I should see "Node was successfully created."
 
   @javascript  
-  Scenario: Super user on create node
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on create node
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the new node page
     And I fill in "Title" with "super's new node"
     And I press "Create Node"
@@ -442,26 +443,26 @@ Feature: Authentication
     Given I am a student with email "student@berkeley.edu" and password "password"
     And I login with "student@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
-    Then I should see "Access denied."
+    Then I should not see "Access denied."
 
   @javascript  
   Scenario: Instructor user on edit node
     Given I am an instructor with email "instructor@berkeley.edu" and password "password"
     And I login with "instructor@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
-    Then I should see "Access denied."
+    Then I should not see "Access denied."
 
   @javascript  
   Scenario: Admin user on edit node
     Given I am an admin with email "admin@berkeley.edu" and password "password"
     And I login with "admin@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
-    Then I should see "Access denied."
+    Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on edit node
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on edit node
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
     Then I should not see "Access denied."
   
@@ -475,7 +476,7 @@ Feature: Authentication
     And I login with "student@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
     And I press "Update Node"
-    Then I should see "Access denied."
+    Then I should not see "Access denied."
 
   @javascript  
   Scenario: Instructor user on update node
@@ -483,7 +484,7 @@ Feature: Authentication
     And I login with "instructor@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
     And I press "Update Node"
-    Then I should see "Access denied."
+    Then I should not see "Access denied."
 
   @javascript  
   Scenario: Admin user on update node
@@ -491,12 +492,12 @@ Feature: Authentication
     And I login with "admin@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
     And I press "Update Node"
-    Then I should see "Access denied."
+    Then I should not see "Access denied."
 
   @javascript  
-  Scenario: Super user on update node
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on update node
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the edit page for the "sample node" node
     And I press "Update Node"
     Then I should not see "Access denied."
@@ -533,8 +534,8 @@ Feature: Authentication
     Then I should see "Access denied."
 
   @javascript  
-  Scenario: Super user on delete node
-    Given I am a super with email "super@berkeley.edu" and password "password"
-    And I login with "super@berkeley.edu" and "password"
+  Scenario: Super admin user on delete node
+    Given I am a super admin with email "super_admin@berkeley.edu" and password "password"
+    And I login with "super_admin@berkeley.edu" and "password"
     When I go to the asdf page
     Then I should not see "Access denied."

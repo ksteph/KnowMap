@@ -4,7 +4,7 @@ Feature: Authentication
   I want to be able to log in
   
   Background:
-    Given the role student exists
+    Given the test database is seeded
 
   @javascript  
   Scenario: Sign up for an account

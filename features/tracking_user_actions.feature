@@ -4,9 +4,8 @@ Feature: User Tracking
   I want to be able to track users' actions
   
   Background:
-    Given the role student exists
-    Given the role super exists
-    Given I am a super with email "asd@asd.com" and password "password"
+    Given the test database is seeded
+    Given I am a student with email "asd@asd.com" and password "password"
 
   @javascript @t
   Scenario: User signs up
