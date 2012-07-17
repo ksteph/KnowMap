@@ -1,0 +1,16 @@
+<% ([@graph]+@graph.all_subgraphs).each { |g| %>
+  <a href="#" data-nodes="<%= g.nodes.map { |n| n.id } %>"><%= g.name %></a><br />
+<% } %>
+
+<script>
+
+$(function($) {
+  $("#side-widget a").on("click", function() {
+    ids = $.parseJSON(this.dataset.nodes);
+    d3.selectAll("g").filter( function(d) { return ids.indexOf(d.id) > -1 } ).select("circle").attr("style","fill:green");
+  });
+});
+
+
+
+</script>

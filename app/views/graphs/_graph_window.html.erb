@@ -24,8 +24,8 @@
     var width = parseInt($("#window").css("width")), height = 500, cRadius = 10, linkDist = cRadius*4;
 
     var svg = d3.select("#chart").append("svg")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("width", "100%")
+        .attr("height", "100%");
 
     <!-- Arrowhead end -->  
     svg.append("defs").append("marker")
@@ -60,8 +60,8 @@
         .attr("class", "node");
 
     node.on("dblclick", onDblClick);
-    //node.on("mouseenter", showTitle);
-    //node.on("mouseleave", hideTitle);
+    node.on("mouseenter", showTitle);
+    node.on("mouseleave", hideTitle);
 
     node.append("circle")
       .attr("r", cRadius)
