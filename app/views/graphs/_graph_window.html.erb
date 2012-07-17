@@ -4,10 +4,14 @@
 </div>
 <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 <script type="text/javascript">
-  url = "../data.json?id=";
+  var url = "../data.json?id=";
   node_ids = $("#graphData").attr("data-all_graph_nodes");
   node_ids = node_ids.substr(1, node_ids.length-2);
   if(node_ids) { url = url + node_ids; }
+
+  var transMatrix = [1,0,0,1,0,0];
+  var svgChartGroup = null;
+  var width = parseInt($("#window").css("width")), height = 500, cRadius = 10, linkDist = cRadius*4;
   
   d3.json(url, function(json) {
     var edgeStyles = {"RelatedEdge":"9,5", "DependentEdge":"1,0"};
@@ -21,27 +25,35 @@
       nodeMap[nodes[n].id] = nodes[n];
     }
 
-    var width = parseInt($("#window").css("width")), height = 500, cRadius = 10, linkDist = cRadius*4;
+
+    window.addEventListener('keydown', keyDown, false);
 
     var svg = d3.select("#chart").append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .on("mousewheel", mouseWheel);
+
+    var svgGroup = svg.append("g")
+        .attr("id", "chart-group")
+        .attr("transform","matrix("+transMatrix.join(' ')+")");
+
+    svgChartGroup = svgGroup;
 
     <!-- Arrowhead end -->  
-    svg.append("defs").append("marker")
+    svgGroup.append("defs").append("marker")
       .attr("id", "arrowhead")
       .attr("viewBox", "0 0 10 10")
-      .attr("refX", cRadius*1.4)
+      .attr("refX", cRadius*4.1)
       .attr("refY", "5")
       .attr("markerUnits", "strokeWidth")
-      .attr("markerWidth", 10)
-      .attr("markerHeight", 9)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 4)
       .attr("orient", "auto")
       .append("path")
         .attr("d", "M 0 0 L 10 5 L 0 10 Z");
 
     <!-- Insert Edges -->  
-    var link = svg.selectAll("link.link")
+    var link = svgGroup.selectAll("link.link")
       .data(links)
       .enter().append("line")
         .attr("class","link")
@@ -50,18 +62,19 @@
         .attr("y2", function(d){return nodeMap[d.target].y;})
         .attr("x2", function(d){return nodeMap[d.target].x;})
         .style("stroke","black")
+        .style("stroke-width","0.75")
         .style("stroke-dasharray", function(d){return edgeStyles[d.type]})
         .style("marker-end", function(d){return edgeMarkerEnd[d.type]});
 
     <!-- Insert Nodes -->  
-    var node = svg.selectAll("g.node")
+    var node = svgGroup.selectAll("g.node")
       .data(nodes)
       .enter().append("g")
         .attr("class", "node");
 
     node.on("dblclick", onDblClick);
-    //node.on("mouseenter", showTitle);
-    //node.on("mouseleave", hideTitle);
+//      .on("mouseenter", showTitle)
+//      .on("mouseleave", hideTitle);
 
     node.append("circle")
       .attr("r", cRadius)
@@ -74,7 +87,7 @@
       .attr("x", function(d){return d.x;})
       .attr("y", function(d){return d.y;})
       .attr("dy",".35em")
-      .attr("font-size", "8pt");
+      .attr("font-size", "2pt");
 
     node.append("title").attr("data-id", function(d){return d.id;}).text(function(d){return d.title;});
   });
@@ -102,6 +115,66 @@
       }
     );
     */
+  }
+
+  function mouseWheel() {
+    if (d3.event.wheelDelta > 0)
+      zoom('in');
+    else
+      zoom('out');
+  }
+
+  function zoom(type) {
+    if (svgChartGroup == null)
+      return;
+
+    var scale;
+    if (type == 'in')
+      scale = 1.1;
+    else if (type == 'out')
+      scale = (1.0/1.1);
+    else
+      alert("zoom function got bad type " + type);
+
+    for(var i = 0; i < transMatrix.length; i++) {
+      transMatrix[i] *= scale;
+    }
+
+    transMatrix[4] += (1-scale)*width/2;
+    transMatrix[5] += (1-scale)*height/2;
+
+    var matrix = "matrix("+transMatrix.join(' ')+")";
+    svgChartGroup.attr("transform", matrix);
+  }
+
+  function keyDown(event) {
+    switch(event.keyCode) {
+      case 37: // left arrow
+        pan(10,0);
+        break;
+      case 38: // up arrow
+        pan(0,10);
+        break;
+      case 39: // right arrow
+        pan(-10,0);
+        break;
+      case 40: // down arrow
+        pan(0,-10);
+        break;
+      default:
+        break; // Do nothing
+    }
+  }
+
+  function pan(dx,dy) {
+    if (svgChartGroup == null)
+      return;
+
+    transMatrix[4] += dx;
+    transMatrix[5] += dy;
+
+    var matrix = "matrix("+transMatrix.join(' ')+")";
+    svgChartGroup.attr("transform", matrix);
   }
   
   function showTitle() {
