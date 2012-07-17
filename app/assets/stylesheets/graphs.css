@@ -9,3 +9,24 @@
   border: 1px solid black;
   margin: 1em;
 }
+
+.zoom-pan-widget-compass {
+}
+.zoom-pan-button {
+  fill:  #225EA8;
+  stroke:  #0C2C84;
+  stroke-miterlimit:  6;
+  stroke-linecap:  round;
+}
+.zoom-pan-button:hover {
+  stroke-width: 2;
+}
+.zoom-pan-compass {
+  fill:  #fff;
+  stroke:  #000;
+  stroke-width:  1.5;
+}
+.zoom-pan-plus-minus {
+  fill: #fff;
+  pointer-events: none;
+}

@@ -1,5 +1,5 @@
 <div id="window">
-<div id="debug"><p></p></div>
+<!-- <div id="debug"><p></p></div> -->
 <div id="chart"></div>
 </div>
 <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
@@ -9,12 +9,83 @@
   node_ids = node_ids.substr(1, node_ids.length-2);
   if(node_ids) { url = url + node_ids; }
 
-  var transMatrix = [1,0,0,1,0,0];
-  var svgChartGroup = null;
   var width = parseInt($("#window").css("width")), height = 500, cRadius = 10, linkDist = cRadius*4;
-  
+  var transMatrix = [1,0,0,1,0,0];
+
+  window.addEventListener('keydown', keyDown, false);
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mousewheel", mouseWheel);
+
+  var svgChartGroup = svg.append("g")
+      .attr("id", "chart-group")
+      .attr("transform","matrix("+transMatrix.join(' ')+")");
+
+  <!-- Add zoom/pan widget -->
+  var svgZoomPan = svg.append("g")
+    .attr("transform", "translate(0,"+(height-100)+")");
+  svgZoomPan.append("circle")
+    .attr("cx",50)
+    .attr("cy",50)
+    .attr("r",42)
+    .style("fill","white")
+    .style("opacity",0.75);
+  svgZoomPan.append("path")
+    .attr("d", "M50 10 l12 20 a40,70 0 0,0 -24,0z")
+    .attr("class","zoom-pan-button")
+    .on("click",panUp);
+  svgZoomPan.append("path")
+    .attr("d", "M10 50 l20 -12 a70,40 0 0,0 0,24z")
+    .attr("class","zoom-pan-button")
+    .on("click",panRight);
+  svgZoomPan.append("path")
+    .attr("d", "M50 90 l12 -20 a40,70 0 0,1 -24,0z")
+    .attr("class","zoom-pan-button")
+    .on("click",panDown);
+  svgZoomPan.append("path")
+    .attr("d", "M90 50 l-20 -12 a70,40 0 0,1 0,24z")
+    .attr("class","zoom-pan-button")
+    .on("click",panLeft);
+  svgZoomPan.append("circle")
+    .attr("class", "zoom-pan-compass")
+    .attr("cx",50)
+    .attr("cy",50)
+    .attr("r",20);
+  svgZoomPan.append("circle")
+    .attr("class", "zoom-pan-button")
+    .attr("cx",50)
+    .attr("cy",41)
+    .attr("r",8)
+    .on("click",zoomOut);
+  svgZoomPan.append("circle")
+    .attr("class", "zoom-pan-button")
+    .attr("cx",50)
+    .attr("cy",59)
+    .attr("r",8)
+    .on("click",zoomIn);
+  svgZoomPan.append("rect")
+    .attr("class", "zoom-pan-plus-minus")
+    .attr("x",46)
+    .attr("y",39.5)
+    .attr("width",8)
+    .attr("height",3);
+  svgZoomPan.append("rect")
+    .attr("class", "zoom-pan-plus-minus")
+    .attr("x",46)
+    .attr("y",57.5)
+    .attr("width",8)
+    .attr("height",3);
+  svgZoomPan.append("rect")
+    .attr("class", "zoom-pan-plus-minus")
+    .attr("x",48.5)
+    .attr("y",55)
+    .attr("width",3)
+    .attr("height",8);
+
   d3.json(url, function(json) {
-    var edgeStyles = {"RelatedEdge":"9,5", "DependentEdge":"1,0"};
+    var edgeStyles = {"RelatedEdge":"2,1", "DependentEdge":"1,0"};
     var edgeMarkerEnd = {"RelatedEdge":"none", "DependentEdge":"url(#arrowhead)"};
     var nodes = json.nodes;
     var links = json.lines;
@@ -25,22 +96,8 @@
       nodeMap[nodes[n].id] = nodes[n];
     }
 
-
-    window.addEventListener('keydown', keyDown, false);
-
-    var svg = d3.select("#chart").append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .on("mousewheel", mouseWheel);
-
-    var svgGroup = svg.append("g")
-        .attr("id", "chart-group")
-        .attr("transform","matrix("+transMatrix.join(' ')+")");
-
-    svgChartGroup = svgGroup;
-
     <!-- Arrowhead end -->  
-    svgGroup.append("defs").append("marker")
+    svgChartGroup.append("defs").append("marker")
       .attr("id", "arrowhead")
       .attr("viewBox", "0 0 10 10")
       .attr("refX", cRadius*4.1)
@@ -53,7 +110,7 @@
         .attr("d", "M 0 0 L 10 5 L 0 10 Z");
 
     <!-- Insert Edges -->  
-    var link = svgGroup.selectAll("link.link")
+    var link = svgChartGroup.selectAll("link.link")
       .data(links)
       .enter().append("line")
         .attr("class","link")
@@ -67,7 +124,7 @@
         .style("marker-end", function(d){return edgeMarkerEnd[d.type]});
 
     <!-- Insert Nodes -->  
-    var node = svgGroup.selectAll("g.node")
+    var node = svgChartGroup.selectAll("g.node")
       .data(nodes)
       .enter().append("g")
         .attr("class", "node");
@@ -90,6 +147,7 @@
       .attr("font-size", "2pt");
 
     node.append("title").attr("data-id", function(d){return d.id;}).text(function(d){return d.title;});
+
   });
 
   function onDblClick() {
@@ -123,6 +181,9 @@
     else
       zoom('out');
   }
+
+  function zoomIn() { zoom('in'); }
+  function zoomOut() { zoom('out'); }
 
   function zoom(type) {
     if (svgChartGroup == null)
@@ -165,6 +226,11 @@
         break; // Do nothing
     }
   }
+
+  function panUp(){ pan(0,10); }
+  function panDown(){ pan(0,-10); }
+  function panRight(){ pan(10,0); }
+  function panLeft(){ pan(-10,0); }
 
   function pan(dx,dy) {
     if (svgChartGroup == null)
