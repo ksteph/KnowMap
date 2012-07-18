@@ -33,8 +33,7 @@
       .attr("transform","matrix("+transMatrix.join(' ')+")");
 
   <!-- Add zoom/pan widget -->
-  var svgZoomPan = svg.append("g")
-    .attr("transform", "translate(0,"+($('#chart').height()-100)+")");
+  var svgZoomPan = svg.append("g");
   svgZoomPan.append("circle")
     .attr("cx",50)
     .attr("cy",50)
@@ -102,6 +101,11 @@
     var nodeMap = {}
     for (n in nodes)
     {
+      //Shifting nodes as needed.
+      //This turns the string to a float, hopefully the type change won't hurt
+      //anything.
+      nodes[n].x = parseFloat(nodes[n].x) + 100;
+
       nodeMap[nodes[n].id] = nodes[n];
     }
 
@@ -132,7 +136,7 @@
         .style("stroke-dasharray", function(d){return edgeStyles[d.type]})
         .style("marker-end", function(d){return edgeMarkerEnd[d.type]});
 
-    <!-- Insert Nodes -->  
+    <!-- Insert Nodes -->
     var node = svgChartGroup.selectAll("g.node")
       .data(nodes)
       .enter().append("g")
@@ -155,7 +159,9 @@
       .attr("dy",".35em")
       .attr("font-size", "2pt");
 
-    node.append("title").attr("data-id", function(d){return d.id;}).text(function(d){return d.title;});
+    node.append("title")
+      .attr("data-id", function(d){return d.id;})
+        .text(function(d){return d.title;});
 
   });
 
