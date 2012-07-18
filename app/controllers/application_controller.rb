@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     if params[:id] then
       l = params[:id].split(',').map { |x| x.to_i }
       @nodes = Node.find_all_by_id l
-      @edges = Edge.where "node_id_A IN (?) AND node_id_B IN (?)", l, l
+      @edges = Edge.where "\"node_id_A\" IN (?) AND \"node_id_B\" IN (?)", l, l
     else
       @nodes = Node.all
       @edges = Edge.all
