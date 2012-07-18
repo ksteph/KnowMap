@@ -13,14 +13,20 @@
   var transMatrix = [1,0,0,1,0,0];
 
   window.addEventListener('keydown', keyDown, false);
+  window.addEventListener('mousemove', winMouseMove, false);
+  window.addEventListener('mouseup', winMouseUp, false);
 
+  var winPos = [0,0];
+  var svgPos = [0,0];
+  var bMouseDown = false;
+  var dragOldPos = [0,0];
+  
   var svg = d3.select("#chart").append("svg")
       .attr("width", width)
       .attr("height", height)
-      .on("mousewheel", mouseWheel)
-      .on("mousemove", mouseMove);
-  var xSvg = undefined;
-  var ySvg = undefined;
+      .on("mousewheel", svgMouseWheel)
+      .on("mousedown", svgMouseDown)
+      .on("mousemove", svgMouseMove);
 
   var svgChartGroup = svg.append("g")
       .attr("id", "chart-group")
@@ -178,13 +184,34 @@
     */
   }
 
-  function mouseMove() {
-    var pos = d3.mouse(this);
-    xSvg = pos[0];
-    ySvg = pos[1];
+  function svgMouseMove() {
+    svgPos = d3.mouse(this);
   }
 
-  function mouseWheel() {
+  function svgMouseDown() {
+    bMouseDown = true;
+    dragOldPos = winPos;
+    svg.style("cursor", "move");
+    d3.event.preventDefault();
+  }
+
+  function winMouseUp(e) {
+    bMouseDown = false;
+    svg.style("cursor", "auto");
+    d3.event.preventDefault();
+  }
+
+  function winMouseMove(e) {
+    winPos = [e.clientX,e.clientY];
+    if (bMouseDown) {
+      var dx = -1*(dragOldPos[0]-winPos[0]);
+      var dy = -1*(dragOldPos[1]-winPos[1]);
+      pan(dx,dy);
+      dragOldPos = winPos;
+    }
+  }
+
+  function svgMouseWheel() {
     if (d3.event.wheelDelta > 0)
       zoomIn();
     else
@@ -201,8 +228,8 @@
       transMatrix[i] *= scale;
     }
 
-    transMatrix[4] += (1-scale)*xSvg;
-    transMatrix[5] += (1-scale)*ySvg;
+    transMatrix[4] += (1-scale)*svgPos[0];
+    transMatrix[5] += (1-scale)*svgPos[1];
 
     var matrix = "matrix("+transMatrix.join(' ')+")";
     svgChartGroup.attr("transform", matrix);
