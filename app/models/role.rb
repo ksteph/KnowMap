@@ -11,7 +11,7 @@ class Role < ActiveRecord::Base
   def self.admin
     Role.find_by_name "Admin"
   end
-  def self.super
-    Role.find_by_name "Super"
+  def self.super_admin
+    Role.find_by_name "Super Admin"
   end
 end

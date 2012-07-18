@@ -6,10 +6,10 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-  Role.create :name => "Super"
-  Role.create :name => "Admin"
-  Role.create :name => "Intructor"
-  Role.create :name => "Student"
+  # create all roles
+  ["Super Admin", "Admin", "Instructor", "Student"].each do |name|
+    Role.create :name => name if not Role.find_by_name name
+  end
 
   #n1 = Node.create({ title: 'TCP Header'})
   #n2 = Node.create({ title: 'TCP Protocol Flow Chart'})

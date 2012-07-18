@@ -52,3 +52,9 @@ Then /^I print the page contents$/ do
   puts page.html
 end
 
+Given /^the test database is seeded$/ do
+  load "#{Rails.root}/db/seeds.rb"
+end
+
+
+

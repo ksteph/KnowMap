@@ -9,7 +9,7 @@
   node_ids = node_ids.substr(1, node_ids.length-2);
   if(node_ids) { url = url + node_ids; }
 
-  var width = parseInt($("#window").css("width")), height = 500, cRadius = 10, linkDist = cRadius*4;
+  var cRadius = 10, linkDist = cRadius*4;
   var transMatrix = [1,0,0,1,0,0];
 
   window.addEventListener('keydown', keyDown, false);
@@ -22,8 +22,8 @@
   var dragOldPos = [0,0];
   
   var svg = d3.select("#chart").append("svg")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("width", "100%")
+      .attr("height", "100%")
       .on("mousewheel", svgMouseWheel)
       .on("mousedown", svgMouseDown)
       .on("mousemove", svgMouseMove);
@@ -34,7 +34,7 @@
 
   <!-- Add zoom/pan widget -->
   var svgZoomPan = svg.append("g")
-    .attr("transform", "translate(0,"+(height-100)+")");
+    .attr("transform", "translate(0,"+($('#chart').height()-100)+")");
   svgZoomPan.append("circle")
     .attr("cx",50)
     .attr("cy",50)
@@ -139,8 +139,8 @@
         .attr("class", "node");
 
     node.on("dblclick", onDblClick);
-//      .on("mouseenter", showTitle)
-//      .on("mouseleave", hideTitle);
+    node.on("mouseenter", showTitle);
+    node.on("mouseleave", hideTitle);
 
     node.append("circle")
       .attr("r", cRadius)

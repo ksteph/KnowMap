@@ -5,9 +5,8 @@
 
 #window {
   background-color: #EAEAEA;
-  min-height:400px;
+  min-height:500px;
   border: 1px solid black;
-  margin: 1em;
 }
 
 .zoom-pan-widget-compass {

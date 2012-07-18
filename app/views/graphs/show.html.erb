@@ -1,4 +1,96 @@
 <%= render :partial => "application/flash", :locals => { :flash => flash } %>
 <div id="graphData" style="display:none" data-graph_id="<%= @graph.id if @graph %>" data-graph_nodes="<%= @graph.nodes.map{ |n| n.id }.to_json if @graph %>" data-all_graph_nodes="<%= @graph.all_nodes.map{ |n| n.id }.to_json if @graph %>" data-node_id="<%= @node.id if @node %>" ></div>
 
-<%= render 'graph_window' %>
+
+<div id="top-widget" style="border: 1px solid black; border-bottom:none">
+  <div id="top-widget-content" style="height:125px;display:none; text-align:center; background-color:#D9D9D9; line-height:150px; padding-top:40px;">
+    <%= render 'learning_path_widget' %>
+  </div>
+  <div id="top-widget-button" style="text-align:center;background-color:grey;">&#x2235;</div>
+</div>
+
+
+<div id="side-widget" style="float:right;height:100%;border:1px solid black;background-color:#D9D9D9;">
+  <div id="side-widget-button" style="display:inline-block;min-height:490px;line-height:490px; padding:5px;background-color:grey;">&laquo;</div>
+  <div id="side-widget-content" style="width:250px;display:none;float:right;padding:5px;">
+    <%= render 'side_widget', :locals => { :graph => @graph } %>
+  </div>
+</div>
+
+
+<div id="b" style="margin-right:19px;position:relative">
+  <div style="position:absolute;right:0;top:0;background-color:green">
+  
+  <div id="abs-side-widget" style="float:right;height:100%; border:1px solid black;background-color:#D9D9D9; ">
+    <div id="abs-side-widget-button" style="display:inline-block;height:100%;line-height:100%; padding:5px;background-color:grey;margin:0">&laquo;</div>
+    <div id="abs-side-widget-content" style="width:250px;float:right;display:none;min-height:100px;padding:5px;">
+      <%= render 'side_widget', :locals => { :graph => @graph } %>
+    </div>
+  </div>
+  
+  </div>
+    <%= render 'graph_window' %>
+</div>
+
+
+<div id="bottom-widget" style>
+  
+</div>
+
+<script>
+
+$("#top-widget-button").on("click", function(event) {
+  if(!$("#top-widget-content").is(":visible"))
+      $("#top-widget-button").css("border-top","1px solid black");
+  $("#top-widget-content").animate({height: 'toggle'}, null, null, function() {
+    if($("#top-widget-content").is(":visible")) {
+      $("#top-widget-button").html("&#x2234;");
+    } else {
+      $("#top-widget-button").html("&#x2235;");
+      $("#top-widget-button").css("border-top", "none");
+    }
+  });
+});
+
+$("#side-widget-button").on("click", function(event) {
+  if(!$("#side-widget-content").is(":visible"))
+      $("#side-widget-button").css("border-right","1px solid black");
+  if(!$("#side-widget-content").is(":visible"))
+    $("#b").css('margin-right', parseInt($("#side-widget").css('width')) + parseInt($("#side-widget-content").css('width')) +15 );
+  $("#side-widget-content").animate({width: 'toggle'}, {
+    step: function() {
+    },
+    complete: function() {
+      if($("#side-widget-content").is(":visible")) {
+        $("#side-widget-button").html("&raquo;");
+        //$("#b").css('width', parseInt($("#a").css('width')) - parseInt($("#side-widget").css('width'))  );
+        $("#b").css('margin-right', parseInt($("#side-widget").css('width')) +1);
+        
+      } else {
+        $("#side-widget-button").html("&laquo;");
+        $("#b").css('margin-right', parseInt($("#side-widget").css('width')) );    
+        //$("#b").css('width', parseInt($("#a").css('width')) - parseInt($("#side-widget").css('width')) );
+        $("#side-widget-button").css("border-right", "none");
+      }
+    }
+  });
+});
+
+$("#abs-side-widget-button").on("click", function(event) {
+  if(!$("#abs-side-widget-content").is(":visible")) {
+      $("#abs-side-widget-button").css("border-right","1px solid black");
+      $("#abs-side-widget-button").css("border-bottom","1px solid black");
+    }
+    $("#abs-side-widget-content").animate({width: 'toggle'},  function() {
+      if($("#abs-side-widget-content").is(":visible"))
+        $("#abs-side-widget-button").html("&raquo;");
+      else {
+        $("#abs-side-widget-button").html("&laquo;");
+        $("#abs-side-widget-button").css("border-right", "none");
+        $("#abs-side-widget-button").css("border-bottom", "none");
+      }
+  });
+});
+
+
+</script>
