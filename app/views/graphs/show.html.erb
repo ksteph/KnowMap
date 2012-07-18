@@ -9,10 +9,10 @@
   <div id="top-widget-button" style="text-align:center;background-color:grey;">&#x2235;</div>
 </div>
 
-<div id="map" style="position:relative">
-  <div id="side-widget" style="position:absolute;right:0;top:0; ">
-    <div id="side-widget-button" style="display:inline-block;height:100%;line-height:100%; padding:5px;background-color:grey;margin:0">&laquo;</div>
-    <div id="side-widget-content" style="width:250px;float:right;display:none;min-height:100px;padding:5px;">
+<div id="map" style="position:relative; overflow:hidden;">
+  <div id="side-widget" style="position:absolute;right:-300px;top:0; ">
+    <div id="side-widget-button" style="position:absolute;top:-1px;left:-1px;line-height:100%; padding:5px;background-color:grey;margin:0">&laquo;</div>
+    <div id="side-widget-content" style="margin-left:18px;width:250px;float:right;min-height:100px;max-height:490px;padding:5px;overflow-y:scroll">
       <%= render 'side_widget', :locals => { :graph => @graph } %>
     </div>
   </div>
@@ -36,18 +36,18 @@ $("#top-widget-button").on("click", function(event) {
 });
 
 $("#side-widget-button").on("click", function(event) {
-  if(!$("#side-widget-content").is(":visible")) {
-      $("#side-widget-button").css("border-right","1px solid black");
-      $("#side-widget-button").css("border-bottom","1px solid black");
+  if(parseInt($("#side-widget").css("right"),10)!=0) {
+      $("#side-widget-button").animate({left: parseInt($("#side-widget-button").css('left'),10) == -1 ? -$("#side-widget-button").outerWidth()-1 : -1});
     }
-    $("#side-widget-content").animate({width: 'toggle'},  function() {
-      if($("#side-widget-content").is(":visible"))
+    $("#side-widget").animate({right: parseInt($("#side-widget").css('right'),10) == 0 ? -$("#side-widget").outerWidth() : 0},  function() {
+      if(parseInt($("#side-widget").css("right"),10)==0) {
         $("#side-widget-button").html("&raquo;");
-      else {
+      } else {
+        $("#side-widget-button").animate({left: parseInt($("#side-widget-button").css('left'),10) == -1 ? -$("#side-widget-button").outerWidth()-1 : -1});
         $("#side-widget-button").html("&laquo;");
-        $("#side-widget-button").css("border-right", "none");
-        $("#side-widget-button").css("border-bottom", "none");
       }
   });
 });
+  $("#side-widget").animate({right: -$("#side-widget").outerWidth()});
+  $("#side-widget-button").animate({left: -$("#side-widget-button").outerWidth()-1});
 </script>

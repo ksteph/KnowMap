@@ -1,6 +1,7 @@
 <div id="window">
   <!-- <div id="debug"><p></p></div> -->
-  <div id="chart"></div>
+  <div id="chart" style="height:100%; width:100%;"></div>
+  <div class="clear"></div>
 </div>
 <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 <script type="text/javascript">
@@ -22,8 +23,8 @@
   var dragOldPos = [0,0];
   
   var svg = d3.select("#chart").append("svg")
-      //.attr("width", "100%")
-      .attr("height", $("#window").css("height"))
+      .attr("width", "100%")
+      .attr("height", "100%")
       .on("mousewheel", svgMouseWheel)
       .on("mousedown", svgMouseDown)
       .on("mousemove", svgMouseMove);

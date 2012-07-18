@@ -6,6 +6,7 @@
 #window {
   background-color: #EAEAEA;
   min-height:500px;
+  height:500px;
   border: 1px solid black;
 }
 
@@ -35,5 +36,7 @@
 }
 
 #top-widget { border-bottom:none }
-
+#side-widget-button{ border: 1px solid black }
 #top-widget-button:hover, #side-widget-button:hover { cursor: pointer }
+
+#side-widget-content { max-height:500px; }
