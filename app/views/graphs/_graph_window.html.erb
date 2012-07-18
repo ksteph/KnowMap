@@ -22,8 +22,8 @@
   var dragOldPos = [0,0];
   
   var svg = d3.select("#chart").append("svg")
-      .attr("width", "100%")
-      .attr("height", "100%")
+      //.attr("width", "100%")
+      .attr("height", $("#window").css("height"))
       .on("mousewheel", svgMouseWheel)
       .on("mousedown", svgMouseDown)
       .on("mousemove", svgMouseMove);
