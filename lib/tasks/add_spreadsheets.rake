@@ -181,6 +181,12 @@ namespace :csv do
         puts "setting: #{title} #{pos_x} #{pos_y}"
       end
     }
+    
+    # create cs161 group
+    subgraphs = Graph.all
+    Graph.create(:name => "CS161")
+    Graph.last.nodes << Node.all
+    Graph.last.subgraphs << subgraphs
   end
 end
 
