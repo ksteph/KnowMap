@@ -216,6 +216,7 @@
       zoomIn();
     else
       zoomOut();
+    d3.event.preventDefault();
   }
   function zoomIn() { zoom(1.1); }
   function zoomOut() { zoom(1.0/1.1); }
