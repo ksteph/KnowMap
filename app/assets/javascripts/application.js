@@ -26,12 +26,17 @@ function add_fields(link, association, content) {
   $(link).before(content.replace(regexp, new_id));
 }
 
-function updateView(url) {
+function updateView(url, div) {
   $.ajax({
     url: url,
     dataType: 'html'
   }).done(function(data) { 
-    $('div#content').html(data);
+    if(div)
+      $(div).html(data);
+    else {
+      $('div#content').html(data);
+      setupMap();
+    }
     updateGraph();
     ajax();
   });
@@ -46,6 +51,7 @@ jQuery(function($) {
     });
     history.replaceState({search: search_term()}, document.title, document.location.href);
     updateGraph();
+    setupMap();
     ajax();
 
     if ( ! $.cookie("remote") ) {
@@ -59,6 +65,8 @@ jQuery(function($) {
       ajax();
     }
   }
+  if($("#node").css('display')!='none')
+    showTopWidget();
 });
 
 function ajax() {
@@ -72,6 +80,7 @@ function ajax() {
     
     // updateGraph
     updateGraph();
+    setupMap();
     
     // attach ajax:success event
     ajax();
@@ -95,6 +104,7 @@ function ajax() {
     
     // updateGraph
     updateGraph();
+    setupMap();
     
     // attach ajax:success event
     ajax();

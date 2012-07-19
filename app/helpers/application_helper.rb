@@ -13,5 +13,6 @@ module ApplicationHelper
   
   def remote?
     Rails.configuration.remote && cookies[:remote]
+    true
   end
 end
