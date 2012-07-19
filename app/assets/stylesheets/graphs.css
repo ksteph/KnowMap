@@ -9,8 +9,15 @@
   border: 1px solid black;
 }
 
-.zoom-pan-widget-compass {
+.group-button {
+  width: 10px;
+  height: 10px;
+  border: 1px solid black;
 }
+.group-button:hover {
+  cursor: pointer;
+}
+
 .zoom-pan-button {
   fill:  #225EA8;
   stroke:  #0C2C84;
