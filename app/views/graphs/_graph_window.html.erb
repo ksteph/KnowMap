@@ -1,5 +1,4 @@
 <div id="window">
-  <!-- <div id="debug"><p></p></div> -->
   <div id="chart" style="height:100%; width:100%;"></div>
   <div class="clear"></div>
 </div>
@@ -34,8 +33,7 @@
       .attr("transform","matrix("+transMatrix.join(' ')+")");
 
   <!-- Add zoom/pan widget -->
-  var svgZoomPan = svg.append("g")
-    .attr("transform", "translate(0,"+($('#chart').height()-100)+")");
+  var svgZoomPan = svg.append("g");
   svgZoomPan.append("circle")
     .attr("cx",50)
     .attr("cy",50)
@@ -103,6 +101,11 @@
     var nodeMap = {}
     for (n in nodes)
     {
+      //Shifting nodes as needed.
+      //This turns the string to a float, hopefully the type change won't hurt
+      //anything.
+      nodes[n].x = parseFloat(nodes[n].x) + 100;
+
       nodeMap[nodes[n].id] = nodes[n];
     }
 
@@ -133,21 +136,27 @@
         .style("stroke-dasharray", function(d){return edgeStyles[d.type]})
         .style("marker-end", function(d){return edgeMarkerEnd[d.type]});
 
-    <!-- Insert Nodes -->  
+    <!-- Insert Nodes -->
     var node = svgChartGroup.selectAll("g.node")
       .data(nodes)
       .enter().append("g")
-        .attr("class", "node");
+        .attr("class", "node")
+        .attr("id", function(d){return d.id;});
 
     node.on("dblclick", onDblClick);
     node.on("mouseenter", showTitle);
     node.on("mouseleave", hideTitle);
 
-    node.append("circle")
-      .attr("r", cRadius)
-      .attr("cx", function(d){return d.x;})
-      .attr("cy", function(d){return d.y;})
-      .style("fill", "silver");
+    node.append("g")
+      .attr("id","g-group");
+
+    node.append("g")
+      .attr("id","g-node")
+      .append("circle")
+        .attr("r", cRadius)
+        .attr("cx", function(d){return d.x;})
+        .attr("cy", function(d){return d.y;})
+        .style("fill", "silver");
 
     node.append("text").text(function(d){return d.label})
       .attr("text-anchor","middle")
@@ -156,7 +165,9 @@
       .attr("dy",".35em")
       .attr("font-size", "2pt");
 
-    node.append("title").attr("data-id", function(d){return d.id;}).text(function(d){return d.title;});
+    node.append("title")
+      .attr("data-id", function(d){return d.id;})
+        .text(function(d){return d.title;});
 
   });
 
@@ -199,7 +210,6 @@
   function winMouseUp(e) {
     bMouseDown = false;
     svg.style("cursor", "auto");
-    d3.event.preventDefault();
   }
 
   function winMouseMove(e) {
