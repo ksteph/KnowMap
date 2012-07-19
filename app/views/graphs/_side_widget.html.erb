@@ -6,7 +6,7 @@
 
 <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 <script>
-  var defaultColor = "#ffffff";
+  var btnDefaultColor = d3.select(".group-button").select("rect").style("fill");
   var usedColor = [];
   var unUsedColor = ["#ff0000","#3914af","#ffd300","#00cc00"];
   var nodeColors = {};
@@ -22,11 +22,12 @@
     var nodesToColor = d3.select("#chart-group").selectAll(".node")
       .filter(function(d) { return ids.indexOf(d.id) > -1 } );
 
-    if ((btnRect.style("fill") == defaultColor) && (unUsedColor.length > 0)) {
+    if ((btnRect.style("fill") == btnDefaultColor) && (unUsedColor.length > 0)) {
       var color = unUsedColor.shift();
-      usedColor.push(color);
 
       btnRect.style("fill",color);
+      color = btnRect.style("fill");
+      usedColor.push(color);
 
       nodesToColor.each(function(d) {
         if (nodeColors[d.id] == undefined)
@@ -37,13 +38,12 @@
         addCircleParts(d3.select(this).select("#g-group"),
           nodeColors[d.id],d.x,d.y);
       });
-    } else if (btnRect.style("fill") != defaultColor) {
+    } else if (btnRect.style("fill") != btnDefaultColor) {
       var color = btnRect.style("fill");
       unUsedColor.push(color);
       usedColor.splice(usedColor.indexOf(color),1);
 
-
-      btnRect.style("fill",defaultColor);
+      btnRect.style("fill",btnDefaultColor);
       nodesToColor.each(function(d) {
         var aryColors = nodeColors[d.id];
         nodeColors[d.id] = [];
@@ -56,7 +56,6 @@
         addCircleParts(d3.select(this).select("#g-group"),
           nodeColors[d.id],d.x,d.y);
       });
-
     }
   }
 
