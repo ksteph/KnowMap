@@ -9,7 +9,6 @@
   node_ids = node_ids.substr(1, node_ids.length-2);
   if(node_ids) { url = url + node_ids; }
 
-  var cRadius = 10, linkDist = cRadius*4;
   var transMatrix = [1,0,0,1,0,0];
 
   window.addEventListener('keydown', keyDown, false);
@@ -93,7 +92,10 @@
     .attr("height",8);
 
   d3.json(url, function(json) {
-    var edgeStyles = {"RelatedEdge":"2,1", "DependentEdge":"1,0"};
+    var edgeStyles = {
+      "RelatedEdge":MAP_CONSTANTS.edge_style_related,
+      "DependentEdge":MAP_CONSTANTS.edge_style_dependent,
+    };
     var edgeMarkerEnd = {"RelatedEdge":"none", "DependentEdge":"url(#arrowhead)"};
     var nodes = json.nodes;
     var links = json.lines;
@@ -104,7 +106,8 @@
       //Shifting nodes as needed.
       //This turns the string to a float, hopefully the type change won't hurt
       //anything.
-      nodes[n].x = parseFloat(nodes[n].x) + 100;
+      nodes[n].x = parseFloat(nodes[n].x) + MAP_CONSTANTS.node_shift_x;
+      nodes[n].y = parseFloat(nodes[n].y) + MAP_CONSTANTS.node_shift_y;
 
       nodeMap[nodes[n].id] = nodes[n];
     }
@@ -113,7 +116,7 @@
     svgChartGroup.append("defs").append("marker")
       .attr("id", "arrowhead")
       .attr("viewBox", "0 0 10 10")
-      .attr("refX", cRadius*4.1)
+      .attr("refX", MAP_CONSTANTS.node_radius*4.35)
       .attr("refY", "5")
       .attr("markerUnits", "strokeWidth")
       .attr("markerWidth", 6)
@@ -126,13 +129,11 @@
     var link = svgChartGroup.selectAll("link.link")
       .data(links)
       .enter().append("line")
-        .attr("class","link")
+        .attr("class","map-edge")
         .attr("x1", function(d){return nodeMap[d.source].x;})
         .attr("y1", function(d){return nodeMap[d.source].y;})
         .attr("y2", function(d){return nodeMap[d.target].y;})
         .attr("x2", function(d){return nodeMap[d.target].x;})
-        .style("stroke","black")
-        .style("stroke-width","0.75")
         .style("stroke-dasharray", function(d){return edgeStyles[d.type]})
         .style("marker-end", function(d){return edgeMarkerEnd[d.type]});
 
@@ -144,28 +145,28 @@
         .attr("id", function(d){return d.id;});
 
     node.on("dblclick", onDblClick);
-    node.on("mouseenter", showTitle);
-    node.on("mouseleave", hideTitle);
+    node.on("mouseover", showTitle);
+    node.on("mouseout", hideTitle);
 
     node.append("g")
       .attr("id","g-group");
 
-    node.append("g")
+    nodeGNode = node.append("g")
       .attr("id","g-node")
-      .append("circle")
-        .attr("r", cRadius)
-        .attr("cx", function(d){return d.x;})
-        .attr("cy", function(d){return d.y;})
-        .style("fill", "silver");
 
-    node.append("text").text(function(d){return d.label})
-      .attr("text-anchor","middle")
+    nodeGNode.append("circle")
+        .attr("class", "map-node")
+        .attr("r", MAP_CONSTANTS.node_radius)
+        .attr("cx", function(d){return d.x;})
+        .attr("cy", function(d){return d.y;});
+
+    nodeGNode.append("text").text(function(d){return d.label})
+      .attr("class","map-node-text")
       .attr("x", function(d){return d.x;})
       .attr("y", function(d){return d.y;})
-      .attr("dy",".35em")
-      .attr("font-size", "2pt");
+      .attr("dy",".35em");
 
-    node.append("title")
+    nodeGNode.append("title")
       .attr("data-id", function(d){return d.id;})
         .text(function(d){return d.title;});
 
@@ -229,8 +230,8 @@
       zoomOut();
     d3.event.preventDefault();
   }
-  function zoomIn() { zoom(1.1); }
-  function zoomOut() { zoom(1.0/1.1); }
+  function zoomIn() { zoom(MAP_CONSTANTS.zoom_scale); }
+  function zoomOut() { zoom(1.0/MAP_CONSTANTS.zoom_scale); }
 
   function zoom(scale) {
     if (svgChartGroup == null)
@@ -266,10 +267,10 @@
     }
   }
 
-  function panUp(){ pan(0,10); }
-  function panDown(){ pan(0,-10); }
-  function panRight(){ pan(10,0); }
-  function panLeft(){ pan(-10,0); }
+  function panUp(){ pan(0,MAP_CONSTANTS.pan_step); }
+  function panDown(){ pan(0,-MAP_CONSTANTS.pan_step); }
+  function panRight(){ pan(MAP_CONSTANTS.pan_step,0); }
+  function panLeft(){ pan(-MAP_CONSTANTS.pan_step,0); }
 
   function pan(dx,dy) {
     if (svgChartGroup == null)

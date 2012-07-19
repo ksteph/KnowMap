@@ -8,7 +8,7 @@
 <script>
   var btnDefaultColor = d3.select(".group-button").select("rect").style("fill");
   var usedColor = [];
-  var unUsedColor = ["#ff0000","#3914af","#ffd300","#00cc00"];
+  var unUsedColor = MAP_CONSTANTS.highlight_colors;
   var nodeColors = {};
 
   d3.selectAll(".group-button").on("click",groupClick);
@@ -63,7 +63,7 @@
     x = parseFloat(x);
     y = parseFloat(y);
 
-    var colorR = 15;
+    var colorR = MAP_CONSTANTS.highlight_radius;
     var rotateRadian = Math.PI/2;
   
     svgG.selectAll("path.cParts").remove();
@@ -73,21 +73,22 @@
       svgG.selectAll("circle.cParts").data(colors).enter().append("circle")
         .attr("class","cParts")
         .attr("fill",function(d){return d;})
-        .style("opacity",0.5)
+        .style("opacity",MAP_CONSTANTS.highlight_opacity)
         .attr("r",colorR)
         .attr("cx",x)
-       .attr("cy",y);
+        .attr("cy",y);
     } else {
       svgG.selectAll("path.cParts").data(colors).enter().append("path")
        .attr("class","cParts")
        .attr("fill",function(d){return d;})
-       .style("opacity",0.5)
+       .style("opacity",MAP_CONSTANTS.highlight_opacity)
        .attr("d",function(d){
          var outStr = "M"+x+","+y+" "; //Center
 
          var i = colors.indexOf(d);
          var len = colors.length;
-  
+
+         // Have -0.001 so there is a very slight overlap of the circle parts
          var x1 = x + colorR*Math.cos(Math.PI*2*((i/len)-0.001) - rotateRadian);
          var y1 = y + colorR*Math.sin(Math.PI*2*((i/len)-0.001) - rotateRadian);
   
@@ -97,9 +98,7 @@
          var y2 = y + colorR*Math.sin(Math.PI*2*((i+1)/len) - rotateRadian);
   
          outStr += "A"+colorR+","+colorR+" 0 0,1 ";
-         outStr += x2+","+y2+" ";
-  
-         outStr += "L"+x+","+y+" ";
+         outStr += x2+","+y2+" Z";
 
          return outStr;
        });

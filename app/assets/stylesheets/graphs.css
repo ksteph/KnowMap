@@ -10,6 +10,19 @@
   border: 1px solid black;
 }
 
+.map-node {
+  fill : silver;
+}
+.map-node-text {
+  font-size : 2pt;
+  text-anchor : middle;
+}
+
+.map-edge {
+  stroke: black;
+  stroke-width: 0.75;
+}
+
 .group-button {
   width: 10px;
   height: 10px;
