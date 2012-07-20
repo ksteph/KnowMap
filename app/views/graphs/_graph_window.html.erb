@@ -103,11 +103,36 @@
     var nodeMap = {}
     for (n in nodes)
     {
-      //Shifting nodes as needed.
-      //This turns the string to a float, hopefully the type change won't hurt
-      //anything.
+      /*
+        Shifting nodes as needed. This turns the string to a float, hopefully
+        the type change won't hurt anything.
+      */
       nodes[n].x = parseFloat(nodes[n].x) + MAP_CONSTANTS.node_shift_x;
       nodes[n].y = parseFloat(nodes[n].y) + MAP_CONSTANTS.node_shift_y;
+
+      if (nodes[n].title.length > MAP_CONSTANTS.node_text_line_char_limit) {
+        var aryStr = nodes[n].title.split(' ');
+        var aryLabel = [aryStr.shift()];
+        var iLabel = 0;
+        var currLineLen = aryLabel[iLabel].length;
+        for (i in aryStr) {
+          if ((currLineLen+aryStr[i].length+1) >
+              MAP_CONSTANTS.node_text_line_char_limit) {
+            iLabel++;
+            aryLabel[iLabel] = ""
+            currLineLen = 0;
+          } else {
+            aryLabel[iLabel] += " ";
+            currLineLen++;
+          }
+          aryLabel[iLabel] += aryStr[i];
+          currLineLen += aryStr[i].length;
+        }
+        
+        nodes[n].aryLabel = aryLabel;
+      } else {
+        nodes[n].aryLabel = [nodes[n].title];
+      }
 
       nodeMap[nodes[n].id] = nodes[n];
     }
@@ -142,11 +167,10 @@
       .data(nodes)
       .enter().append("g")
         .attr("class", "node")
-        .attr("id", function(d){return d.id;});
+        .attr("id", function(d){return d.id;})
+        .attr("transform",function(d){return "translate("+d.x+","+d.y+")";});
 
     node.on("dblclick", onDblClick);
-    node.on("mouseover", showTitle);
-    node.on("mouseout", hideTitle);
 
     node.append("g")
       .attr("id","g-group");
@@ -155,16 +179,21 @@
       .attr("id","g-node")
 
     nodeGNode.append("circle")
-        .attr("class", "map-node")
-        .attr("r", MAP_CONSTANTS.node_radius)
-        .attr("cx", function(d){return d.x;})
-        .attr("cy", function(d){return d.y;});
+     .attr("class", "map-node")
+     .attr("r", MAP_CONSTANTS.node_radius);
 
-    nodeGNode.append("text").text(function(d){return d.label})
-      .attr("class","map-node-text")
-      .attr("x", function(d){return d.x;})
-      .attr("y", function(d){return d.y;})
-      .attr("dy",".35em");
+    nodeGNode.append("g")
+      .attr("id","g-node-label")
+      .each(function(d) {
+        var g = d3.select(this);
+        var startDY = 0.5 - (d.aryLabel.length/2.0);
+        startDY += MAP_CONSTANTS.node_text_dy;
+        for(i in d.aryLabel) {
+          g.append("text").text(d.aryLabel[i])
+            .attr("class","map-node-text")
+            .attr("dy",(startDY+parseInt(i))+"em");
+        }
+      });
 
     nodeGNode.append("title")
       .attr("data-id", function(d){return d.id;})
@@ -282,15 +311,4 @@
     var matrix = "matrix("+transMatrix.join(' ')+")";
     svgChartGroup.attr("transform", matrix);
   }
-  
-  function showTitle() {
-    var e = d3.select(this).select("text")
-    e.text(function(d) { return d.title; } );
-  }
-  
-  function hideTitle() {
-    var e = d3.select(this).select("text")
-    e.text(function(d) { return d.label; } );
-  }
-
 </script>

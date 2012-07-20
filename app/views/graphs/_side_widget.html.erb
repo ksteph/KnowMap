@@ -36,7 +36,7 @@
         nodeColors[d.id].push(color);
 
         addCircleParts(d3.select(this).select("#g-group"),
-          nodeColors[d.id],d.x,d.y);
+          nodeColors[d.id]);
       });
     } else if (btnRect.style("fill") != btnDefaultColor) {
       var color = btnRect.style("fill");
@@ -54,15 +54,12 @@
         }
 
         addCircleParts(d3.select(this).select("#g-group"),
-          nodeColors[d.id],d.x,d.y);
+          nodeColors[d.id]);
       });
     }
   }
 
-  function addCircleParts(svgG,colors,x,y) {
-    x = parseFloat(x);
-    y = parseFloat(y);
-
+  function addCircleParts(svgG,colors) {
     var colorR = MAP_CONSTANTS.highlight_radius;
     var rotateRadian = Math.PI/2;
   
@@ -74,28 +71,26 @@
         .attr("class","cParts")
         .attr("fill",function(d){return d;})
         .style("opacity",MAP_CONSTANTS.highlight_opacity)
-        .attr("r",colorR)
-        .attr("cx",x)
-        .attr("cy",y);
+        .attr("r",colorR);
     } else {
       svgG.selectAll("path.cParts").data(colors).enter().append("path")
        .attr("class","cParts")
        .attr("fill",function(d){return d;})
        .style("opacity",MAP_CONSTANTS.highlight_opacity)
        .attr("d",function(d){
-         var outStr = "M"+x+","+y+" "; //Center
+         var outStr = "M0,0 "; //Center
 
          var i = colors.indexOf(d);
          var len = colors.length;
 
          // Have -0.001 so there is a very slight overlap of the circle parts
-         var x1 = x + colorR*Math.cos(Math.PI*2*((i/len)-0.001) - rotateRadian);
-         var y1 = y + colorR*Math.sin(Math.PI*2*((i/len)-0.001) - rotateRadian);
+         var x1 = colorR*Math.cos(Math.PI*2*((i/len)-0.001) - rotateRadian);
+         var y1 = colorR*Math.sin(Math.PI*2*((i/len)-0.001) - rotateRadian);
   
          outStr += "L"+x1+","+y1+" ";
   
-         var x2 = x + colorR*Math.cos(Math.PI*2*((i+1)/len) - rotateRadian);
-         var y2 = y + colorR*Math.sin(Math.PI*2*((i+1)/len) - rotateRadian);
+         var x2 = colorR*Math.cos(Math.PI*2*((i+1)/len) - rotateRadian);
+         var y2 = colorR*Math.sin(Math.PI*2*((i+1)/len) - rotateRadian);
   
          outStr += "A"+colorR+","+colorR+" 0 0,1 ";
          outStr += x2+","+y2+" Z";

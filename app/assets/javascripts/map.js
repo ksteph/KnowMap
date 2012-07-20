@@ -5,6 +5,8 @@ var MAP_CONSTANTS = {
     node_radius : 8,
     node_shift_x : 100,
     node_shift_y : 0,
+    node_text_line_char_limit : 15,
+    node_text_dy : 0.35,
 
     edge_style_related : "1,2",
     edge_style_dependent : "1,0",
