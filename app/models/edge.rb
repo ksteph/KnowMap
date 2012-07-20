@@ -7,4 +7,9 @@ class Edge < ActiveRecord::Base
   #validates :node_id_A, :presence => true
   #validates :node_id_B, :presence => true
   validates_uniqueness_of :node_id_A, scope: [:node_id_B, :type], message: "You cannot add a #{I18n.translate('nodes.one').downcase} that has already been added."
+  validate :edge_cannot_be_to_and_from_same_node
+  
+  def edge_cannot_be_to_and_from_same_node
+    errors.add(:node_id_A, "^Node cannot be connected to itself.") if node_id_B == node_id_A
+  end
 end
