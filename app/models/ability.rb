@@ -37,6 +37,7 @@ class Ability
     end
     def instructor
       student
+      can [:index, :new, :create, :edit, :update, :show], [Course]
     end
     def admin
       instructor

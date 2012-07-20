@@ -1,4 +1,6 @@
 KnowledgeMap::Application.routes.draw do
+  resources :courses
+
   resources :roles
 
   resources :actions
