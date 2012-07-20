@@ -12,13 +12,12 @@ KnowledgeMap::Application.routes.draw do
 
   resources :courses
 
-  resources :users do
-    get "profile" => "users#profile", :as => "profile"
-  end
   get "login" => "sessions#new", :as => "login"
   get "logout" => "sessions#destroy", :as => "logout"
   get "sign_up" => "users#new", :as => "sign_up"
-
+  get "profile" => "users#profile", :as => "profile"
+  
+  resources :users
   resources :roles
   resources :actions
   
