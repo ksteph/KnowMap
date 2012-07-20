@@ -1,40 +1,36 @@
 KnowledgeMap::Application.routes.draw do
-  resources :courses
-
-  resources :roles
-
-  resources :actions
 
   root :to => "graphs#index"
-  
-  resources :graph_membership_graphs
 
-  resources :graph_membership_nodes
-
-  resources :edgetypes
-
-  resources :edges
+  get 'search/(:q)' => "search#search", :as => "search"
 
   resources :graphs
 
   resources :nodes do
     get "learning_path" => "nodes#learning_path", :as => "learning_path"
   end
-  
-  get 'search/(:q)' => "search#search", :as => "search"
-  
-  get 'data.json' => "application#data"
-  get "logout" => "sessions#destroy", :as => "logout"
+
+  resources :courses
+
+  resources :users do
+    get "profile" => "users#profile", :as => "profile"
+  end
   get "login" => "sessions#new", :as => "login"
+  get "logout" => "sessions#destroy", :as => "logout"
   get "sign_up" => "users#new", :as => "sign_up"
-  get "profile" => "users#profile", :as => "profile"
-  root :to => "users#new"
-  resources :users
-  resources :sessions
+
+  resources :roles
+  resources :actions
+  
+  #resources :graph_membership_graphs
+  #resources :graph_membership_nodes
+  #resources :edges
+  #resources :edgetypes
   
   match "/_partials/(:partial)" => 'application#partial'
   
-  match "/redir" => redirect("/graphs")
+  get 'data.json' => "application#data"
+  
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
