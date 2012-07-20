@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
       @nodes = Node.all
       @edges = Edge.all
     end
-    render 'layouts/data.json.erb'
+    render 'data', :format => :json
   end
   
   private

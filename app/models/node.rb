@@ -25,6 +25,12 @@ class Node < ActiveRecord::Base
     related_nodes_A | related_nodes_B
   end
   
+  def learning_path
+    path = [self.id]
+    previous_nodes.each { |node| node.learning_path.each { |id| path.push id unless path.include? id } }
+    path.push path.shift
+  end
+  
   def to_s
     title
   end

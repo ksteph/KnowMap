@@ -17,7 +17,9 @@ KnowledgeMap::Application.routes.draw do
 
   resources :graphs
 
-  resources :nodes
+  resources :nodes do
+    get "learning_path" => "nodes#learning_path", :as => "learning_path"
+  end
   
   get 'search/(:q)' => "search#search", :as => "search"
   

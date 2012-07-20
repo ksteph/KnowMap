@@ -27,6 +27,7 @@ class Ability
     user ||= User.new # guest user (not logged in)
     can [:new, :create], User # sign up
     can :read, [Graph, Node]  # view Graphs and Nodes
+    can :learning_path, Node
     can :assign_roles, User
     
     # a user can edit their own profile
