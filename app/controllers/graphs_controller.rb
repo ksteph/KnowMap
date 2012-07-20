@@ -25,7 +25,7 @@ class GraphsController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
-      format.html { render :layout => !request.xhr? } # show.html.erb
+      format.html { render :layout => 'map' } # show.html.erb
       format.json { render :partial => 'graph', :locals => {:graph => @graph} }
     end
   end

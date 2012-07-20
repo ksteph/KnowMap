@@ -60,3 +60,8 @@
 #top-widget-button:hover, #side-widget-button:hover { cursor: pointer }
 
 #side-widget-content { max-height:500px; }
+
+#node {
+  border: 1px solid black;
+  padding:20px;
+}

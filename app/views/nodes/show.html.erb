@@ -1,6 +1,8 @@
 <%= render :partial => "application/flash", :locals => { :flash => flash } %>
 <div id="graphData" style="display:none" data-graph_id="<%= @graph.id if @graph %>" data-graph_nodes="<%= @graph.nodes.map{ |n| n.id }.to_json if @graph %>" data-node_id="<%= @node.id if @node %>" ></div>
 
+<% content_for :node do %>
+
 <p>
   <b>Title:</b>
   <%= @node.title %>
@@ -44,3 +46,5 @@
 <%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
 <%= link_to t('actions.edit'), edit_node_path(@node), :remote => remote?, "data-type" => "html" %> |
 <%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>
+
+<% end %>

@@ -1,0 +1,33 @@
+<% content_for :content do %>
+  <div id="content">
+    <%= yield %>
+    <div id="top-widget">
+      <div id="top-widget-content" style="height:125px;display:none; text-align:center; background-color:#D9D9D9; line-height:150px; padding-top:40px;">
+        <%= render 'learning_path_widget' %>
+      </div>
+      <div id="top-widget-button" style="text-align:center;background-color:grey;">&#x2235;</div>
+    </div>
+
+    <div id="map" style="position:relative; overflow:hidden;<% if params[:controller] != 'graphs' %>display:none<% end %>">
+      <div id="side-widget" style="position:absolute;right:-300px;top:0; ">
+        <div id="side-widget-button" style="position:absolute;top:-1px;left:-1px;line-height:100%; padding:5px;background-color:grey;margin:0">&laquo;</div>
+        <div id="side-widget-content" style="margin-left:18px;width:250px;float:right;min-height:100px;max-height:490px;padding:5px;overflow-y:scroll">
+          <%= render 'side_widget', :locals => { :graph => @graph } %>
+        </div>
+      </div>
+      <%= render 'graph_window' %>
+    </div>
+    
+    <div id="node"<% if params[:controller] != 'nodes' %>style="display:none"<% end %>><%= yield :node %></div>
+  </div>
+</div>
+<% end %>
+<% if !request.xhr? then %>
+  <%= render :template => 'layouts/application' %>
+<% else %>
+  <% if params[:controller] == 'nodes' then %>
+    <%= yield :node %>
+  <% else %>
+    <%= yield :content %>
+  <% end %>
+<% end %>
