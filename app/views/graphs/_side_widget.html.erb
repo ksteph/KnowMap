@@ -23,6 +23,7 @@
       .filter(function(d) { return ids.indexOf(d.id) > -1 } );
 
     if ((btnRect.style("fill") == btnDefaultColor) && (unUsedColor.length > 0)) {
+      $.ajax("/log/graph/"+this.id+"/highlight"); // log action
       var color = unUsedColor.shift();
 
       btnRect.style("fill",color);
@@ -39,6 +40,7 @@
           nodeColors[d.id]);
       });
     } else if (btnRect.style("fill") != btnDefaultColor) {
+      $.ajax("/log/graph/"+this.id+"/unhighlight"); // log action
       var color = btnRect.style("fill");
       unUsedColor.push(color);
       usedColor.splice(usedColor.indexOf(color),1);

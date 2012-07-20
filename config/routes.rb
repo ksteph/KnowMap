@@ -18,6 +18,7 @@ KnowledgeMap::Application.routes.draw do
   get "profile" => "users#profile", :as => "profile"
   
   resources :users
+  resources :sessions
   resources :roles
   resources :actions
   
@@ -25,6 +26,8 @@ KnowledgeMap::Application.routes.draw do
   #resources :graph_membership_nodes
   #resources :edges
   #resources :edgetypes
+  
+  get "/log/(:log_controller)/(:target_id)/(:log_action)" => "application#log"
   
   match "/_partials/(:partial)" => 'application#partial'
   

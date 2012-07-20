@@ -20,6 +20,11 @@ class ApplicationController < ActionController::Base
     render 'data', :format => :json
   end
   
+  def log
+    Action.log :controller => params[:log_controller], :action => params[:log_action], :target_id => params[:target_id], :user => current_user
+    render :nothing => true
+  end
+  
   private
   
   def record_user_action
