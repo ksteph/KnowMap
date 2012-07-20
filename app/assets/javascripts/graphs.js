@@ -16,12 +16,12 @@ function updateGraph() {
 }
 
 function colorNode(id, color) {
-  $('title[data-id='+id+']').prev().prev().attr('style', 'fill: '+color);
+  //$('title[data-id='+id+']').prev().prev().attr('style', 'fill: '+color);
 }
 
 function uncolorNodes(color) {
-  if($('[style="fill: '+color+'"]').length)
-    $('[style="fill: '+color+'"]').each(function(i, v){
-      v.setAttribute('style', 'fill: pink');
-    });
+  //if($('[style="fill: '+color+'"]').length)
+    //$('[style="fill: '+color+'"]').each(function(i, v){
+    //  v.setAttribute('style', 'fill: pink');
+    //});
 }

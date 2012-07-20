@@ -46,5 +46,6 @@
 <%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
 <%= link_to t('actions.edit'), edit_node_path(@node), :remote => remote?, "data-type" => "html" %> |
 <%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>
+<% if request.xhr? %> | <a href="#" onclick="showMap(); return false;">Show Map</a><% end %>
 
 <% end %>
