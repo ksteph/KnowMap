@@ -4,10 +4,13 @@ KnowledgeMap::Application.routes.draw do
 
   get 'search/(:q)' => "search#search", :as => "search"
 
-  resources :graphs
+  resources :graphs do
+    get "groups_widget" => "graphs#groups_widget", :as => "groups_widget"
+  end
 
   resources :nodes do
     get "learning_path" => "nodes#learning_path", :as => "learning_path"
+    get "node_widget" => "nodes#node_widget", :as => "node_widget"
   end
 
   resources :courses

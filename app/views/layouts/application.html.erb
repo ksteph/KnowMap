@@ -13,7 +13,7 @@
     <div class="title">
       <%= link_to 'Knowledge Map', :root, :remote => remote? %>
     </div>
-    <div class="user_nav"><%= render 'layouts/user_nav' %></div>
+    <div class="user_nav"><%= render 'user_nav' %></div>
     <div class="search clear">
       <%= form_tag search_path, :method => 'get' do %>
         <%= text_field_tag :q, params[:q] || t('search_box.default_text'), :class => params[:q] ? "search-box" : "search-box blank-search-box", "data-timestamp" => "0" %>
@@ -26,6 +26,27 @@
       <%= yield :content %>
     <% else %>
       <div id="content"><%= yield %></div>
+      
+      <div id="map-container" style="display:none">
+        <div id="top-widget">
+          <div id="top-widget-content" class="hidden" style="height:125px;display:none; text-align:center; background-color:#D9D9D9; line-height:150px; padding-top:40px;">
+            <% render 'learning_path_widget' %>
+          </div>
+          <div id="top-widget-button" style="text-align:center;background-color:grey;">&#x2235;</div>
+        </div>
+
+        <div id="map" style="position:relative; overflow:hidden;<% if params[:controller] != 'graphs' %>display:none<% end %>">
+          <div id="side-widget" style="position:absolute;right:0;top:0; ">
+            <div id="side-widget-button" style="position:absolute;top:-1px;left:-1px;line-height:100%; padding:5px;background-color:grey;margin:0">&raquo;</div>
+            <div id="side-widget-content" style="margin-left:18px;width:250px;float:right;min-height:100px;max-height:490px;padding:5px;overflow-y:scroll">
+              <% render 'graphs/groups_widget', :locals => { :graph => @graph } %>
+            </div>
+          </div>
+          <%= render 'graphs/graph_window' %>
+        </div>
+        
+        <div id="node-widget"<% if params[:controller] != 'nodes' %>style="display:none"<% end %>><%= yield :node %></div>
+      </div>
     <% end %>    
     <div class="clear"></div>
   </div>

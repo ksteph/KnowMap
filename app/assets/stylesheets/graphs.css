@@ -61,7 +61,7 @@
 
 #side-widget-content { max-height:500px; }
 
-#node {
+#node-widget {
   border: 1px solid black;
   padding:20px;
 }

@@ -4,10 +4,7 @@
 </div>
 
 <script type="text/javascript">
-  var url = "../data.json?id=";
-  node_ids = $("#graphData").attr("data-all_graph_nodes");
-  node_ids = node_ids.substr(1, node_ids.length-2);
-  if(node_ids) { url = url + node_ids; }
+
 
   var transMatrix = [1,0,0,1,0,0];
 
@@ -20,14 +17,26 @@
   var bMouseDown = false;
   var dragOldPos = [0,0];
   
-  var svg = d3.select("#chart").append("svg")
+  var svg;
+  var svgChartGroup;
+
+function doMapStuff() {
+  if(svg)
+    svg.remove();
+  
+  var url = "../data.json?id=";
+  node_ids = $("#graphData").attr("data-all_graph_nodes");
+  node_ids = node_ids.substr(1, node_ids.length-2);
+  if(node_ids) { url = url + node_ids; }
+  
+  svg = d3.select("#chart").append("svg")
       .attr("width", "100%")
       .attr("height", "100%")
       .on("mousewheel", svgMouseWheel)
       .on("mousedown", svgMouseDown)
       .on("mousemove", svgMouseMove);
 
-  var svgChartGroup = svg.append("g")
+  svgChartGroup = svg.append("g")
       .attr("id", "chart-group")
       .attr("transform","matrix("+transMatrix.join(' ')+")");
 
@@ -200,32 +209,18 @@
         .text(function(d){return d.title;});
 
   });
+}
 
   function onDblClick() {
     <!-- Code to change to the clicked on node's content information. -->
     var title = d3.select(this).select("title").text();
     var id = parseInt($('title:contains('+title+')')[0].getAttribute('data-id'));
     var url = '/nodes/' + id;
-    updateView(url, "div#node");
-    showNode();
-    showTopWidget();
-    // save history
-    history.pushState({'node_id': id, search:search_term()}, document.title, url);
-    // uncolor prev circle
-    //uncolor_nodes();
-    // color selected circle
-    //color_node(id);
-    /*
-    var e = d3.select(this).select("text")
-    var t = e.text();
-    e.text(function(d) {
-      if (t == d.title)
-        {return d.label;}
-      else
-        {return d.title;}
-      }
-    );
-    */
+    updateView(url);
+    Map.NodeWidget.show();
+    Map.LearningPathWidget.expand();
+    
+    history.pushState({'node_id': id, search:search_term()}, document.title, url); // save history
   }
 
   function svgMouseMove() {
