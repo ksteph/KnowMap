@@ -28,12 +28,12 @@ $(function() {
 var Map = (function(Map, $, undefined){
   Map.setup = function() {
     //console.log("called Map.setup()");
-    $("#top-widget-button").on("click", Map.LearningPathWidget.toggle);
-    $("#side-widget-button").on("click", Map.GroupsWidget.toggle);
-    //$("#side-widget").animate({right: -$("#side-widget").outerWidth()});
-    //$("#side-widget").css("right", -$("#side-widget").outerWidth());
-    //$("#side-widget-button").animate({left: -$("#side-widget-button").outerWidth()-1});
-    //$("#side-widget-button").css("left", -$("#side-widget-button").outerWidth()-1);
+    $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
+    $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
+    //$("#groups-widget").animate({right: -$("#groups-widget").outerWidth()});
+    //$("#groups-widget").css("right", -$("#groups-widget").outerWidth());
+    //$("#groups-widget-button").animate({left: -$("#groups-widget-button").outerWidth()-1});
+    //$("#groups-widget-button").css("left", -$("#groups-widget-button").outerWidth()-1);
     //Map.GroupsWidget.expand();
     Map.update();
   }
@@ -89,28 +89,28 @@ var Map = (function(Map, $, undefined){
   Map.LearningPathWidget = (function(LearningPathWidget) {
     LearningPathWidget.update = function() {
       node_id = $("#graphData").attr("data-node_id");
-      $("#top-widget-content").html( "<img src='/assets/path.png'/ > Node id: " + node_id);
+      $("#learning-path-widget-content").html( "<img src='/assets/path.png'/ > Node id: " + node_id);
     }
     
     LearningPathWidget.expand = function() {
-      if(!$("#top-widget-content").is(":visible"))
+      if(!$("#learning-path-widget-content").is(":visible"))
         LearningPathWidget.toggle();
     }
 
     LearningPathWidget.collapse = function() {
-      if($("#top-widget-content").is(":visible"))
+      if($("#learning-path-widget-content").is(":visible"))
         LearningPathWidget.toggle();
     }
     
     LearningPathWidget.toggle = function(event) {
-      if(!$("#top-widget-content").is(":visible"))
-          $("#top-widget-button").css("border-top","1px solid black");
-      $("#top-widget-content").animate({height: 'toggle'}, null, null, function() {
-        if($("#top-widget-content").is(":visible")) {
-          $("#top-widget-button").html("&#x2234;");
+      if(!$("#learning-path-widget-content").is(":visible"))
+          $("#learning-path-widget-button").css("border-top","1px solid black");
+      $("#learning-path-widget-content").animate({height: 'toggle'}, null, null, function() {
+        if($("#learning-path-widget-content").is(":visible")) {
+          $("#learning-path-widget-button").html("&#x2234;");
         } else {
-          $("#top-widget-button").html("&#x2235;");
-          $("#top-widget-button").css("border-top", "none");
+          $("#learning-path-widget-button").html("&#x2235;");
+          $("#learning-path-widget-button").css("border-top", "none");
         }
       });
     }
@@ -126,30 +126,30 @@ var Map = (function(Map, $, undefined){
         url: url,
         dataType: 'html'
       }).done(function(data) {
-        $("#side-widget-content").html(data);
+        $("#groups-widget-content").html(data);
       })
     }
     
     GroupsWidget.expand = function() {
-      if(parseInt($("#side-widget").css("right"),10)!=0)
+      if(parseInt($("#groups-widget").css("right"),10)!=0)
         GroupsWidget.toggle();
     }
 
     GroupsWidget.collapse = function() {
-      if(parseInt($("#side-widget").css("right"),10)==0)
+      if(parseInt($("#groups-widget").css("right"),10)==0)
         GroupsWidget.toggle();
     }
     
     GroupsWidget.toggle = function(event) {
-      if(parseInt($("#side-widget").css("right"),10)!=0) {
-          $("#side-widget-button").animate({left: parseInt($("#side-widget-button").css('left'),10) == -1 ? -$("#side-widget-button").outerWidth()-1 : -1});
+      if(parseInt($("#groups-widget").css("right"),10)!=0) {
+          $("#groups-widget-button").animate({left: parseInt($("#groups-widget-button").css('left'),10) == -1 ? -$("#groups-widget-button").outerWidth()-1 : -1});
         }
-        $("#side-widget").animate({right: parseInt($("#side-widget").css('right'),10) == 0 ? -$("#side-widget").outerWidth() : 0},  function() {
-          if(parseInt($("#side-widget").css("right"),10)==0) {
-            $("#side-widget-button").html("&raquo;");
+        $("#groups-widget").animate({right: parseInt($("#groups-widget").css('right'),10) == 0 ? -$("#groups-widget").outerWidth() : 0},  function() {
+          if(parseInt($("#groups-widget").css("right"),10)==0) {
+            $("#groups-widget-button").html("&raquo;");
           } else {
-            $("#side-widget-button").animate({left: parseInt($("#side-widget-button").css('left'),10) == -1 ? -$("#side-widget-button").outerWidth()-1 : -1});
-            $("#side-widget-button").html("&laquo;");
+            $("#groups-widget-button").animate({left: parseInt($("#groups-widget-button").css('left'),10) == -1 ? -$("#groups-widget-button").outerWidth()-1 : -1});
+            $("#groups-widget-button").html("&laquo;");
           }
       });
     }
