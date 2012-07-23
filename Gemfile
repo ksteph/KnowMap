@@ -34,6 +34,7 @@ end
 
 gem 'jquery-rails'
 gem "bcrypt-ruby", :require => "bcrypt"
+gem "rufus-scheduler", "~> 2.0.17"
 
 # Authorization
 gem 'cancan'
