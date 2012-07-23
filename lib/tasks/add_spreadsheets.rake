@@ -182,11 +182,13 @@ namespace :csv do
       end
     }
     
-    # create cs161 group
+    # create cs161 group if it doesnt exists
     subgraphs = Graph.all
-    Graph.create(:name => "CS161")
-    Graph.last.nodes << Node.all
-    Graph.last.subgraphs << subgraphs
+    unless Graph.find_by_name "CS161"
+      Graph.create(:name => "CS161")
+      Graph.last.nodes << Node.all
+      Graph.last.subgraphs << subgraphs
+    end
   end
 end
 
