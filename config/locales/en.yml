@@ -8,7 +8,7 @@ en:
     new: "New"
     edit: "Edit"
     remove: "Remove"
-    destroy: "Destroy"
+    destroy: "Delete"
     show: "Show"
     back: "Back"
   graphs:

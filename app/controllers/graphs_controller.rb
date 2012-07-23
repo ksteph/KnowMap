@@ -103,7 +103,7 @@ class GraphsController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
-      format.html { redirect_to graphs_url }
+      format.html { redirect_to :root, notice: 'Graph was successfully deleted.' }
       format.json { head :no_content }
     end
   end

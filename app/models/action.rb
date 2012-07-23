@@ -16,7 +16,11 @@ class Action < ActiveRecord::Base
   end
   
   def target
-    controller.constantize.find(target_id) if target_id
+    if target_id and controller.constantize.find_by_id(target_id) then
+      controller.constantize.find_by_id(target_id)
+    else
+      "a " + controller.downcase.singularize
+    end
   end
   
   def to_s

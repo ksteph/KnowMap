@@ -35,7 +35,7 @@ class Ability
     can [:show, :edit, :update, :profile], User, :id => user.id
     
     def student
-      can [:new, :create, :edit, :update], [Graph, Node]
+      can [:new, :create, :edit, :update, :destroy], [Graph, Node]
     end
     def instructor
       student

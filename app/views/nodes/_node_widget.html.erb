@@ -39,5 +39,10 @@
 </table>
 
 <%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
-<%= link_to t('actions.edit'), edit_node_path(@node), :remote => remote?, "data-type" => "html" %> |
+<% if can?(:edit, Node) %>
+  <%= link_to t('actions.edit'), edit_node_path(@node), :remote => remote?, "data-type" => "html" %> |
+<% end %>
+<% if can?(:destroy, Node) %>
+  <%= link_to t('actions.destroy'), @node, confirm: 'Are you sure?', method: :delete %> |
+<% end %>
 <%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>

@@ -12,36 +12,27 @@
        else
          a.name <=> b.name
        end
-     }.each do |graph| %><li><%= link_to graph.name, graph, :remote => remote?, "data-type" => "html" %></li><% end %>
+     }.each do |graph| %>
+         <li>
+           <% if can?(:edit, Graph) %>
+            <%= link_to t('actions.edit'), edit_graph_path(graph) %> -
+           <% end %>
+            
+           <% if can?(:destroy, Graph) %>
+            <%= link_to t('actions.destroy'), graph, confirm: 'Are you sure?', method: :delete %> -
+           <% end %>
+           
+           <%= link_to graph.name, graph, :remote => remote?, "data-type" => "html" %>
+         </li>
+  <% end %>
 </ul>
-<!--
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Content</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @graphs.each do |graph| %>
-  <tr>
-    <td><%= graph.name %></td>
-    <td><%= graph.content %></td>
-    <td><%= link_to 'Show', graph %></td>
-    <td><%= link_to 'Edit', edit_graph_path(graph) %></td>
-    <td><%= link_to 'Destroy', graph, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
-<% end %>
-</table>
--->
 
 <br />
 
-<% if can?(:create, Graph)  %>
+<% if can?(:create, Graph) %>
   <%= link_to t('graphs.new'), new_graph_path, :remote => remote?, "data-type" => "html" %>
 <% end %>
 <% if can?(:create, Graph) and can?(:create, Graph) %> - <% end %>
-<% if can?(:create, Graph)  %>
+<% if can?(:create, Graph) %>
   <%= link_to t('nodes.new'), new_node_path, :remote => remote?, "data-type" => "html" %>
 <% end %>
