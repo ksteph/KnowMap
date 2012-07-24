@@ -230,10 +230,12 @@ function doMapStuff() {
   }
 
   function svgMouseDown(event) {
-    bMouseDown = true;
-    dragOldPos = winPos;
-    $("#chart svg").css("cursor", "move");
-    event.preventDefault();
+    if(event.which==1) {  // event.which is 1 -> left btn, 2 -> right btn
+      bMouseDown = true;
+      dragOldPos = winPos;
+      $("#chart svg").css("cursor", "move");
+      event.preventDefault();
+    }
   }
 
   function winMouseUp(event) {
