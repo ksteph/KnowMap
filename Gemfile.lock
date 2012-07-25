@@ -120,6 +120,8 @@ GEM
       railties (>= 3.0)
       rspec (~> 2.10.0)
     rubyzip (0.9.8)
+    rufus-scheduler (2.0.17)
+      tzinfo (>= 0.3.23)
     selenium-webdriver (2.22.0)
       childprocess (>= 0.2.5)
       ffi (~> 1.0)
@@ -159,6 +161,7 @@ DEPENDENCIES
   pg
   rails (= 3.2.3)
   rspec-rails (~> 2.0)
+  rufus-scheduler (~> 2.0.17)
   sqlite3 (= 1.3.5)
   therubyracer
   uglifier (>= 1.0.3)

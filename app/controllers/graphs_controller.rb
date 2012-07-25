@@ -25,7 +25,7 @@ class GraphsController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
-      format.html { render :layout => 'map' } # show.html.erb
+      format.html { render :layout => !request.xhr? } # show.html.erb
       format.json { render :partial => 'graph', :locals => {:graph => @graph} }
     end
   end
@@ -103,8 +103,16 @@ class GraphsController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
-      format.html { redirect_to graphs_url }
+      format.html { redirect_to :root, notice: 'Graph was successfully deleted.' }
       format.json { head :no_content }
     end
+  end
+  
+  def groups_widget
+    @graph = Graph.find(params[:graph_id])
+    
+    #Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
+
+    render :partial => "groups_widget", :layout => false#, :layout => !request.xhr?
   end
 end

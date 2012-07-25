@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   #around_filter :record_user_action
   
   def partial
-    render :partial => "layouts/#{params[:partial]}"
+    render :partial => "#{params[:partial]}"
   end
   
   def data

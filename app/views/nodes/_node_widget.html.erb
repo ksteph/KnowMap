@@ -1,0 +1,48 @@
+<p>
+  <b>Title:</b>
+  <%= @node.title %>
+</p>
+
+<p style="min-height:300px;">
+  <b>Content:</b>
+  <%= @node.content %>
+</p>
+
+<p>
+  <b>Position:</b>
+  ( <%= @node.pos_x %> , <%= @node.pos_y %> )
+</p>
+
+<table class="nodesTable">
+  <tr>
+    <td><h3><%= t 'nodes.related' %></h3></td>
+    <td><h3><%= t 'nodes.previous' %></h3></td>
+    <td><h3><%= t 'nodes.next' %></h3></td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <% @node.related_nodes.each do |node| %><li><%= link_to node.title, node, :remote => remote?, "data-type" => "html" %></li><% end %><% if @node.related_nodes.empty? then %><i>None.</i><% end %>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <% @node.previous_nodes.each do |node| %><li><%= link_to node.title, node, :remote => remote?, "data-type" => "html" %></li><% end %><% if @node.previous_nodes.empty? then %><i>None.</i><% end %>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <% @node.next_nodes.each do |node| %><li><%= link_to node.title, node, :remote => remote?, "data-type" => "html" %></li><% end %><% if @node.next_nodes.empty? then %><i>None.</i><% end %>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
+<% if can?(:edit, Node) %>
+  <%= link_to t('actions.edit'), edit_node_path(@node), :remote => remote?, "data-type" => "html" %> |
+<% end %>
+<% if can?(:destroy, Node) %>
+  <%= link_to t('actions.destroy'), @node, confirm: 'Are you sure?', method: :delete %> |
+<% end %>
+<%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>

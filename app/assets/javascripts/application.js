@@ -35,9 +35,8 @@ function updateView(url, div) {
       $(div).html(data);
     else {
       $('div#content').html(data);
-      setupMap();
     }
-    updateGraph();
+    Map.update();
     ajax();
   });
 }
@@ -50,8 +49,7 @@ jQuery(function($) {
         $("div.search input[type=text]").attr('value', history.state.search);
     });
     history.replaceState({search: search_term()}, document.title, document.location.href);
-    updateGraph();
-    setupMap();
+    Map.setup();
     ajax();
 
     if ( ! $.cookie("remote") ) {
@@ -65,8 +63,8 @@ jQuery(function($) {
       ajax();
     }
   }
-  if($("#node").css('display')!='none')
-    showTopWidget();
+  if($("#node-widget").css('display')!='none')
+    Map.LearningPathWidget.expand();
 });
 
 function ajax() {
@@ -78,12 +76,13 @@ function ajax() {
     // update DOM with ajax response
     $('div#content').html(data);
     
-    // updateGraph
-    updateGraph();
-    setupMap();
+    // update Map
+    Map.update();
     
     // attach ajax:success event
     ajax();
+    
+    event.stopImmediatePropagation();
   });
   
   
@@ -102,11 +101,12 @@ function ajax() {
     // update DOM with ajax response
     $('div#content').html(data);
     
-    // updateGraph
-    updateGraph();
-    setupMap();
+    // update Map
+    Map.update();
     
     // attach ajax:success event
     ajax();
+    
+    event.stopImmediatePropagation();
   }); 
 }

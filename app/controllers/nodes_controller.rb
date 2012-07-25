@@ -26,7 +26,7 @@ class NodesController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
-      format.html { render :layout => 'map' } # show.html.erb
+      format.html { render :layout => !request.xhr? } # show.html.erb
       format.json { render :partial => 'node', :locals => {:node => @node} }
     end
   end
@@ -111,7 +111,7 @@ class NodesController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
-      format.html { redirect_to nodes_url }
+      format.html { redirect_to :root, notice: 'Node was successfully deleted.' }
       format.json { head :no_content }
     end
   end
@@ -121,5 +121,13 @@ class NodesController < ApplicationController
     @nodes = Node.find_all_by_id l
     @edges = Edge.where "\"node_id_A\" IN (?) AND \"node_id_B\" IN (?)", l, l
     render 'data'
+  end
+  
+  def node_widget
+    @node = Node.find(params[:node_id])
+    
+    #Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
+
+    render :partial => 'node_widget'
   end
 end
