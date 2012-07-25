@@ -3,8 +3,6 @@
     <svg class="group-button" id="<%=g.id%>" data-nodes="<%= g.all_nodes.map { |n| n.id } %>"><rect height=10 width=10 style="fill:#fff"></rect></svg> <%= g.name %>
   </p>
 <% } %>
-
-<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 <script>
   var btnDefaultColor = d3.select(".group-button").select("rect").style("fill");
   var usedColor = [];
