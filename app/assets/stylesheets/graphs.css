@@ -65,3 +65,8 @@
   border: 1px solid black;
   padding:20px;
 }
+
+.lp-node-text {
+  font-size : 8pt;
+  text-anchor : middle;
+}

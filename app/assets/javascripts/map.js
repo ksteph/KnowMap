@@ -14,6 +14,8 @@ var MAP_CONSTANTS = {
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
     highlight_opacity : 0.5,
+
+    lp_node_radius : 40,
 };
 
 /*

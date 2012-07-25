@@ -4,8 +4,6 @@
 </div>
 
 <script type="text/javascript">
-
-
   var transMatrix = [1,0,0,1,0,0];
 
   window.addEventListener('keydown', keyDown, false);
@@ -19,6 +17,9 @@
   
   var svg;
   var svgChartGroup;
+  var nodes;
+  var links;
+  var nodeMap = {}
 
 function doMapStuff() {
   if(svg)
@@ -106,10 +107,9 @@ function doMapStuff() {
       "DependentEdge":MAP_CONSTANTS.edge_style_dependent,
     };
     var edgeMarkerEnd = {"RelatedEdge":"none", "DependentEdge":"url(#arrowhead)"};
-    var nodes = json.nodes;
-    var links = json.lines;
+    nodes = json.nodes;
+    links = json.lines;
 
-    var nodeMap = {}
     for (n in nodes)
     {
       /*
@@ -179,7 +179,8 @@ function doMapStuff() {
         .attr("id", function(d){return d.id;})
         .attr("transform",function(d){return "translate("+d.x+","+d.y+")";});
 
-    node.on("dblclick", onDblClick);
+    node.on("dblclick", onDblClick)
+      .on("click", showLearningPath);
 
     node.append("g")
       .attr("id","g-group");
@@ -307,5 +308,125 @@ function doMapStuff() {
 
     var matrix = "matrix("+transMatrix.join(' ')+")";
     svgChartGroup.attr("transform", matrix);
+  }
+
+  // Called when a node is clicked on.
+  // Currently written like it is a d3 event function.
+  function showLearningPath() {
+    var lpHeight = parseInt(d3.select("#learning-path-widget-content")
+                   .style("height"));
+    console.log(d3.select("#learning-path-widget-content")
+                   .style("height"));
+    console.log(lpHeight);
+    var distSpace = MAP_CONSTANTS.lp_node_radius*2;
+
+    var svg = d3.select("#learning-path-svg");
+    svg.selectAll("g").remove();
+
+    var id = d3.select(this).attr("id");
+
+    var urlJson = "../nodes/"+id+"/learning_path.json";
+    console.log("showLearningPath: "+urlJson);
+
+    d3.json(urlJson, function(json) {
+      if (json == null)
+        return;
+
+      var edgeStyles = { // TODO: Used also in _graph_window - consolidate
+        "RelatedEdge":MAP_CONSTANTS.edge_style_related,
+        "DependentEdge":MAP_CONSTANTS.edge_style_dependent,
+      };
+
+      var lpNodes = json.nodes;
+      var lpLinks = json.lines;
+      var lpNodesMap = {};
+
+      //Get aryLabel for the lpNodes from nodes.
+      for (n in lpNodes) {
+        lpNodes[n].aryLabel = nodeMap[lpNodes[n].id].aryLabel;
+        lpNodes[n].pos = n;
+
+        lpNodesMap[lpNodes[n].id] = lpNodes[n];
+      }
+
+      var svgNodeGroup = svg.append("g");
+      var svgLinkGroup = svg.append("g");
+
+      //Add nodes
+      var nodeGNode = svgNodeGroup.selectAll("g.node")
+          .data(lpNodes)
+        .enter().append("g")
+          .attr("class","node")
+          .attr("id",function(d){return d.id;})
+          .attr("transform",function(d){
+             var x = distSpace + MAP_CONSTANTS.lp_node_radius
+                       + d.pos*(MAP_CONSTANTS.lp_node_radius*2+distSpace);
+             var y = lpHeight/2;
+             return "translate("+x+","+y+")";
+          });
+
+      nodeGNode.append("circle")
+       .attr("class", "map-node")
+       .attr("r", MAP_CONSTANTS.lp_node_radius);
+
+      nodeGNode.append("g")
+        .attr("id","g-node-label")
+        .each(function(d) {
+          var g = d3.select(this);
+          var startDY = 0.5 - (d.aryLabel.length/2.0);
+          startDY += MAP_CONSTANTS.node_text_dy;
+          for(i in d.aryLabel) {
+            g.append("text").text(d.aryLabel[i])
+              .attr("class","lp-node-text")
+              .attr("dy",(startDY+parseInt(i))+"em");
+          }
+        });
+      nodeGNode.append("title")
+        .attr("data-id", function(d){return d.id;})
+          .text(function(d){return d.title;});
+
+    //Add Edges
+      var link = svgLinkGroup.selectAll("line.link")
+          .data(lpLinks)
+        .enter().append("path")
+          .attr("class","link")
+          .attr("d",function(d){
+            var rCircle = MAP_CONSTANTS.lp_node_radius;
+            var x1 = distSpace + MAP_CONSTANTS.lp_node_radius
+                       +lpNodesMap[d.source].pos*rCircle*4;
+            var y1 = lpHeight/2-rCircle;
+            var x2 = distSpace + MAP_CONSTANTS.lp_node_radius
+                       +lpNodesMap[d.target].pos*rCircle*4;
+            var y2 = lpHeight/2-rCircle;
+
+            var rX = (x2-x1)/2.0;
+            var rY = (d.target-d.source)*rCircle/2;
+
+            if (d.target < d.source) {
+              rX *= -1;
+              rY *= -1;
+              y1 += rCircle*2;
+              y2 += rCircle*2;
+            }
+
+            var pathStr = "M"+x1+","+y1+" ";
+            pathStr += "A"+rX+","+rY+" 0 0,1 "+x2+","+y2;
+
+            return pathStr;
+          })
+          .style("fill","none")
+          .style("stroke","black")
+          .style("stroke-width","2")
+          .style("stroke-dasharray", function(d){return d.stroke_style;});
+          <!-- .style("marker-end", function(d){ -->
+          <!--   var diff = d.target-d.source; -->
+          <!--   var str = "T"; -->
+          <!--   if (d.target < d.source) { -->
+          <!--     diff *= -1; -->
+          <!--     str = "B"; -->
+          <!--   } -->
+          <!--   return "url(#arrowhead-"+diff+"-"+str+")"; -->
+          <!-- }); -->
+    });
   }
 </script>
