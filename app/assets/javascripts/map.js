@@ -15,7 +15,7 @@ var MAP_CONSTANTS = {
     highlight_radius : 11,
     highlight_opacity : 0.5,
 
-    lp_node_radius : 40,
+    lp_node_radius : 30,
 };
 
 /*

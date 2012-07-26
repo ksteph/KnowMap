@@ -75,13 +75,13 @@ function doMapStuff() {
     .attr("cx",50)
     .attr("cy",41)
     .attr("r",8)
-    .on("click",zoomOut);
+    .on("click",zoomIn);
   svgZoomPan.append("circle")
     .attr("class", "zoom-pan-button")
     .attr("cx",50)
     .attr("cy",59)
     .attr("r",8)
-    .on("click",zoomIn);
+    .on("click",zoomOut);
   svgZoomPan.append("rect")
     .attr("class", "zoom-pan-plus-minus")
     .attr("x",46)
@@ -90,16 +90,16 @@ function doMapStuff() {
     .attr("height",3);
   svgZoomPan.append("rect")
     .attr("class", "zoom-pan-plus-minus")
+    .attr("x",48.5)
+    .attr("y",37)
+    .attr("width",3)
+    .attr("height",8);
+  svgZoomPan.append("rect")
+    .attr("class", "zoom-pan-plus-minus")
     .attr("x",46)
     .attr("y",57.5)
     .attr("width",8)
     .attr("height",3);
-  svgZoomPan.append("rect")
-    .attr("class", "zoom-pan-plus-minus")
-    .attr("x",48.5)
-    .attr("y",55)
-    .attr("width",3)
-    .attr("height",8);
 
   d3.json(url, function(json) {
     var edgeStyles = {
@@ -310,15 +310,19 @@ function doMapStuff() {
     svgChartGroup.attr("transform", matrix);
   }
 
+  function learningPathNodeX(pos) {
+    var spacer = MAP_CONSTANTS.lp_node_radius*1.5;
+
+    return x = spacer + MAP_CONSTANTS.lp_node_radius
+                 + pos*(MAP_CONSTANTS.lp_node_radius*2+spacer);
+  }
+
   // Called when a node is clicked on.
   // Currently written like it is a d3 event function.
   function showLearningPath() {
     var lpHeight = parseInt(d3.select("#learning-path-widget-content")
                    .style("height"));
-    console.log(d3.select("#learning-path-widget-content")
-                   .style("height"));
-    console.log(lpHeight);
-    var distSpace = MAP_CONSTANTS.lp_node_radius*2;
+    var nodeY = lpHeight/2;
 
     var svg = d3.select("#learning-path-svg");
     svg.selectAll("g").remove();
@@ -332,13 +336,8 @@ function doMapStuff() {
       if (json == null)
         return;
 
-      var edgeStyles = { // TODO: Used also in _graph_window - consolidate
-        "RelatedEdge":MAP_CONSTANTS.edge_style_related,
-        "DependentEdge":MAP_CONSTANTS.edge_style_dependent,
-      };
-
       var lpNodes = json.nodes;
-      var lpLinks = json.lines;
+      var lpLinks = [];
       var lpNodesMap = {};
 
       //Get aryLabel for the lpNodes from nodes.
@@ -349,8 +348,91 @@ function doMapStuff() {
         lpNodesMap[lpNodes[n].id] = lpNodes[n];
       }
 
-      var svgNodeGroup = svg.append("g");
+      //Filter to only edges that are dependent edges.
+      var maxPosDiff = 0;
+      var minPosDiff = 0;
+      for (l in json.lines) {
+        if (json.lines[l].type == "DependentEdge")
+          lpLinks.push(json.lines[l]);
+
+
+        var nodeS = lpNodesMap[json.lines[l].source]
+        var nodeT = lpNodesMap[json.lines[l].target]
+
+        var diff = nodeT.pos - nodeS.pos;
+        if (diff > maxPosDiff)
+          maxPosDiff = diff;
+        if (diff < minPosDiff)
+          minPosDiff = diff;
+      }
+
       var svgLinkGroup = svg.append("g");
+      var svgMarkerDef = svgLinkGroup.append("defs");
+      var svgNodeGroup = svg.append("g");
+
+      //Add arrowhead markers
+      for (i=0; i<(maxPosDiff-minPosDiff+1); i++) {
+        if (i == 0)
+          continue;
+        var angle = 15;
+        var mult = minPosDiff + i;
+        if (mult < 0) {
+          angle = 180;
+          mult *= -1;
+        }
+        svgMarkerDef.append("marker")
+          .attr("class", "lp-arrowhead")
+          .attr("id", "arrowhead-"+(minPosDiff+i))
+          .attr("viewBox", "0 0 10 10")
+          .attr("refX", 10)
+          .attr("refY", 5)
+          .attr("markerUnits", "strokeWidth")
+          .attr("markerWidth", 5)
+          .attr("markerHeight", 5)
+          .style("hover:fill","red")
+          .attr("orient", angle+45*(mult/4.5))
+          .append("path")
+            .attr("d", "M 0 0 L 10 5 L 0 10 Z");
+      }
+
+      //Add Edges
+      var link = svgLinkGroup.selectAll("line.link")
+          .data(lpLinks)
+        .enter().append("path")
+          .attr("class","lp-link")
+          .attr("d",function(d){
+            var nodeSource = lpNodesMap[d.source];
+            var nodeTarget = lpNodesMap[d.target];
+
+            var rCircle = MAP_CONSTANTS.lp_node_radius;
+
+            var x1 = learningPathNodeX(nodeSource.pos);
+            var x2 = learningPathNodeX(nodeTarget.pos);
+
+            var y1 = y2 = nodeY - MAP_CONSTANTS.lp_node_radius;
+
+            var rX = (x2-x1)/2.0;
+            var rY = (nodeTarget.pos-nodeSource.pos)*rCircle/4.0;
+
+            if (d.target < d.source) {
+              rX *= -1;
+              rY *= -1;
+              y1 += rCircle*2;
+              y2 += rCircle*2;
+            }
+
+            var pathStr = "M"+x1+","+y1+" ";
+            pathStr += "A"+rX+","+rY+" 0 0,1 "+x2+","+y2;
+
+            return pathStr;
+          })
+          .style("fill","none")
+          .style("marker-end", function(d){
+            var nodeSource = lpNodesMap[d.source];
+            var nodeTarget = lpNodesMap[d.target];
+            var diff = nodeTarget.pos - nodeSource.pos;
+            return "url(#arrowhead-"+diff+")";
+          });
 
       //Add nodes
       var nodeGNode = svgNodeGroup.selectAll("g.node")
@@ -359,10 +441,7 @@ function doMapStuff() {
           .attr("class","node")
           .attr("id",function(d){return d.id;})
           .attr("transform",function(d){
-             var x = distSpace + MAP_CONSTANTS.lp_node_radius
-                       + d.pos*(MAP_CONSTANTS.lp_node_radius*2+distSpace);
-             var y = lpHeight/2;
-             return "translate("+x+","+y+")";
+             return "translate("+learningPathNodeX(d.pos)+","+nodeY+")";
           });
 
       nodeGNode.append("circle")
@@ -385,48 +464,6 @@ function doMapStuff() {
         .attr("data-id", function(d){return d.id;})
           .text(function(d){return d.title;});
 
-    //Add Edges
-      var link = svgLinkGroup.selectAll("line.link")
-          .data(lpLinks)
-        .enter().append("path")
-          .attr("class","link")
-          .attr("d",function(d){
-            var rCircle = MAP_CONSTANTS.lp_node_radius;
-            var x1 = distSpace + MAP_CONSTANTS.lp_node_radius
-                       +lpNodesMap[d.source].pos*rCircle*4;
-            var y1 = lpHeight/2-rCircle;
-            var x2 = distSpace + MAP_CONSTANTS.lp_node_radius
-                       +lpNodesMap[d.target].pos*rCircle*4;
-            var y2 = lpHeight/2-rCircle;
-
-            var rX = (x2-x1)/2.0;
-            var rY = (d.target-d.source)*rCircle/2;
-
-            if (d.target < d.source) {
-              rX *= -1;
-              rY *= -1;
-              y1 += rCircle*2;
-              y2 += rCircle*2;
-            }
-
-            var pathStr = "M"+x1+","+y1+" ";
-            pathStr += "A"+rX+","+rY+" 0 0,1 "+x2+","+y2;
-
-            return pathStr;
-          })
-          .style("fill","none")
-          .style("stroke","black")
-          .style("stroke-width","2")
-          .style("stroke-dasharray", function(d){return d.stroke_style;});
-          <!-- .style("marker-end", function(d){ -->
-          <!--   var diff = d.target-d.source; -->
-          <!--   var str = "T"; -->
-          <!--   if (d.target < d.source) { -->
-          <!--     diff *= -1; -->
-          <!--     str = "B"; -->
-          <!--   } -->
-          <!--   return "url(#arrowhead-"+diff+"-"+str+")"; -->
-          <!-- }); -->
     });
   }
 </script>

@@ -23,6 +23,31 @@
   stroke-width: 0.75;
 }
 
+.lp-node-text {
+  font-size : 8pt;
+  text-anchor : middle;
+}
+
+.lp-link {
+  stroke: black;
+  stroke-width: 2;
+}
+
+.lp-link:hover {
+  stroke : deepskyblue;
+  stroke-width: 3;
+}
+
+.lp-arrowhead {
+  stroke : black;
+  fill : black;
+}
+
+.lp-arrowhead:hover {
+  stroke : deepskyblue;
+  fill : deepskyblue;
+}
+
 .group-button {
   width: 10px;
   height: 10px;
@@ -64,9 +89,4 @@
 #node-widget {
   border: 1px solid black;
   padding:20px;
-}
-
-.lp-node-text {
-  font-size : 8pt;
-  text-anchor : middle;
 }
