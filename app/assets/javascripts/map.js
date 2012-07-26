@@ -193,8 +193,8 @@ var Map = (function(Map, $, undefined){
         url: '/nodes/'+node_id+'/learning_path',
         success: function(data) {
           node_ids = data.nodes.map(function(node) { return node.id });
-          d3.selectAll("g[class=node]").selectAll("circle[class=map-node-highlighted]").filter(function(d) { return node_ids.indexOf(d.id) === -1 }).attr("class", "map-node"); // unhighlight old nodes
-          d3.selectAll("g[class=node]").filter(function(d) { return node_ids.indexOf(d.id) > -1}).select("circle").attr("class", "map-node-highlighted"); // highlight new nodes 
+          d3.selectAll("g[class=node]").selectAll("g[id=g-node]").selectAll("circle[class=map-node-highlighted]").filter(function(d) { return node_ids.indexOf(d.id) === -1 }).attr("class", "map-node"); // unhighlight old nodes
+          d3.selectAll("g[class=node]").selectAll("g[id=g-node]").filter(function(d) { return node_ids.indexOf(d.id) > -1}).select("circle").attr("class", "map-node-highlighted"); // highlight new nodes 
         }
       });
     }
