@@ -13,6 +13,9 @@
 .map-node {
   fill : silver;
 }
+.map-node-highlighted {
+  fill : green;
+}
 .map-node-text {
   font-size : 1.3pt;
   text-anchor : middle;
