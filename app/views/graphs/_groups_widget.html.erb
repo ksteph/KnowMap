@@ -1,8 +1,4 @@
-<% if @graph then ([@graph]+@graph.all_subgraphs).each { |g| %>
-  <p>
-    <svg class="group-button" id="<%=g.id%>" data-nodes="<%= g.all_nodes.map { |n| n.id } %>"><rect height=10 width=10 style="fill:#fff"></rect></svg> <%= g.name %>
-  </p>
-<% } end %>
+<% if @graph %><%= render :partial => 'groups_widget_button', :locals => { :g => @graph } %><% end %>
 <script>
   var btnDefaultColor = d3.select(".group-button").select("rect").style("fill");
   var usedColor = [];

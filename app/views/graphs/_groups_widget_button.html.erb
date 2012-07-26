@@ -1,0 +1,6 @@
+<div style="padding:3px 0;">
+  <svg class="group-button" id="<%=g.id%>" data-nodes="<%= g.all_nodes.map { |n| n.id } %>"><rect height=10 width=10 style="fill:#fff"></rect></svg> <%= g.name %>
+</div>
+<div style="padding-left:15px;">
+  <%= render :partial => "groups_widget_button", :collection => g.subgraphs, :as => :g %>
+</div>
