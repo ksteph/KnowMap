@@ -89,8 +89,9 @@ var Map = (function(Map, $, undefined){
   })({});
   
   Map.LearningPathWidget = (function(LearningPathWidget) {
-    LearningPathWidget.update = function() {
-      node_id = $("#graphData").attr("data-node_id");
+    LearningPathWidget.update = function(node_id) {
+      if(!node_id)
+        node_id = $("#graphData").attr("data-node_id");
       $("#learning-path-widget-content").html( "<img src='/assets/path.png'/ > Node id: " + node_id);
     }
     
@@ -178,6 +179,25 @@ var Map = (function(Map, $, undefined){
     }
     
     return NodeWidget;
+  })({});
+  
+  Map.Node = (function(Node) {
+    Node.click = function() {
+      node_id = this.__data__.id;
+      Map.LearningPathWidget.update(node_id); // update LearningPath Widget
+      Map.LearningPathWidget.expand(); // expand LearningPath Widget
+      // TODO: implement highlighting path on map
+      $.ajax({
+        url: '/nodes/'+node_id+'/learning_path',
+        success: function(data) {
+          console.log(data.nodes)
+          console.log(data.edges)
+        }
+      });
+      console.log("node " + node_id + " was clicked");
+    }
+    
+    return Node;
   })({});
   
   return Map;

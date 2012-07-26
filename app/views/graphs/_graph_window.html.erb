@@ -33,9 +33,10 @@ function doMapStuff() {
   svg = d3.select("#chart").append("svg")
       .attr("width", "100%")
       .attr("height", "100%")
-      .on("mousewheel", svgMouseWheel)
-      .on("mousedown", svgMouseDown)
       .on("mousemove", svgMouseMove);
+
+  $("#chart").on("mousewheel", svgMouseWheel);
+  $("#chart").on("mousedown", svgMouseDown);
 
   svgChartGroup = svg.append("g")
       .attr("id", "chart-group")
@@ -179,8 +180,10 @@ function doMapStuff() {
         .attr("id", function(d){return d.id;})
         .attr("transform",function(d){return "translate("+d.x+","+d.y+")";});
 
-    node.on("dblclick", onDblClick)
-      .on("click", showLearningPath);
+    <!-- node.on("dblclick", onDblClick) -->
+    <!--   .on("click", showLearningPath); -->
+    node.on("dblclick", onDblClick);
+    node.on("click", Map.Node.click);
 
     node.append("g")
       .attr("id","g-group");
@@ -224,20 +227,22 @@ function doMapStuff() {
     history.pushState({'node_id': id, search:search_term()}, document.title, url); // save history
   }
 
-  function svgMouseMove() {
+  function svgMouseMove(event) {
     svgPos = d3.mouse(this);
   }
 
-  function svgMouseDown() {
-    bMouseDown = true;
-    dragOldPos = winPos;
-    svg.style("cursor", "move");
-    d3.event.preventDefault();
+  function svgMouseDown(event) {
+    if(event.which==1) {  // event.which is 1 -> left btn, 2 -> right btn
+      bMouseDown = true;
+      dragOldPos = winPos;
+      $("#chart svg").css("cursor", "move");
+      event.preventDefault();
+    }
   }
 
-  function winMouseUp(e) {
+  function winMouseUp(event) {
     bMouseDown = false;
-    svg.style("cursor", "auto");
+    $("#chart svg").css("cursor", "default");
   }
 
   function winMouseMove(e) {
@@ -250,13 +255,14 @@ function doMapStuff() {
     }
   }
 
-  function svgMouseWheel() {
-    if (d3.event.wheelDelta > 0)
+  function svgMouseWheel(event, delta, deltaX, deltaY) {
+    if (delta > 0)
       zoomIn();
     else
       zoomOut();
-    d3.event.preventDefault();
+    event.preventDefault();
   }
+  
   function zoomIn() { zoom(MAP_CONSTANTS.zoom_scale); }
   function zoomOut() { zoom(1.0/MAP_CONSTANTS.zoom_scale); }
 
@@ -276,6 +282,7 @@ function doMapStuff() {
   }
 
   function keyDown(event) {
+    //console.log("Key pressed: " + event.keyCode);
     switch(event.keyCode) {
       case 37: // left arrow
         panRight();
@@ -288,6 +295,12 @@ function doMapStuff() {
         break;
       case 40: // down arrow
         panDown();
+        break;
+      case 61: // + key
+        zoomIn();
+        break;
+      case 109: // - key
+        zoomOut();
         break;
       default:
         break; // Do nothing
