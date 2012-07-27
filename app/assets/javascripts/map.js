@@ -101,18 +101,14 @@ var Map = (function(Map, $, undefined){
       Map.show();
       Map.GroupsWidget.update();
 
-      // doMapStuff();
+      // Draw nodes, links, and the zoom/pan widget
       var url = "../data.json?id=";
       node_ids = $("#graphData").attr("data-all_graph_nodes");
       node_ids = node_ids.substr(1, node_ids.length-2);
       if(node_ids) { url = url + node_ids; }
-      
       d3.json(url, function(json) {
-        nodes = json.nodes;
-        links = json.lines;
-
-        Map.Node.update(nodes);
-        Map.Edge.update(links, Map.Node.MapId2Data);
+        Map.Node.update(json.nodes);
+        Map.Edge.update(json.lines, Map.Node.MapId2Data);
       });
 
       Map.Container.show();
@@ -188,15 +184,77 @@ var Map = (function(Map, $, undefined){
   })({});
   
   Map.GroupsWidget = (function(GroupsWidget) {
+    GroupsWidget.UsedColor = [];
+    GroupsWidget.UnUsedColor = MAP_CONSTANTS.highlight_colors;
+    GroupsWidget.NodeColors = {};
+    GroupsWidget.BtnDefaultColor = null;
+
     GroupsWidget.update = function() {
       var url = '/graphs/'+ $("#graphData").attr("data-graph_id") +'/groups_widget';
-      console.log(url);
       $.ajax({
         url: url,
         dataType: 'html'
       }).done(function(data) {
         $("#groups-widget-content").html(data);
+        d3.selectAll(".group-button").on("click",Map.GroupsWidget.click);
+        GroupsWidget.BtnDefaultColor = d3.select(".group-button").select("rect")
+          .style("fill");
       })
+
+      GroupsWidget.UsedColor = [];
+      GroupsWidget.UnUsedColor = [];
+      for (var i=0; i < MAP_CONSTANTS.highlight_colors.length; i++)
+        GroupsWidget.UnUsedColor.push(MAP_CONSTANTS.highlight_colors[i]);
+      GroupsWidget.NodeColors = {};
+    }
+
+    GroupsWidget.click = function() {
+      var btn = d3.select(this);
+      var btnRect = btn.select("rect");
+
+      var ids = $.parseJSON(btn.attr("data-nodes"));
+      var nodesToColor = d3.select("#node-group").selectAll(".map-node-g")
+        .filter(function(d) { return ids.indexOf(d.id) > -1 } );
+
+      if ((btnRect.style("fill") == GroupsWidget.BtnDefaultColor) &&
+          (GroupsWidget.UnUsedColor.length > 0)) {
+        $.ajax("/log/graph/"+this.id+"/highlight"); // log action
+
+        var color = GroupsWidget.UnUsedColor.shift();
+        btnRect.style("fill",color);
+        color = btnRect.style("fill"); // Get browser's color representation
+        GroupsWidget.UsedColor.push(color);
+
+        nodesToColor.each(function(d) {
+          if (GroupsWidget.NodeColors[d.id] == undefined)
+              GroupsWidget.NodeColors[d.id] = [];
+
+            GroupsWidget.NodeColors[d.id].push(color);
+
+            Map.Node.addOuterCircles(d3.select(this),
+                                     GroupsWidget.NodeColors[d.id]);
+         });
+      } else if (btnRect.style("fill") != GroupsWidget.BtnDefaultColor) {
+        $.ajax("/log/graph/"+this.id+"/unhighlight"); // log action
+
+        var color = btnRect.style("fill");
+        GroupsWidget.UnUsedColor.push(color);
+        GroupsWidget.UsedColor.splice(GroupsWidget.UsedColor.indexOf(color),1);
+
+        btnRect.style("fill",GroupsWidget.BtnDefaultColor);
+        nodesToColor.each(function(d) {
+          var aryColors = GroupsWidget.NodeColors[d.id];
+          GroupsWidget.NodeColors[d.id] = [];
+
+          for (var c = 0; c<aryColors.length; c++) {
+            if (aryColors[c] != color)
+              GroupsWidget.NodeColors[d.id].push(aryColors[c]);
+          }
+
+          Map.Node.addOuterCircles(d3.select(this),
+                                   GroupsWidget.NodeColors[d.id]);
+        });
+      }
     }
     
     GroupsWidget.expand = function() {
@@ -234,7 +292,6 @@ var Map = (function(Map, $, undefined){
     
     NodeWidget.update = function() {
       var url = '/nodes/'+ $("#graphData").attr("data-node_id") +'/node_widget';
-      console.log(url);
       $.ajax({
         url: url,
         dataType: 'html'
@@ -329,6 +386,50 @@ var Map = (function(Map, $, undefined){
         return [label];
       }
 
+    }
+
+    Node.addOuterCircles = function(svgNode,colors) {
+      var colorR = MAP_CONSTANTS.highlight_radius;
+      var rotateRadian = Math.PI/2;
+      var svgNodeOuterG = svgNode.select("#map-node-outer");
+
+      svgNodeOuterG.selectAll("circle.map-node-highlight").remove();
+      svgNodeOuterG.selectAll("path.map-node-highlight").remove();
+      
+      if (colors.length == 1) { // If one color just want a circle
+        svgNodeOuterG.selectAll("circle.map-node-highlight")
+          .data(colors).enter().append("circle")
+            .attr("class","map-node-highlight")
+            .attr("fill",function(d){return d;})
+            .style("opacity",MAP_CONSTANTS.highlight_opacity)
+            .attr("r",colorR);
+      } else {
+        svgNodeOuterG.selectAll("path.map-node-highlight")
+          .data(colors).enter().append("path")
+            .attr("class","map-node-highlight")
+            .attr("fill",function(d){return d;})
+            .style("opacity",MAP_CONSTANTS.highlight_opacity)
+            .attr("d",function(d){
+              var outStr = "M0,0 "; //Center
+
+              var i = colors.indexOf(d);
+              var len = colors.length;
+
+              // Have -0.001 so have very slight overlap of the circle parts
+              var x1 = colorR*Math.cos(Math.PI*2*((i/len)-0.001) - rotateRadian);
+              var y1 = colorR*Math.sin(Math.PI*2*((i/len)-0.001) - rotateRadian);
+  
+              outStr += "L"+x1+","+y1+" ";
+  
+              var x2 = colorR*Math.cos(Math.PI*2*((i+1)/len) - rotateRadian);
+              var y2 = colorR*Math.sin(Math.PI*2*((i+1)/len) - rotateRadian);
+  
+              outStr += "A"+colorR+","+colorR+" 0 0,1 ";
+              outStr += x2+","+y2+" Z";
+
+              return outStr;
+            });
+      }
     }
 
     Node.dblClick = function() {
