@@ -131,7 +131,7 @@ var Map = (function(Map, $, undefined){
       Map.Container.hide();
     }
   }
-  
+    
   Map.hide = function() {
     $("div#map").css("display","none");
     $("div#node-widget").css("display","block");
@@ -354,17 +354,21 @@ var Map = (function(Map, $, undefined){
       //console.log("click"); return;
 
       node_id = this.__data__.id;
+      console.log("node " + node_id + " was clicked");
       Map.LearningPathWidget.update(node_id); // update LearningPath Widget
       Map.LearningPathWidget.expand(); // expand LearningPath Widget
-      // TODO: implement highlighting path on map
+      Map.Node.highlight_path(node_id); // highlight learning path for node on map
+    }
+    
+    Node.highlight_path = function(node_id) {
       $.ajax({
         url: '/nodes/'+node_id+'/learning_path',
         success: function(data) {
-          console.log(data.nodes)
-          console.log(data.edges)
+          node_ids = data.nodes.map(function(node) { return node.id });
+          d3.selectAll("g[class=node]").selectAll("g[id=g-node]").selectAll("circle[class=map-node-highlighted]").filter(function(d) { return node_ids.indexOf(d.id) === -1 }).attr("class", "map-node"); // unhighlight old nodes
+          d3.selectAll("g[class=node]").selectAll("g[id=g-node]").filter(function(d) { return node_ids.indexOf(d.id) > -1}).select("circle").attr("class", "map-node-highlighted"); // highlight new nodes 
         }
       });
-      console.log("node " + node_id + " was clicked");
     }
     
     return Node;

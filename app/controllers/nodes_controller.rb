@@ -118,7 +118,7 @@ class NodesController < ApplicationController
   
   def learning_path
     l = Node.find(params[:node_id]).learning_path
-    @nodes = Node.find_all_by_id l
+    @nodes = Node.find_all_by_id(l).sort! {|a, b| l.index(a.id) <=> l.index(b.id)}
     @edges = Edge.where "\"node_id_A\" IN (?) AND \"node_id_B\" IN (?)", l, l
     render 'data'
   end
