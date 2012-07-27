@@ -26,17 +26,20 @@
   stroke-width: 0.75;
 }
 
+.lp-node {
+  fill : silver;
+}
 .lp-node-text {
   font-size : 8pt;
   text-anchor : middle;
 }
 
-.lp-link {
+.lp-edge {
   stroke: black;
   stroke-width: 2;
 }
 
-.lp-link:hover {
+.lp-edge:hover {
   stroke : deepskyblue;
   stroke-width: 3;
 }

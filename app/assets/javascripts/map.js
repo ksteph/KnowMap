@@ -89,6 +89,13 @@ var Map = (function(Map, $, undefined){
     .attr("id","zoom-pan-widget");
     Map.ZoomPanWidget.create(Map.SvgZoomPanG);
 
+    var learningPathSvg = d3.select("#learning-path").append("svg")
+      .attr("id", "learning-path-svg")
+      .attr("width", "100%")
+      .attr("height", "100%");
+
+    Map.LearningPathWidget.setup(learningPathSvg);
+
     Map.update();
   }
   
@@ -151,10 +158,162 @@ var Map = (function(Map, $, undefined){
   })({});
   
   Map.LearningPathWidget = (function(LearningPathWidget) {
+    LearningPathWidget.Svg = null;
+
+    LearningPathWidget.setup = function(svg) {
+      LearningPathWidget.Svg = svg;
+    }
+
     LearningPathWidget.update = function(node_id) {
       if(!node_id)
         node_id = $("#graphData").attr("data-node_id");
-      $("#learning-path-widget-content").html( "<img src='/assets/path.png'/ > Node id: " + node_id);
+
+      var lpHeight = parseInt(d3.select("#learning-path-widget-content")
+                              .style("height"));
+      var nodeY = lpHeight/2;
+
+      LearningPathWidget.Svg.selectAll("g").remove();
+
+      var urlJson = "../nodes/"+node_id+"/learning_path.json";
+      console.log("showLearningPath: " + urlJson);
+
+      d3.json(urlJson, function(json) {
+        if (json == null)
+          return;
+
+        console.log(json);
+
+        var lpNodes = json.nodes;
+        var lpLinks = [];
+        var lpNodesMap = {};
+
+        var maxPosDiff = 0;
+        var minPosDiff = 0;
+
+        for(var i=0; i < lpNodes.length; i++) {
+          lpNodes[i].aryLabel = Map.Node.getAryLabel(lpNodes[i].title);
+          lpNodes[i].pos = i;
+          lpNodesMap[lpNodes[i].id] = lpNodes[i];
+        }
+
+        for (var i=0; i<json.lines.length; i++) {
+          //Filter to only edges that are dependent edges.
+          if (json.lines[i].type == "DependentEdge")
+            lpLinks.push(json.lines[i]);
+
+          var nodeS = lpNodesMap[json.lines[i].source];
+          var nodeT = lpNodesMap[json.lines[i].target];
+
+          var diff = nodeT.pos - nodeS.pos;
+          if (diff > maxPosDiff)
+            maxPosDiff = diff;
+          if (diff < minPosDiff)
+            minPosDiff = diff;
+        }
+
+        var svgLinkGroup = LearningPathWidget.Svg.append("g");
+        var svgMarkerDef = svgLinkGroup.append("defs");
+        var svgNodeGroup = LearningPathWidget.Svg.append("g");
+
+        //Add arrowhead markers
+        for (i=0; i<(maxPosDiff-minPosDiff+1); i++) {
+          if (i == 0)
+            continue;
+          var angle = 15;
+          var mult = minPosDiff + i;
+          if (mult < 0) {
+            angle = 180;
+            mult *= -1;
+          }
+          
+          svgMarkerDef.append("marker")
+            .attr("class", "lp-arrowhead")
+            .attr("id", "arrowhead-"+(minPosDiff+i))
+            .attr("viewBox", "0 0 10 10")
+            .attr("refX", 10)
+            .attr("refY", 5)
+            .attr("markerUnits", "strokeWidth")
+            .attr("markerWidth", 5)
+            .attr("markerHeight", 5)
+              //.style("hover:fill","red")
+            .attr("orient", angle+45*(mult/4.5))
+            .append("path")
+              .attr("d", "M 0 0 L 10 5 L 0 10 Z");
+        }
+
+        //Add Edges
+        svgLinkGroup.selectAll("path.lp-edge")
+          .data(lpLinks)
+          .enter().append("path")
+            .attr("class","lp-edge")
+            .style("fill","none")
+            .style("marker-end", function(d){
+               var diff = lpNodesMap[d.target].pos - lpNodesMap[d.source].pos;
+               return "url(#arrowhead-"+diff+")";
+             })
+            .attr("d",function(d){
+               var nodeS = lpNodesMap[d.source];
+               var nodeT = lpNodesMap[d.target];
+
+               var rCircle = MAP_CONSTANTS.lp_node_radius;
+
+               var x1 = LearningPathWidget.getNodePosX(nodeS.pos);
+               var x2 = LearningPathWidget.getNodePosX(nodeT.pos);
+
+               var y1 = y2 = nodeY - MAP_CONSTANTS.lp_node_radius;
+
+               var rX = (x2-x1)/2.0;
+               var rY = (nodeT.pos-nodeS.pos)*rCircle/4.0;
+
+               if (nodeT.pos < nodeS.pos) {
+                 rX *= -1;
+                 rY *= -1;
+                 y1 += rCircle*2;
+                 y2 += rCircle*2;
+               }
+
+            var pathStr = "M"+x1+","+y1+" ";
+            pathStr += "A"+rX+","+rY+" 0 0,1 "+x2+","+y2;
+
+            return pathStr;
+            });
+
+        //Add nodes
+        var nodeGNode = svgNodeGroup.selectAll("g.lp-node-g")
+          .data(lpNodes)
+          .enter().append("g")
+            .attr("class","lp-node-g")
+            .attr("id",function(d){return "lp-node-"+d.id;})
+            .attr("node-id",function(d){return d.id;})
+            .attr("transform",function(d){
+               return "translate("+
+                 LearningPathWidget.getNodePosX(d.pos)+","+nodeY+")";
+            });
+
+        nodeGNode.append("circle")
+          .attr("class", "lp-node")
+          .attr("r", MAP_CONSTANTS.lp_node_radius);
+
+        nodeGNode.append("g")
+          .attr("id","lp-node-label")
+          .each(function(d) {
+             var g = d3.select(this);
+             var startDY = 0.5 - (d.aryLabel.length/2.0);
+             startDY += MAP_CONSTANTS.node_text_dy;
+             for(i in d.aryLabel) {
+               g.append("text").text(d.aryLabel[i])
+                 .attr("class","lp-node-text")
+                 .attr("dy",(startDY+parseInt(i))+"em");
+             }
+           });
+      });
+    }
+
+    LearningPathWidget.getNodePosX = function(pos) {
+      var spacer = MAP_CONSTANTS.lp_node_radius*1.5;
+
+      return x = spacer + MAP_CONSTANTS.lp_node_radius
+                   + pos*(MAP_CONSTANTS.lp_node_radius*2+spacer);
     }
     
     LearningPathWidget.expand = function() {
@@ -331,7 +490,8 @@ var Map = (function(Map, $, undefined){
         .data(Node.Data)
         .enter().append("g")
           .attr("class","map-node-g")
-          .attr("id", function(d){return d.id;})
+          .attr("id", function(d){return "node-"+d.id;})
+          .attr("node-id", function(d){return d.id;})
           .attr("transform", function(d){return "translate("+d.x+","+d.y+")";})
       //          .on("dblclick", onDblClick) //TODO: Move this function
           .on("dblclick", Map.Node.dblClick)
@@ -348,7 +508,7 @@ var Map = (function(Map, $, undefined){
         .attr("r", MAP_CONSTANTS.node_radius);
 
       Node.SvgNodesInner.append("g")
-        .attr("id","g-node-label")
+        .attr("id","map-node-label")
         .each(function(d) {
           var g = d3.select(this);
           var startDY = 0.5 - (d.aryLabel.length/2.0);
@@ -435,7 +595,7 @@ var Map = (function(Map, $, undefined){
     Node.dblClick = function() {
         //      console.log("dblClick"); return;
 
-      var id = parseInt(d3.select(this).attr("id"));
+      var id = parseInt(d3.select(this).attr("node-id"));
       var url = '/nodes/' + id;
 
       updateView(url);
