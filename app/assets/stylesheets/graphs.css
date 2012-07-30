@@ -14,7 +14,7 @@
   fill : silver;
 }
 .map-node-highlighted {
-  fill : green;
+  fill : greenyellow;
 }
 .map-node-text {
   font-size : 1.3pt;
@@ -24,6 +24,34 @@
 .map-edge {
   stroke: black;
   stroke-width: 0.75;
+}
+
+.lp-node {
+  fill : silver;
+}
+.lp-node-text {
+  font-size : 8pt;
+  text-anchor : middle;
+}
+
+.lp-edge {
+  stroke: black;
+  stroke-width: 2;
+}
+
+.lp-edge:hover {
+  stroke : deepskyblue;
+  stroke-width: 3;
+}
+
+.lp-arrowhead {
+  stroke : black;
+  fill : black;
+}
+
+.lp-arrowhead:hover {
+  stroke : deepskyblue;
+  fill : deepskyblue;
 }
 
 .group-button {
