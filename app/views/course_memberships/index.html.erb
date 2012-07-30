@@ -1,0 +1,27 @@
+<h1>Listing course_memberships</h1>
+
+<table>
+  <tr>
+    <th>Course</th>
+    <th>User</th>
+    <th>Role</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @course_memberships.each do |course_membership| %>
+  <tr>
+    <td><%= course_membership.course_id %></td>
+    <td><%= course_membership.user_id %></td>
+    <td><%= course_membership.role %></td>
+    <td><%= link_to 'Show', course_membership %></td>
+    <td><%= link_to 'Edit', edit_course_membership_path(course_membership) %></td>
+    <td><%= link_to 'Destroy', course_membership, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Course membership', new_course_membership_path %>

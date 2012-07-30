@@ -24,22 +24,22 @@ class Ability
     #   can :update, Article, :published => true
     #
     # See the wiki for details: https://github.com/ryanb/cancan/wiki/Defining-Abilities
-    user ||= User.new # guest user (not logged in)
+    @user = user || User.new # guest user (not logged in)
     can [:new, :create], User # sign up
-    can :read, [Graph, Node]  # view Graphs and Nodes
+    can :read, [Graph, Node, Course]  # view Graphs and Nodes
     can [:learning_path, :node_widget], Node
     can :groups_widget, Graph
     can :assign_roles, User
     
     # a user can edit their own profile
-    can [:show, :edit, :update, :profile], User, :id => user.id
+    can [:show, :edit, :update, :profile], User, :id => @user.id
     
     def student
       can [:new, :create, :edit, :update, :destroy], [Graph, Node]
     end
     def instructor
       student
-      can [:index, :new, :create, :edit, :update, :show], [Course]
+      can [:manage], [Course]
     end
     def admin
       instructor
@@ -50,16 +50,16 @@ class Ability
     end
         
     
-    if user.role? :student
+    if @user.role? :student
       student
     end
-    if user.role? :instructor
+    if @user.role? :instructor
       instructor
     end
-    if user.role? :admin
+    if @user.role? :admin
       admin
     end
-    if user.role? :super_admin
+    if @user.role? :super_admin
       super_admin
     end
   end

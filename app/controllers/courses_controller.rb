@@ -26,6 +26,9 @@ class CoursesController < ApplicationController
   # GET /courses/new.json
   def new
     @course = Course.new
+    @course.instructors << current_user
+    3.times { @course.instructor_memberships.build }
+    10.times { @course.student_memberships.build }
 
     respond_to do |format|
       format.html # new.html.erb
@@ -36,6 +39,8 @@ class CoursesController < ApplicationController
   # GET /courses/1/edit
   def edit
     @course = Course.find(params[:id])
+    @course.instructor_memberships.build
+    3.times { @course.student_memberships.build }
   end
 
   # POST /courses

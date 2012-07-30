@@ -23,6 +23,20 @@
     <%= f.label :graph_id %><br />
     <%= f.select :graph_id, Graph.all.collect { |g| [g, g.id] }.insert(0, '') %>
   </div>
+  
+  <h2>Instructors</h2>
+  <%= f.fields_for :instructor_memberships do |builder| %>
+    <%= render "instructor_membership_fields", :f => builder %>
+  <% end %>
+  <%= link_to_add_fields 'Add instructor', f, :instructor_memberships %>
+  
+  <h2>Students</h2>
+  <%= f.fields_for :student_memberships do |builder| %>
+    <%= render "student_membership_fields", :f => builder %>
+  <% end %>
+  <%= link_to_add_fields 'Add student', f, :student_memberships %>
+  
+  
   <div class="actions">
     <%= f.submit %>
   </div>

@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :first, :last, :role_ids
   has_many :actions
   has_and_belongs_to_many :roles
+  has_many :course_memberships
+  has_many :courses, :through => :course_memberships 
   
   attr_accessor :password
   before_save :encrypt_password

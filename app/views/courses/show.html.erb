@@ -15,6 +15,18 @@
   <%= link_to @course.graph, @course.graph %>
 </p>
 
+<p>
+  <b>Instructors (<%= @course.instructors.count %>):</b>
+  <ul>
+    <% @course.instructors.each do |instructor| %><li><%= instructor %></li><% end %>
+  </ul>
+</p>
+
+<p>
+  <b>Students (<%= @course.students.count %>):</b>
+  <%= @course.description %>
+</p>
+
 
 <%= link_to 'Edit', edit_course_path(@course) %> |
 <%= link_to 'Back', courses_path %>

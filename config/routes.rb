@@ -29,6 +29,7 @@ KnowledgeMap::Application.routes.draw do
   #resources :graph_membership_nodes
   #resources :edges
   #resources :edgetypes
+  #resources :course_memberships
   
   get "/log/(:log_controller)/(:target_id)/(:log_action)" => "application#log"
   

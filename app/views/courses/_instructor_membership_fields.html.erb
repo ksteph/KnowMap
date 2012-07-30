@@ -1,0 +1,7 @@
+<div class="field">
+  <%= f.label :user_id %>
+  <%= f.select :user_id, User.all.collect { |s| [s.email, s.id] }.insert(0, '') %>
+  <%= f.label :role %>
+  <%= f.select :role, [["Student", CourseMembership.studentRole], ["Instructor", CourseMembership.instructorRole]].insert(0, ''), :selected => CourseMembership.instructorRole %>
+  <%= link_to_remove_fields 'remove', f %>
+</div>
