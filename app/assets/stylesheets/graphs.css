@@ -38,7 +38,6 @@
   stroke: black;
   stroke-width: 2;
 }
-
 .lp-edge:hover {
   stroke : deepskyblue;
   stroke-width: 3;
@@ -48,10 +47,13 @@
   stroke : black;
   fill : black;
 }
-
 .lp-arrowhead:hover {
   stroke : deepskyblue;
   fill : deepskyblue;
+}
+
+#lp-scroll-rect {
+  fill : #606060;
 }
 
 .group-button {

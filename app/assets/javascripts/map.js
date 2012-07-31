@@ -16,6 +16,10 @@ var MAP_CONSTANTS = {
     highlight_opacity : 0.5,
 
     lp_node_radius : 30,
+    lp_node_spacer : 45,
+    lp_scroller_height : 10,
+    lp_scroller_min_width : 10,
+    lp_scroller_padding : 5,
 };
 
 /*
@@ -159,21 +163,38 @@ var Map = (function(Map, $, undefined){
   
   Map.LearningPathWidget = (function(LearningPathWidget) {
     LearningPathWidget.Svg = null;
+    LearningPathWidget.SvgG = null;
+    LearningPathWidget.SvgGScroller = null;
+    LearningPathWidget.TransMatrix = [1,0,0,1,0,0,];
+    LearningPathWidget.BMouseDown = false;
+    LearningPathWidget.BMouseActive = false;
+
+    LearningPathWidget.ScrollerTransMatrix = [1,0,0,1,0,0,];
+    LearningPathWidget.BScrollerMouseDown = false;
+    LearningPathWidget.BScrollerTooSmall = false;
+    LearningPathWidget.ScrollScale = 1.0;
 
     LearningPathWidget.setup = function(svg) {
       LearningPathWidget.Svg = svg;
+      LearningPathWidget.SvgGScroller = svg.append("g");
+      LearningPathWidget.SvgG = svg.append("g").attr("id","lp-svg-g-main");
+
+      $("#lp-svg-g-main").on("mousedown", LearningPathWidget.svgMouseDown);
     }
 
     LearningPathWidget.update = function(node_id) {
       if(!node_id)
         node_id = $("#graphData").attr("data-node_id");
 
+      //Get height here so get height of style not
+      // actual height while expanding the div
       var lpHeight = parseInt(d3.select("#learning-path-widget-content")
                               .style("height"));
-      var nodeY = lpHeight/2;
-
       // Clear old learning path stuff
-      LearningPathWidget.Svg.selectAll("g").remove();
+      LearningPathWidget.SvgG.selectAll("g").remove();
+      LearningPathWidget.TransMatrix = [1,0,0,1,0,0,];
+      var matrix = "matrix("+LearningPathWidget.TransMatrix.join(' ')+")";
+      LearningPathWidget.SvgG.attr("transform", matrix);
       d3.selectAll(".map-node-highlighted").attr("class","map-node");
 
       var urlJson = "../nodes/"+node_id+"/learning_path.json";
@@ -188,6 +209,15 @@ var Map = (function(Map, $, undefined){
 
         var maxPosDiff = 0;
         var minPosDiff = 0;
+
+        var lpWidth = $("#learning-path-widget-content").width();
+        var pathWidth = LearningPathWidget.getNodePosX(lpNodes.length-1) +
+            MAP_CONSTANTS.lp_node_radius + MAP_CONSTANTS.lp_node_spacer;
+
+        var nodeY = lpHeight - MAP_CONSTANTS.lp_scroller_padding*2 -
+            MAP_CONSTANTS.lp_scroller_height - MAP_CONSTANTS.lp_node_radius;
+
+        LearningPathWidget.updateScrollRect(lpHeight, lpWidth, pathWidth);
 
         for(var i=0; i < lpNodes.length; i++) {
           lpNodes[i].aryLabel = Map.Node.getAryLabel(lpNodes[i].title);
@@ -213,9 +243,18 @@ var Map = (function(Map, $, undefined){
             minPosDiff = diff;
         }
 
-        var svgLinkGroup = LearningPathWidget.Svg.append("g");
+        LearningPathWidget.SvgG.append("g").append("rect")
+          .attr("x",0)
+          .attr("y",0)
+          .attr("height",lpHeight-MAP_CONSTANTS.lp_scroller_height-
+                MAP_CONSTANTS.lp_scroller_padding)
+          .attr("width",pathWidth)
+          .attr("fill",d3.select("#learning-path-widget-content")
+                .style("background-color"));
+
+        var svgLinkGroup = LearningPathWidget.SvgG.append("g");
         var svgMarkerDef = svgLinkGroup.append("defs");
-        var svgNodeGroup = LearningPathWidget.Svg.append("g");
+        var svgNodeGroup = LearningPathWidget.SvgG.append("g");
 
         //Add arrowhead markers
         for (i=0; i<(maxPosDiff-minPosDiff+1); i++) {
@@ -312,12 +351,55 @@ var Map = (function(Map, $, undefined){
     }
 
     LearningPathWidget.getNodePosX = function(pos) {
-      var spacer = MAP_CONSTANTS.lp_node_radius*1.5;
-
-      return x = spacer + MAP_CONSTANTS.lp_node_radius
-                   + pos*(MAP_CONSTANTS.lp_node_radius*2+spacer);
+      return MAP_CONSTANTS.lp_node_spacer + MAP_CONSTANTS.lp_node_radius +
+          pos*(MAP_CONSTANTS.lp_node_radius*2 + MAP_CONSTANTS.lp_node_spacer);
     }
-    
+
+    LearningPathWidget.updateScrollRect =
+        function(svgHeight, svgWidth, width) {
+      LearningPathWidget.SvgGScroller.selectAll("rect").remove();
+      LearningPathWidget.BScrollerTooSmall = false;
+      LearningPathWidget.ScrollScale = 1.0;
+      LearningPathWidget.ScrollerTransMatrix = [1,0,0,1,0,0,];
+      var matrix = "matrix("+
+          LearningPathWidget.ScrollerTransMatrix.join(' ')+")";
+      LearningPathWidget.SvgGScroller.attr("transform", matrix);
+
+      var scrollerWidth = svgWidth*2-width-MAP_CONSTANTS.lp_scroller_padding*2;
+      if (width < svgWidth)
+        scrollerWidth = svgWidth - MAP_CONSTANTS.lp_scroller_padding*2;
+
+      if (scrollerWidth < MAP_CONSTANTS.lp_scroller_min_width) {
+        scrollerWidth = MAP_CONSTANTS.lp_scroller_min_width;
+        LearningPathWidget.BScrollerTooSmall = true;
+        LearningPathWidget.ScrollScale =
+            (width-svgWidth+MAP_CONSTANTS.lp_scroller_padding*2+
+             MAP_CONSTANTS.lp_scroller_min_width)/(svgWidth*1.0);
+      }
+
+      LearningPathWidget.SvgGScroller.append("rect")
+        .attr("id","lp-scroll-rect")
+        .attr("x", MAP_CONSTANTS.lp_scroller_padding)
+        .attr("y", svgHeight-MAP_CONSTANTS.lp_scroller_height-
+              MAP_CONSTANTS.lp_scroller_padding)
+        .attr("height", MAP_CONSTANTS.lp_scroller_height)
+        .attr("width",scrollerWidth);
+
+      $("#lp-scroll-rect").on("mousedown",
+                              LearningPathWidget.scrollerMouseDown);
+    }
+
+    LearningPathWidget.panScroller = function(dx) {
+      if (LearningPathWidget.SvgGScroller == null)
+        return;
+
+      LearningPathWidget.ScrollerTransMatrix[4] += dx;
+      //          (dx/LearningPathWidget.ScrollScale);
+      var matrix = "matrix("+
+          LearningPathWidget.ScrollerTransMatrix.join(' ')+")";
+      LearningPathWidget.SvgGScroller.attr("transform", matrix);
+    }
+
     LearningPathWidget.expand = function() {
       if(!$("#learning-path-widget-content").is(":visible"))
         LearningPathWidget.toggle();
@@ -339,6 +421,61 @@ var Map = (function(Map, $, undefined){
           $("#learning-path-widget-button").css("border-top", "none");
         }
       });
+    }
+
+    LearningPathWidget.scrollerMouseDown = function(event) {
+      if(event.which==1) {  // event.which is 1 -> left btn, 2 -> right btn
+        LearningPathWidget.BScrollerMouseDown = true;
+        LearningPathWidget.BMouseActive = true;
+        Map.DragOldMousePos = Map.WinMousePos;
+        Map.DragStartMousePos = Map.WinMousePos;
+        event.preventDefault();
+      }
+    }
+
+    LearningPathWidget.svgMouseDown = function(event) {
+      if(event.which==1) {  // event.which is 1 -> left btn, 2 -> right btn
+        LearningPathWidget.BMouseDown = true;
+        LearningPathWidget.BMouseActive = true;
+        Map.DragOldMousePos = Map.WinMousePos;
+        Map.DragStartMousePos = Map.WinMousePos;
+        $("#learning-path-svg").css("cursor", "move");
+        event.preventDefault();
+      }
+    }
+
+    LearningPathWidget.winMouseUp = function(event) {
+      if (LearningPathWidget.BMouseDown) {
+        LearningPathWidget.BMouseDown = false;
+        Map.DragEndMousePos = Map.WinMousePos;
+        $("#learning-path-svg").css("cursor", "default");
+      } else if (LearningPathWidget.BScrollerMouseDown) {
+        LearningPathWidget.BScrollerMouseDown = false;
+        Map.DragEndMousePos = Map.WinMousePos;
+      }
+    }
+
+    //Only use dx because don't want to move vertically.
+    LearningPathWidget.pan = function(dx,dy) {
+      if (LearningPathWidget.SvgG == null)
+        return;
+
+      if (LearningPathWidget.BMouseDown) {
+        LearningPathWidget.TransMatrix[4] += dx;
+
+        LearningPathWidget.panScroller((dx * -1.0)/
+                                       LearningPathWidget.ScrollScale);
+      } else if (LearningPathWidget.BScrollerMouseDown) {
+        LearningPathWidget.TransMatrix[4] +=
+            (dx * -1.0 * LearningPathWidget.ScrollScale);
+        LearningPathWidget.panScroller(dx);
+      }
+
+      if (LearningPathWidget.BMouseDown ||
+          LearningPathWidget.BScrollerMouseDown) {
+        var matrix = "matrix("+LearningPathWidget.TransMatrix.join(' ')+")";
+        LearningPathWidget.SvgG.attr("transform", matrix);
+      }
     }
     
     return LearningPathWidget;
@@ -787,18 +924,26 @@ var Map = (function(Map, $, undefined){
   }
 
   Map.winMouseUp = function(event) {
-    Map.BMouseDown = false;
-    Map.DragEndMousePos = Map.WinMousePos;
-    $("#svg-chart").css("cursor", "default");
+    if (Map.BMouseDown) {
+      Map.BMouseDown = false;
+      Map.DragEndMousePos = Map.WinMousePos;
+      $("#svg-chart").css("cursor", "default");
+    } else if (Map.LearningPathWidget.BMouseActive) {
+      Map.LearningPathWidget.winMouseUp(event);
+    }
   }
 
   Map.winMouseMove = function(e) {
     Map.WinMousePos = [e.clientX,e.clientY];
-    if (Map.BMouseDown) {
+    if (Map.BMouseDown || Map.LearningPathWidget.BMouseActive) {
       var dx = -1*(Map.DragOldMousePos[0]-Map.WinMousePos[0]);
       var dy = -1*(Map.DragOldMousePos[1]-Map.WinMousePos[1]);
-      Map.pan(dx,dy);
       Map.DragOldMousePos = Map.WinMousePos;
+
+      if (Map.BMouseDown)
+        Map.pan(dx,dy);
+      else if (Map.LearningPathWidget.BMouseActive)
+        Map.LearningPathWidget.pan(dx,dy);
     }
   }
 
