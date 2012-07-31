@@ -28,6 +28,7 @@ class Ability
     can [:new, :create], User # sign up
     can :read, [Graph, Node, Course]  # view Graphs and Nodes
     can [:learning_path, :node_widget], Node
+    can [:syllabus], Course
     can :groups_widget, Graph
     can :assign_roles, User
     

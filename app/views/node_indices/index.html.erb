@@ -1,0 +1,29 @@
+<h1>Listing node_indices</h1>
+
+<table>
+  <tr>
+    <th>Course</th>
+    <th>Node</th>
+    <th>Row</th>
+    <th>Index</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @node_indices.each do |node_index| %>
+  <tr>
+    <td><%= node_index.course_id %></td>
+    <td><%= node_index.node_id %></td>
+    <td><%= node_index.row %></td>
+    <td><%= node_index.index %></td>
+    <td><%= link_to 'Show', node_index %></td>
+    <td><%= link_to 'Edit', edit_node_index_path(node_index) %></td>
+    <td><%= link_to 'Destroy', node_index, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Node index', new_node_index_path %>

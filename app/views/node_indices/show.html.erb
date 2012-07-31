@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Course:</b>
+  <%= @node_index.course_id %>
+</p>
+
+<p>
+  <b>Node:</b>
+  <%= @node_index.node_id %>
+</p>
+
+<p>
+  <b>Row:</b>
+  <%= @node_index.row %>
+</p>
+
+<p>
+  <b>Index:</b>
+  <%= @node_index.index %>
+</p>
+
+
+<%= link_to 'Edit', edit_node_index_path(@node_index) %> |
+<%= link_to 'Back', node_indices_path %>

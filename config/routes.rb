@@ -1,5 +1,7 @@
 KnowledgeMap::Application.routes.draw do
 
+  resources :node_indices
+
   root :to => "graphs#index"
 
   get 'search/(:q)' => "search#search", :as => "search"
@@ -13,7 +15,9 @@ KnowledgeMap::Application.routes.draw do
     get "node_widget" => "nodes#node_widget", :as => "node_widget"
   end
 
-  resources :courses
+  resources :courses do
+    get "syllabus" => "courses#syllabus", :as => "syllabus"
+  end
 
   get "login" => "sessions#new", :as => "login"
   get "logout" => "sessions#destroy", :as => "logout"

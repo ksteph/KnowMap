@@ -1,0 +1,2 @@
+module NodeIndicesHelper
+end

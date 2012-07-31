@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120724195151) do
+ActiveRecord::Schema.define(:version => 20120730215635) do
 
   create_table "actions", :force => true do |t|
     t.integer  "user_id"
@@ -83,6 +83,15 @@ ActiveRecord::Schema.define(:version => 20120724195151) do
   end
 
   add_index "graphs", ["id"], :name => "index_graphs_on_id"
+
+  create_table "node_indices", :force => true do |t|
+    t.integer  "course_id"
+    t.integer  "node_id"
+    t.integer  "row"
+    t.integer  "index"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "nodes", :force => true do |t|
     t.string   "title"
