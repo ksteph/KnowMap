@@ -188,6 +188,9 @@ namespace :csv do
       Graph.create(:name => "CS161")
       Graph.last.nodes << Node.all
       Graph.last.subgraphs << subgraphs
+
+      Course.create(name: "CS161", description: "CS161 course",
+                    graph_id: Graph.find_by_name("CS161").id)
     end
   end
 end

@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.3'
+gem 'pg'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -18,7 +19,6 @@ group :development, :test do
 end
 
 group :production do
-  gem 'pg'
 end
 
 gem 'dynamic_form'
