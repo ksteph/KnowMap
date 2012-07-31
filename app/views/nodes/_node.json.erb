@@ -1,7 +1,9 @@
         {
           "id": <%= node.id %>,
           "title": "<%= node.title %>",
-          "label": "<%= node.title.length > 15 ? "#{node.title[0,12]}..." : node.title %>",
+          "label": "<%= node.title.length > 15 ? "#{node.title[0,12]}..." : node.title %>",<% if node.respond_to? 'row' and node.row %>
+          "row": "<%= node.row %>",<% end %><% if node.respond_to? 'index' and node.index %>
+          "index": "<%= node.index %>",<% end %>
           "x": "<%= node.pos_x %>",
           "y": "<%= node.pos_y %>"
         }

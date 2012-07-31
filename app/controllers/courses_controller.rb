@@ -47,6 +47,7 @@ class CoursesController < ApplicationController
   # POST /courses.json
   def create
     @course = Course.new(params[:course])
+    @course.instructors << current_user
 
     respond_to do |format|
       if @course.save
@@ -63,6 +64,7 @@ class CoursesController < ApplicationController
   # PUT /courses/1.json
   def update
     @course = Course.find(params[:id])
+    @course.instructors << current_user
 
     respond_to do |format|
       if @course.update_attributes(params[:course])
@@ -85,5 +87,13 @@ class CoursesController < ApplicationController
       format.html { redirect_to courses_url }
       format.json { head :no_content }
     end
+  end
+  
+  def syllabus
+    @course = Course.find(params[:course_id])
+    @nodes = @course.nodes
+    node_ids = @nodes.each { |n| n.id }
+    @edges = Edge.where "\"node_id_A\" IN (?) AND \"node_id_B\" IN (?)", node_ids, node_ids
+    render 'data'
   end
 end
