@@ -159,9 +159,15 @@ var Map = (function(Map, $, undefined){
   
   Map.LearningPathWidget = (function(LearningPathWidget) {
     LearningPathWidget.Svg = null;
+    LearningPathWidget.SvgG = null;
+    LearningPathWidget.TransMatrix = [1,0,0,1,0,0,];
+    LearningPathWidget.BMouseDown = false;
 
     LearningPathWidget.setup = function(svg) {
       LearningPathWidget.Svg = svg;
+      LearningPathWidget.SvgG = svg.append("g");
+
+      $("#learning-path-svg").on("mousedown", LearningPathWidget.svgMouseDown);
     }
 
     LearningPathWidget.update = function(node_id) {
@@ -173,7 +179,7 @@ var Map = (function(Map, $, undefined){
       var nodeY = lpHeight/2;
 
       // Clear old learning path stuff
-      LearningPathWidget.Svg.selectAll("g").remove();
+      LearningPathWidget.SvgG.selectAll("g").remove();
       d3.selectAll(".map-node-highlighted").attr("class","map-node");
 
       var urlJson = "../nodes/"+node_id+"/learning_path.json";
@@ -213,9 +219,9 @@ var Map = (function(Map, $, undefined){
             minPosDiff = diff;
         }
 
-        var svgLinkGroup = LearningPathWidget.Svg.append("g");
+        var svgLinkGroup = LearningPathWidget.SvgG.append("g");
         var svgMarkerDef = svgLinkGroup.append("defs");
-        var svgNodeGroup = LearningPathWidget.Svg.append("g");
+        var svgNodeGroup = LearningPathWidget.SvgG.append("g");
 
         //Add arrowhead markers
         for (i=0; i<(maxPosDiff-minPosDiff+1); i++) {
@@ -339,6 +345,33 @@ var Map = (function(Map, $, undefined){
           $("#learning-path-widget-button").css("border-top", "none");
         }
       });
+    }
+
+    LearningPathWidget.svgMouseDown = function(event) {
+      if(event.which==1) {  // event.which is 1 -> left btn, 2 -> right btn
+        LearningPathWidget.BMouseDown = true;
+        Map.DragOldMousePos = Map.WinMousePos;
+        Map.DragStartMousePos = Map.WinMousePos;
+        $("#learning-path-svg").css("cursor", "move");
+        event.preventDefault();
+      }
+    }
+
+    LearningPathWidget.winMouseUp = function(event) {
+      LearningPathWidget.BMouseDown = false;
+      Map.DragEndMousePos = Map.WinMousePos;
+      $("#learning-path-svg").css("cursor", "default");
+    }
+
+    LearningPathWidget.pan = function(dx,dy) {
+      if (LearningPathWidget.SvgG == null)
+        return;
+
+      //Only dx because don't want to move vertically.
+      LearningPathWidget.TransMatrix[4] += dx;
+
+      var matrix = "matrix("+LearningPathWidget.TransMatrix.join(' ')+")";
+      LearningPathWidget.SvgG.attr("transform", matrix);
     }
     
     return LearningPathWidget;
@@ -787,18 +820,26 @@ var Map = (function(Map, $, undefined){
   }
 
   Map.winMouseUp = function(event) {
-    Map.BMouseDown = false;
-    Map.DragEndMousePos = Map.WinMousePos;
-    $("#svg-chart").css("cursor", "default");
+    if (Map.BMouseDown) {
+      Map.BMouseDown = false;
+      Map.DragEndMousePos = Map.WinMousePos;
+      $("#svg-chart").css("cursor", "default");
+    } else if (Map.LearningPathWidget.BMouseDown) {
+      Map.LearningPathWidget.winMouseUp(event);
+    }
   }
 
   Map.winMouseMove = function(e) {
     Map.WinMousePos = [e.clientX,e.clientY];
-    if (Map.BMouseDown) {
+    if (Map.BMouseDown || Map.LearningPathWidget.BMouseDown) {
       var dx = -1*(Map.DragOldMousePos[0]-Map.WinMousePos[0]);
       var dy = -1*(Map.DragOldMousePos[1]-Map.WinMousePos[1]);
-      Map.pan(dx,dy);
       Map.DragOldMousePos = Map.WinMousePos;
+
+      if (Map.BMouseDown)
+        Map.pan(dx,dy);
+      else if (Map.LearningPathWidget.BMouseDown)
+        Map.LearningPathWidget.pan(dx,dy);
     }
   }
 
