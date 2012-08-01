@@ -20,6 +20,8 @@ var MAP_CONSTANTS = {
     lp_scroller_height : 10,
     lp_scroller_min_width : 10,
     lp_scroller_padding : 5,
+
+    syllabus_transform_duration : 1000,
 };
 
 /*
@@ -39,6 +41,8 @@ var Map = (function(Map, $, undefined){
   Map.DragOldMousePos = [0,0];
   Map.DragStartMousePos = [0,0];
   Map.DragEndMousePos = [0,0];
+
+  Map.BLayoutIsSyllabus = false;
 
   Map.setup = function() {
     //console.log("called Map.setup()");
@@ -866,6 +870,207 @@ var Map = (function(Map, $, undefined){
 
     return ZoomPanWidget;
   })({});
+
+  Map.SyllabusView = (function(SyllabusView) {
+    SyllabusView.Grid = null;
+    SyllabusView.Coord = null;
+    SyllabusView.Done = false;
+    SyllabusView.IntervalVariable = null;
+
+    SyllabusView.setupLayout = function(crsId) {
+      if (SyllabusView.Grid != null)
+        return;
+
+      SyllabusView.Grid = [];
+      SyllabusView.Coord = {};
+
+      var url = "../courses/"+crsId+"/syllabus.json";
+      d3.json(url, function(json) {
+        var nodes = json.nodes;
+        var edges = json.lines;
+
+        //Code doesn't take into account if two nodes are in the same (row,index)
+        for(var i = 0; i < nodes.length; i++) {
+          Map.Node.MapId2Data[nodes[i].id].children = [];
+          Map.Node.MapId2Data[nodes[i].id].parents = [];
+
+          if (nodes[i].row != undefined) {
+            if (SyllabusView.Grid[nodes[i].row] == undefined)
+                SyllabusView.Grid[nodes[i].row] = [];
+
+            SyllabusView.Grid[nodes[i].row][nodes[i].index] = nodes[i].id;
+          }
+        }
+
+        //Clean in case have undefined elements anywhere
+        for(var i = 0; i < SyllabusView.Grid.length; i++) {
+          if (SyllabusView.Grid[i] == undefined) {
+            SyllabusView.Grid.splice(i,1);
+            i--;
+          } else {
+            for(var j = 0; j < SyllabusView.Grid[i].length; j++) {
+              if (SyllabusView.Grid[i][j] == undefined) {
+                SyllabusView.Grid[i].splice(j,1);
+                j--;
+              }
+            }
+          }
+        }
+
+        //Update node information to contain parent and children ID lists
+        for(var i = 0; i < edges.length; i++) {
+          var edge = edges[i];
+          if (edge.type == "DependentEdge") {
+            Map.Node.MapId2Data[edge.source].children.push(edge.target);
+            Map.Node.MapId2Data[edge.target].parents.push(edge.source);
+          }
+        }
+
+        //Insert parent nodes not in grid for nodes that are in grid
+        var usedNodes = [];
+        for(var i = 0; i < SyllabusView.Grid.length; i++) {
+          //Check if parents are all set
+          for(var j = 0; j < SyllabusView.Grid[i].length; j++) {
+            var node = Map.Node.MapId2Data[SyllabusView.Grid[i][j]];
+            for(var k = 0; k < node.parents.length; k++) {
+              if (usedNodes.indexOf(node.parents[k]) < 0) {
+                SyllabusView.Grid[i].splice(j,0,node.parents[k]);
+                j++;
+
+                usedNodes.push(node.parents[k]);
+              }
+            }
+            usedNodes.push(SyllabusView.Grid[i][j]);
+          }
+        }
+
+        //Find roots of the nodes not in grid.
+        var roots = [];
+        for(var i = 0; i < nodes.length; i++) {
+          var node = Map.Node.MapId2Data[nodes[i].id];
+          if ((usedNodes.indexOf(node.id)) < 0 && (node.parents.length == 0))
+            roots.push(node.id);
+        }
+        
+        var currRow = usedNodes.concat([]);
+        if (currRow.length == 0) {
+            for(var k = 0; k < 5; k++)
+              if (roots.length > 0) currRow.push(roots.shift());
+
+          SyllabusView.Grid.push(currRow.concat([]));
+        }
+
+        var nextRow = [];
+        while (currRow.length > 0) {
+          //Build nextRow based on currRow's children with all parents used
+          nextRow = [];
+          for(var i = 0; i < currRow.length; i++) {
+            var children = Map.Node.MapId2Data[currRow[i]].children;
+            for(var j = 0; j < children.length; j++) {
+              if (usedNodes.indexOf(children[j]) >= 0)
+                continue; //Child already seen, don't do again
+
+              //Findn if all parents have been added
+              var childParents = Map.Node.MapId2Data[children[j]].parents;
+              var bParentsNotAllSeen = false;
+              for(var k = 0; k < childParents.length; k++) {
+                if (usedNodes.indexOf(childParents[k]) < 0)
+                  bParentsNotAllSeen = true;
+              }
+
+              if (!bParentsNotAllSeen) {
+                nextRow.push(children[j]);
+                usedNodes.push(children[j]);
+              }
+            }
+          }
+
+          currRow = nextRow.concat([]);
+          if (currRow.length == 0) {
+            for(var k = 0; k < 5; k++)
+              if (roots.length > 0) currRow.push(roots.shift());
+
+            usedNodes = usedNodes.concat(currRow);
+          }
+
+          SyllabusView.Grid.push(currRow.concat([]));
+        }
+
+        //Set (row,index) for nodes and figure out their coordinates
+        for(var i = 0; i < SyllabusView.Grid.length; i++) {
+          var spacer = MAP_CONSTANTS.node_radius*4;
+          var y = MAP_CONSTANTS.node_radius*2 + spacer*i;
+          var xStart = ($("#chart").width()/2.0) -
+              (SyllabusView.Grid[i].length/2.0)*spacer;
+
+          for(var j = 0; j < SyllabusView.Grid[i].length; j++) {
+            var x = xStart + spacer*j;
+            SyllabusView.Coord[SyllabusView.Grid[i][j]] = {};
+            SyllabusView.Coord[SyllabusView.Grid[i][j]].x = x;
+            SyllabusView.Coord[SyllabusView.Grid[i][j]].y = y;
+          }
+        }
+
+        SyllabusView.Done = true;
+      });
+    }
+
+    SyllabusView.transform = function(bSyllabus) {
+      if (!Map.SyllabusView.Done || (SyllabusView.IntervalVariable == null))
+        return
+
+      Map.Node.SvgNodes.transition()
+        .duration(MAP_CONSTANTS.syllabus_transform_duration)
+        .attr("transform", function(d){
+           var coord = {};
+           if (bSyllabus) {
+             var coord = Map.SyllabusView.Coord[d.id];
+
+             if (coord == undefined) {
+               coord.x = d.x;
+               coord.y = d.y;
+               Map.SyllabusView.Coord[d.id] = coord;
+             }
+           } else {
+             coord.x = d.x;
+             coord.y = d.y;
+           }
+
+           return "translate("+coord.x+","+coord.y+")";
+         });
+
+      var coordMap = SyllabusView.Coord;
+      if (!bSyllabus)
+        coordMap = Map.Node.MapId2Data;
+
+      Map.Edge.SvgEdges.transition()
+        .duration(MAP_CONSTANTS.syllabus_transform_duration)
+        .attr("x1",function(d){return coordMap[d.source].x;})
+        .attr("y1",function(d){return coordMap[d.source].y;})
+        .attr("x2",function(d){return coordMap[d.target].x;})
+        .attr("y2",function(d){return coordMap[d.target].y;});
+
+      clearInterval(SyllabusView.IntervalVariable);
+      SyllabusView.IntervalVariable = null;
+    }
+
+    return SyllabusView;
+  })({});
+
+  Map.toggleLayout = function() {
+    Map.BLayoutIsSyllabus = !Map.BLayoutIsSyllabus;
+
+    if (Map.BLayoutIsSyllabus) {
+      Map.SyllabusView.setupLayout(1); //TODO: Hardcoding is bad!
+
+      //Use setInterval so can wait until after data done processing
+      Map.SyllabusView.IntervalVariable =
+          setInterval(function(){Map.SyllabusView.transform(true)},50)
+    } else {
+      Map.SyllabusView.IntervalVariable = 0;
+      Map.SyllabusView.transform(false);
+    }
+  }
   
   Map.pan = function(dx,dy) {
     if (Map.SvgChartG == null)
@@ -967,6 +1172,9 @@ var Map = (function(Map, $, undefined){
         break;
       case 189: // - key
         Map.zoomOut();
+        break;
+      case 32: // space bar
+        Map.toggleLayout();
         break;
       default:
         break; // Do nothing
