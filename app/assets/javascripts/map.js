@@ -45,14 +45,8 @@ var Map = (function(Map, $, undefined){
   Map.BLayoutIsSyllabus = false;
 
   Map.setup = function() {
-    //console.log("called Map.setup()");
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
-    //$("#groups-widget").animate({right: -$("#groups-widget").outerWidth()});
-    //$("#groups-widget").css("right", -$("#groups-widget").outerWidth());
-    //$("#groups-widget-button").animate({left: -$("#groups-widget-button").outerWidth()-1});
-    //$("#groups-widget-button").css("left", -$("#groups-widget-button").outerWidth()-1);
-    //Map.GroupsWidget.expand();
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -108,11 +102,7 @@ var Map = (function(Map, $, undefined){
   }
   
   Map.update = function() {
-    //console.log("called Map.update()");
     if ( $("#graphData").attr("data-graph_id") && $("#graphData").attr("data-graph_id") !== "" ) {
-      //console.log("--> Graph detected");
-      //Map.LearningPathWidget.collapse();
-      //Map.GroupsWidget.collapse();
       Map.show();
       Map.GroupsWidget.update();
 
@@ -128,17 +118,12 @@ var Map = (function(Map, $, undefined){
 
       Map.Container.show();
       Map.LearningPathWidget.collapse();
-      //Map.GroupsWidget.expand();
     } else if ( $("#graphData").attr("data-node_id") && $("#graphData").attr("data-node_id") !== "" ) {
-      //console.log("--> Node detected");
-      //Map.LearningPathWidget.expand();
-      //Map.GroupsWidget.collapse();     
       Map.NodeWidget.update();
       Map.LearningPathWidget.update();
       Map.NodeWidget.show();
       Map.Container.show();
     } else {
-      //console.log("--> hiding map container");
       Map.Container.hide();
     }
   }
@@ -280,7 +265,6 @@ var Map = (function(Map, $, undefined){
             .attr("markerUnits", "strokeWidth")
             .attr("markerWidth", 5)
             .attr("markerHeight", 5)
-              //.style("hover:fill","red")
             .attr("orient", angle+45*(mult/4.5))
             .append("path")
               .attr("d", "M 0 0 L 10 5 L 0 10 Z");
@@ -398,7 +382,6 @@ var Map = (function(Map, $, undefined){
         return;
 
       LearningPathWidget.ScrollerTransMatrix[4] += dx;
-      //          (dx/LearningPathWidget.ScrollScale);
       var matrix = "matrix("+
           LearningPathWidget.ScrollerTransMatrix.join(' ')+")";
       LearningPathWidget.SvgGScroller.attr("transform", matrix);
@@ -636,7 +619,6 @@ var Map = (function(Map, $, undefined){
           .attr("id", function(d){return "node-"+d.id;})
           .attr("node-id", function(d){return d.id;})
           .attr("transform", function(d){return "translate("+d.x+","+d.y+")";})
-      //          .on("dblclick", onDblClick) //TODO: Move this function
           .on("dblclick", Map.Node.dblClick)
           .on("click", Map.Node.click);
 
@@ -752,8 +734,6 @@ var Map = (function(Map, $, undefined){
       if (((Map.DragStartMousePos[0]-Map.DragEndMousePos[0]) != 0) ||
           ((Map.DragStartMousePos[1]-Map.DragEndMousePos[1]) != 0))
         return;
-
-      //console.log("click"); return;
 
       node_id = this.__data__.id;
       Map.LearningPathWidget.update(node_id); // update LearningPath Widget
@@ -970,7 +950,7 @@ var Map = (function(Map, $, undefined){
               if (usedNodes.indexOf(children[j]) >= 0)
                 continue; //Child already seen, don't do again
 
-              //Findn if all parents have been added
+              //Find if all parents have been added
               var childParents = Map.Node.MapId2Data[children[j]].parents;
               var bParentsNotAllSeen = false;
               for(var k = 0; k < childParents.length; k++) {
