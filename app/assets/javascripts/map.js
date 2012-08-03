@@ -999,6 +999,9 @@ var Map = (function(Map, $, undefined){
     SyllabusView.transform = function(bSyllabus) {
       if (!Map.SyllabusView.Done || (SyllabusView.IntervalVariable == null))
         return
+      
+      var crsId = 1; // hardcoded course ID
+      $.ajax("/log/course/"+crsId+"/syllabus"); // log action
 
       Map.Node.SvgNodes.transition()
         .duration(MAP_CONSTANTS.syllabus_transform_duration)
