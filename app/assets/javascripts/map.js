@@ -938,6 +938,7 @@ var Map = (function(Map, $, undefined){
               if (roots.length > 0) currRow.push(roots.shift());
 
           SyllabusView.Grid.push(currRow.concat([]));
+          usedNodes = usedNodes.concat(currRow);
         }
 
         var nextRow = [];
