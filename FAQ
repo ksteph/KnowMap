@@ -1,0 +1,48 @@
+What do I do to update the production machine to the latest version?
+(TODO: double check correct)
+  - git pull
+  - bundle install
+  - bundle exec rake db:migrate RAILS_ENV=production
+  - bundle exec rake assets:precompile
+  - sudo service apache2 reload
+
+
+How do I move data from the production version to the dev version? (Assuming we get two versions running) (TODO)
+
+
+How do I see what's in the database? In the backend?
+
+  Run the command "rails console" which will take you to the rails console where
+  you can interact with the database 2.
+
+  You may need to specify RAILS_ENV if you are looking for a specific version of
+  the database. The default environment is "development" and others options are
+  "test" and "production". To findout when environment you are in while in the
+  console, run "Rails.env"
+
+  What's in the console you can query the database. Look in db/schema.rb to see
+  how the database is structured. Tables are plural, but in the console it is
+  singular, so to access all rows in the nodes table run "Node.all"
+
+  For an overview on how to build a function to retrieve the information you
+  want from the database go here:
+  http://heurionconsulting.wordpress.com/2007/05/24/using-find-methods-in-railsactiverecord/
+
+
+How do I write a cucumber test?
+
+  Good tutorial: Railscasts.com cucumber tutorials
+  Location of a good test example in our code: features/authentication.feature
+
+
+How are things backed up?
+
+  Location of code that backs up stuff: config/initializers/task_scheduler.rb
+  Had to use the rufus/scheduler jem.
+
+
+How do I restore from a database dump?
+
+  rake db:drop
+  rake db:create
+  rake pg:dumpimport[filename_of_data_dump]
