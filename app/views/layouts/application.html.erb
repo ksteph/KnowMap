@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>KnowledgeMap</title>
+  <title>Know Map</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
@@ -9,7 +9,10 @@
 <body><div id="container">
   <div id="header">
     <div class="title">
-      <%= link_to 'Knowledge Map', :root, :remote => remote? %>
+      <%= link_to 'Know Map', :root, :remote => remote? %>
+    </div>
+    <div class="nav">
+      <%= link_to 'Courses', courses_path, :remote => remote? %>
     </div>
     <div class="user_nav"><%= render 'user_nav' %></div>
     <div class="search clear">
