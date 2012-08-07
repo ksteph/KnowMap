@@ -1,4 +1,4 @@
-<p id="notice"><%= notice %></p>
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
 
 <p>
   <b>Name:</b>
@@ -27,6 +27,22 @@
   <%= @course.description %>
 </p>
 
+<p>
+  <b>Nodes' Rank:</b>
+  There are <%= @course.nodes.to_a.count %> nodes.
+  <div class ="rows" <% if current_user and current_user.role? "instructor" %>data-edit=""<% end %>>
+    <% curr_row = -1 %>
+        <% @course.nodes.each do |node| %>
+          <% if curr_row != node.row %>
+            <% if curr_row != -1 %></ul></div><% end %>
+            <div class="row"><ul class="nodes">
+          <% curr_row = node.row %>
+          <% end %>
+          <%= content_tag_for :li, node, :"data-rank" => "#{node.rank_id}" do %>&nbsp;&nbsp;<%= node.title %>&nbsp;&nbsp;<% end %>
+        <% end %>
+        <% if @course.nodes.to_a.count > 0 %></ul></div><div class="row"><ul class="nodes"></ul></div><% end %>
+  </div>
+</p>
 
 <%= link_to 'Edit', edit_course_path(@course) %> |
 <%= link_to 'Back', courses_path %>

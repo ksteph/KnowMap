@@ -1,27 +1,15 @@
-<h1>Listing courses</h1>
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Graph</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<h1>All Courses</h1>
 
 <% @courses.each do |course| %>
-  <tr>
-    <td><%= course.name %></td>
-    <td><%= course.description %></td>
-    <td><%= link_to course.graph, course.graph %></td>
-    <td><%= link_to 'Show', course %></td>
-    <td><%= link_to 'Edit', edit_course_path(course) %></td>
-    <td><%= link_to 'Destroy', course, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
+  <div>
+    <% if can?(:edit, Course) %><%= link_to 'Edit', edit_course_path(course) %><% end %>
+    <% if can?(:destroy, Course) %><%= link_to 'Destroy', course, confirm: 'Are you sure?', method: :delete %><% end %>
+    <span class="course-title"><%= link_to course.name, course %></span> by <%= course.instructors.map { |i| link_to i.to_s, i }.join(' and ').html_safe %>.
+  </div>
 <% end %>
-</table>
 
 <br />
 
-<%= link_to 'New Course', new_course_path %>
+<% if can?(:create, Course) %>
+  <%= link_to 'New Course', new_course_path %>
+<% end %>
