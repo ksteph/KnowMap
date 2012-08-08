@@ -14,7 +14,7 @@
   <b>Email:</b>
   <%= @user.email %>
 </p>
-
+<% if can?(:view_detailed_profile, @user) %>
 <p>
   <b>Role:</b>
   <%= @user.role %>
@@ -28,7 +28,7 @@
   </tr>
   <%= render @user.actions %>
 </table>
-
+<% end %>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
