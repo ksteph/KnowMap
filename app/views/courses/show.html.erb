@@ -30,7 +30,7 @@
 <p>
   <b>Nodes' Rank:</b>
   There are <%= @course.nodes.to_a.count %> nodes.
-  <div class ="rows" <% if current_user and current_user.role? "instructor" %>data-edit=""<% end %>>
+  <div class ="rows" <% if can? :manage, @course %>data-edit=""<% end %>>
     <% curr_row = -1 %>
         <% @course.nodes.each do |node| %>
           <% if curr_row != node.row %>

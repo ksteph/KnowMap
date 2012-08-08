@@ -34,7 +34,6 @@ class UsersController < ApplicationController
       redirect_to root_url
     else
       @user = User.new
-      @user.roles << Role.student
       render :layout => !request.xhr?
     end
   end
@@ -47,7 +46,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(params[:user])
+    @user = User.new(params[:user], :as => current_user.role)
     
     if @user.save
       Action.log :controller => params[:controller], :action => params[:action], :user => @user
@@ -63,7 +62,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
 
     respond_to do |format|
-      if @user.update_attributes(params[:user])
+      if @user.update_attributes(params[:user], :as => current_user.role)
         Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { head :no_content }
