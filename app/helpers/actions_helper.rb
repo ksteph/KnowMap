@@ -1,6 +1,11 @@
 module ActionsHelper
   def action_to_html(action)
     case action.controller
+    when "Course"
+      case action.action
+      when "syllabus"
+        "#{link_to action.user, action.user, :remote => remote? } toggled the syllabus view for #{link_to_if action.target.class!='String', action.target, action.target, :remote => remote? }".html_safe
+      end
     when "Session"
       case action.action
       when "create"

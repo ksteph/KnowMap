@@ -7,7 +7,10 @@ require 'rufus/scheduler'
 
 scheduler = Rufus::Scheduler.start_new
 
-scheduler.every("1h") do
+if Rails.env == "production"
+  scheduler.every("1h") do
     #Rake::Task["csv:export"].invoke
     system("rake csv:export")
+    system("rake pg:dump")
+  end
 end
