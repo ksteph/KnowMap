@@ -41,10 +41,11 @@ class Ability
     def instructor
       student
       can [:manage], [Course]
+      can [:view_detailed_profile], User, :role => User.Roles.Student
     end
     def admin
       instructor
-      can [:change_role], User
+      can [:change_role, :view_detailed_profile], User
     end
     def super_admin
       admin

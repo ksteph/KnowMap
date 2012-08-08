@@ -20,10 +20,8 @@ class User < ActiveRecord::Base
     end
   end
   
-  attr_accessible :email, :password, :password_confirmation, :first, :last, :as => User.Roles.Student
-  attr_accessible :email, :password, :password_confirmation, :first, :last, :as => User.Roles.Instructor
-  attr_accessible :email, :password, :password_confirmation, :first, :last, :role, :as => User.Roles.Admin
-  attr_accessible :email, :password, :password_confirmation, :first, :last, :role, :as => User.Roles.SuperAdmin
+  attr_accessible :email, :password, :password_confirmation, :first, :last
+  attr_accessible :role, :as => :change_role
   
   has_many :actions
   has_many :course_memberships
