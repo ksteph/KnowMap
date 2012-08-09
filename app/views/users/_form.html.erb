@@ -19,7 +19,7 @@
   </p>
   <p>
     <%= f.label :email %><br />
-    <%= f.text_field :email %>
+    <%= f.email_field :email %>
   </p>
   <p>
     <%= f.label :password %><br />
@@ -29,10 +29,16 @@
     <%= f.label :password_confirmation %><br />
     <%= f.password_field :password_confirmation %>
   </p>
+  <% if can?(:change_role, User) %>
   <p>
     <%= f.label :role %><br />
     <%= f.text_field :role %>
   </p>
-
+  <% end %>
+  <p>
+    <%= f.label "Help improve #{Rails.configuration.website_name}" %><br />
+    <%= f.check_box :track %> Yes, allow <%= Rails.configuration.website_name %> to collect my usage information.
+  </p>
+  
   <p class="button"><%= f.submit @user.new_record? ? "Sign up" : "Update User" %></p>
 <% end %>

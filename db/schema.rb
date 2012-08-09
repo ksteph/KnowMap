@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120807204610) do
+ActiveRecord::Schema.define(:version => 20120809211628) do
 
   create_table "actions", :force => true do |t|
     t.integer  "user_id"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(:version => 20120807204610) do
     t.string   "first"
     t.string   "last"
     t.string   "role",          :default => "student"
+    t.boolean  "track",         :default => true
   end
 
 end

@@ -7,9 +7,9 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
   # create all roles
-  ["Super Admin", "Admin", "Instructor", "Student"].each do |name|
-    Role.create :name => name if not Role.find_by_name name
-  end
+  #["Super Admin", "Admin", "Instructor", "Student"].each do |name|
+  #  Role.create :name => name if not Role.find_by_name name
+  #end
 
   #n1 = Node.create({ title: 'TCP Header'})
   #n2 = Node.create({ title: 'TCP Protocol Flow Chart'})

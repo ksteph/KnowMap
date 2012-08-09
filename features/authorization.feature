@@ -4,7 +4,6 @@ Feature: Authentication
   I want to 
   
   Background:
-    Given the test database is seeded
     Given the graph "sample graph" exists
     And the node "sample node" exists
   

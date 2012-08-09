@@ -37,6 +37,7 @@ class Ability
     
     def student
       can [:new, :create, :edit, :update, :destroy], [Graph, Node]
+      can [:read, User]
     end
     def instructor
       student
@@ -51,19 +52,20 @@ class Ability
       admin
       can :manage, :all
     end
-        
     
-    if @user.role == User.Roles.Student
-      student
-    end
-    if @user.role == User.Roles.Instructor
-      instructor
-    end
-    if @user.role == User.Roles.Admin
-      admin
-    end
-    if @user.role == User.Roles.SuperAdmin
-      super_admin
+    unless @user.new_record? then # this is to distinguish the guest account we created above
+      if @user.role == User.Roles.Student
+        student
+      end
+      if @user.role == User.Roles.Instructor
+        instructor
+      end
+      if @user.role == User.Roles.Admin
+        admin
+      end
+      if @user.role == User.Roles.SuperAdmin
+        super_admin
+      end
     end
   end
 end

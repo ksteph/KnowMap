@@ -14,6 +14,12 @@
   <b>Email:</b>
   <%= @user.email %>
 </p>
+
+<p>
+  <b>Help improve <%= Rails.configuration.website_name %>:</b>
+  <%= @user.track ? "enabled" : "disabled" %>
+</p>
+
 <% if can?(:view_detailed_profile, @user) %>
 <p>
   <b>Role:</b>

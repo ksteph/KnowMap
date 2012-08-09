@@ -4,11 +4,7 @@ end
 
 Given /^I am an? (.*?) with email "(.*?)" and password "(.*?)"$/ do |role, email, password|
   user = User.create(:email => email, :password => password)
-  if Role.find_by_name(role.titlecase) then
-    user.roles << Role.find_by_name(role.titlecase)
-  else
-    user.roles << Role.create(:name => role.titlecase)
-  end
+  user.role = role.downcase
   user.save
 end
 
