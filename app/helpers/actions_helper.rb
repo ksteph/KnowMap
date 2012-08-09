@@ -5,6 +5,20 @@ module ActionsHelper
       case action.action
       when "syllabus"
         "#{link_to action.user, action.user, :remote => remote? } toggled the syllabus view for #{link_to_if action.target.class!='String', action.target, action.target, :remote => remote? }".html_safe
+      when "index"
+        "#{link_to action.user, action.user, :remote => remote? } viewed the index page for all #{action.controller.downcase.pluralize}".html_safe
+      when "new"
+        "#{link_to action.user, action.user, :remote => remote? } viewed the new #{action.controller.downcase} page".html_safe
+      when "create"
+        "#{link_to action.user, action.user, :remote => remote? } created a new #{action.controller.downcase}".html_safe
+      when "show"
+        "#{link_to action.user, action.user, :remote => remote? } viewed #{link_to_if action.target.class!='String', action.target, action.target, :remote => remote? }".html_safe
+      when "destroy"
+        "#{link_to action.user, action.user, :remote => remote? } deleted a #{action.controller.downcase.singularize}".html_safe
+      when "edit"
+        "#{link_to action.user, action.user, :remote => remote? } viewed the edit page for #{link_to_if action.target.class!='String', action.target, action.target, :remote => remote? }".html_safe
+      when "update"
+        "#{link_to action.user, action.user, :remote => remote? } edited #{link_to_if action.target.class!='String', action.target, action.target, :remote => remote? }".html_safe
       end
     when "Session"
       case action.action

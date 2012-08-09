@@ -35,4 +35,8 @@ class Course < ActiveRecord::Base
 
     ActiveRecord::Base.connection.select_all("INSERT INTO node_indices (\"course_id\", \"node_id\", \"row\", \"index\", \"created_at\", \"updated_at\") VALUES #{query};") if query != ""
   end
+  
+  def to_s
+    "#{name}"
+  end
 end
