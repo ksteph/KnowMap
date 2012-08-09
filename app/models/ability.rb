@@ -41,11 +41,12 @@ class Ability
     end
     def instructor
       student
-      can [:manage], [Course]
+      can [:manage], [Course], :course_memberships => { :user_id => @user.id, :role => CourseMembership.instructorRole }
       can [:view_detailed_profile], User, :role => User.Roles.Student
     end
     def admin
       instructor
+      can [:manage], [Course]
       can [:change_role, :view_detailed_profile], User
     end
     def super_admin

@@ -2,8 +2,8 @@
 
 <% @courses.each do |course| %>
   <div>
-    <% if can?(:edit, Course) %><%= link_to 'Edit', edit_course_path(course) %><% end %>
-    <% if can?(:destroy, Course) %><%= link_to 'Destroy', course, confirm: 'Are you sure?', method: :delete %><% end %>
+    <% if can?(:edit, course) %><%= link_to 'Edit', edit_course_path(course) %><% end %>
+    <% if can?(:destroy, course) %><%= link_to 'Destroy', course, confirm: 'Are you sure?', method: :delete %><% end %>
     <span class="course-title"><%= link_to course.name, course %></span> by <%= course.instructors.map { |i| link_to i.to_s, i }.join(' and ').html_safe %>.
   </div>
 <% end %>
