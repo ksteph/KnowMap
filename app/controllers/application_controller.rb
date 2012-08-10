@@ -8,6 +8,15 @@ class ApplicationController < ActionController::Base
     render :partial => "#{params[:partial]}"
   end
   
+  def render(options = nil, extra_options = {}, &block)
+    # overriding render to change default layout value
+    # so we dont render a layout on ajax calls
+    options ||= {}
+    options = options.merge(:layout => !request.xhr?) if options.is_a? Hash
+    extra_options = extra_options.merge(:layout => !request.xhr?) if extra_options.is_a? Hash
+    super options, extra_options, &block
+  end
+  
   def data
     if params[:id] then
       l = params[:id].split(',').map { |x| x.to_i }
