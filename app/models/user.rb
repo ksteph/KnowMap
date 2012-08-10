@@ -1,7 +1,29 @@
 class User < ActiveRecord::Base
-  attr_accessible :email, :password, :password_confirmation, :first, :last, :role_ids
+  # define Roles
+  cattr_accessor :Roles
+  self.Roles = Class.new
+  self.Roles.instance_eval do
+    def Student
+      "student"
+    end
+    def Instructor
+      "instructor"
+    end
+    def Admin
+      "admin"
+    end
+    def SuperAdmin
+      "superadmin"
+    end
+    def all
+      [self.Student, self.Instructor, self.Admin, self.SuperAdmin]
+    end
+  end
+  
+  attr_accessible :email, :password, :password_confirmation, :first, :last
+  attr_accessible :role, :as => :change_role
+  
   has_many :actions
-  has_and_belongs_to_many :roles
   has_many :course_memberships
   has_many :courses, :through => :course_memberships 
   
@@ -27,10 +49,6 @@ class User < ActiveRecord::Base
       self.password_salt = BCrypt::Engine.generate_salt
       self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
     end
-  end
-  
-  def role?(role)
-    roles.map{|r| r.name}.include? role.to_s.titlecase
   end
   
   def to_s

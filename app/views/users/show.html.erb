@@ -14,12 +14,11 @@
   <b>Email:</b>
   <%= @user.email %>
 </p>
-
-<h2>Assigned Roles</h2>
-<ul><% @user.roles.each { |r| %>
-  <li><%= r.name %></li>
-<% } %></ul>
-<% if @user.roles.count == 0 then %>There are no roles assigned to this user.<% end %>
+<% if can?(:view_detailed_profile, @user) %>
+<p>
+  <b>Role:</b>
+  <%= @user.role %>
+</p>
 
 <h2>Recent actions</h2>
 <table>
@@ -29,7 +28,7 @@
   </tr>
   <%= render @user.actions %>
 </table>
-
+<% end %>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>

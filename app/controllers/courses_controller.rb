@@ -6,7 +6,7 @@ class CoursesController < ApplicationController
     @courses = Course.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { render :layout => !request.xhr? } # index.html.erb
       format.json { render json: @courses }
     end
   end
@@ -15,9 +15,10 @@ class CoursesController < ApplicationController
   # GET /courses/1.json
   def show
     @course = Course.find(params[:id])
+    @course.update_nodes_rank
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render :layout => !request.xhr? } # show.html.erb
       format.json { render json: @course }
     end
   end
@@ -31,7 +32,7 @@ class CoursesController < ApplicationController
     10.times { @course.student_memberships.build }
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render :layout => !request.xhr? } # new.html.erb
       format.json { render json: @course }
     end
   end
@@ -54,7 +55,7 @@ class CoursesController < ApplicationController
         format.html { redirect_to @course, notice: 'Course was successfully created.' }
         format.json { render json: @course, status: :created, location: @course }
       else
-        format.html { render action: "new" }
+        format.html { render action: "new", :layout => !request.xhr? }
         format.json { render json: @course.errors, status: :unprocessable_entity }
       end
     end
@@ -64,14 +65,13 @@ class CoursesController < ApplicationController
   # PUT /courses/1.json
   def update
     @course = Course.find(params[:id])
-    @course.instructors << current_user
 
     respond_to do |format|
       if @course.update_attributes(params[:course])
         format.html { redirect_to @course, notice: 'Course was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
+        format.html { render action: "edit", :layout => !request.xhr? }
         format.json { render json: @course.errors, status: :unprocessable_entity }
       end
     end
@@ -84,7 +84,7 @@ class CoursesController < ApplicationController
     @course.destroy
 
     respond_to do |format|
-      format.html { redirect_to courses_url }
+      format.html { redirect_to courses_url, notice: 'Course was successfully deleted.' }
       format.json { head :no_content }
     end
   end

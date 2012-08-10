@@ -41,9 +41,11 @@ class Ability
     def instructor
       student
       can [:manage], [Course]
+      can [:view_detailed_profile], User, :role => User.Roles.Student
     end
     def admin
       instructor
+      can [:change_role, :view_detailed_profile], User
     end
     def super_admin
       admin
@@ -51,16 +53,16 @@ class Ability
     end
         
     
-    if @user.role? :student
+    if @user.role == User.Roles.Student
       student
     end
-    if @user.role? :instructor
+    if @user.role == User.Roles.Instructor
       instructor
     end
-    if @user.role? :admin
+    if @user.role == User.Roles.Admin
       admin
     end
-    if @user.role? :super_admin
+    if @user.role == User.Roles.SuperAdmin
       super_admin
     end
   end

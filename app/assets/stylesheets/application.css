@@ -58,6 +58,20 @@ body {
   float:right;
 }
 
+.nav {
+  display: inline-block;
+}
+
+.nav a {
+  margin: 0 20px;
+  color: #FFF;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+}
+
 #body {
   margin: 0 auto;
   background-color: #FFF;

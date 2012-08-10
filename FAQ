@@ -7,7 +7,14 @@ What do I do to update the production machine to the latest version?
   - sudo service apache2 reload
 
 
-How do I move data from the production version to the dev version? (Assuming we get two versions running) (TODO)
+How do I move data from the production version to the dev version? (Assuming we get two versions running)
+  Take a data dump from production and run rake pg:dumppimport. This may not work if the databases are different.
+
+  - sudo service apache2 stop //Need to stop apache
+  - bundle exec rake db:drop RAILS_ENV=development
+  - bundle exec rake db:create RAILS_ENV=development
+  - bundle exec rake pg:dumpimport[filename_want_to_import] RAILS_ENV=development
+  - sudo service apache2 start //Restart apache
 
 
 How do I see what's in the database? In the backend?
