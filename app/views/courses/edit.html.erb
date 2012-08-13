@@ -4,5 +4,5 @@
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @course %> |
-<%= link_to 'Back', courses_path %>
+<%= link_to 'Show', @course, :remote => remote? %> |
+<%= link_to 'Back', courses_path, :remote => remote? %>

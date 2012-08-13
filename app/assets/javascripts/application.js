@@ -89,10 +89,18 @@ function ajax() {
   
   $('.user_nav a[data-remote=true],#login_form[data-remote=true]').one('ajax:success', function(event, data, status, xhr) {
     $.ajax({
-      url: '_partials/user_nav',
+      url: '/_partials/user_nav',
       dataType: 'html'
     }).done(function(data) {
       $('div.user_nav').html(data);
+      ajax();
+    });
+    
+    $.ajax({
+      url: '/_partials/nav',
+      dataType: 'html'
+    }).done(function(data) {
+      $('div.nav').html(data);
       ajax();
     });
     

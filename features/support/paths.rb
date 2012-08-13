@@ -25,6 +25,8 @@ module NavigationHelpers
       '/graphs'
     when /^the actions\s?page$/
       '/actions'
+    when /^the change password\s?page$/
+      '/account/change_password'
     when /^the "(.*)" graph$/
       "/graphs/#{Graph.find_by_name($1).id}"
     when /^the new graph$/

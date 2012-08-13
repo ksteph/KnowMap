@@ -1,5 +1,5 @@
 Given /^a user exists with email "(.*?)" and password "(.*?)"$/ do |email, password|
-  User.create(:email => email, :password => password)
+  User.create({:email => email, :password => password}, :as => :new)
 end
 
 Given /^I am an? (.*?) with email "(.*?)" and password "(.*?)"$/ do |role, email, password|
@@ -50,6 +50,18 @@ end
 
 Given /^the test database is seeded$/ do
   load "#{Rails.root}/db/seeds.rb"
+end
+
+Given /^I change my password from "(.*?)" to "(.*?)"$/ do |arg1, arg2|
+  step "I am on the change password page"
+  step "I fill in \"Current password\" with \"#{arg1}\""
+  step "I fill in \"New password\" with \"#{arg2}\""
+  step "I fill in \"New password confirmation\" with \"#{arg2}\""
+  step "I press \"Change password\""
+end
+
+Given /^I logout$/ do
+  step "I go to the logout page"
 end
 
 

@@ -37,7 +37,7 @@ class Ability
     
     def student
       can [:new, :create, :edit, :update, :destroy], [Graph, Node]
-      can [:read, User]
+      can [:account, :profile, :change_password], [User], :id => @user.id
     end
     def instructor
       student
@@ -48,6 +48,7 @@ class Ability
       instructor
       can [:manage], [Course]
       can [:change_role, :view_detailed_profile], User
+      can [:manage], [User]
     end
     def super_admin
       admin

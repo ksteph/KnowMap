@@ -7,7 +7,7 @@ Feature: User Tracking
     Given the test database is seeded
     Given I am a student with email "asd@asd.com" and password "password"
 
-  @javascript @t
+  @javascript
   Scenario: User signs up
     Given I sign up with email "asdf@asdf.com" and password "password"
     And I login with "asdf@asdf.com" and "password"

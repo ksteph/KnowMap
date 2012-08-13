@@ -18,7 +18,7 @@
     <td><%= node.content %></td>
     <td><%= link_to t('actions.show'), node, :remote => remote?, "data-type" => "html" %></td>
     <td><%= link_to t('actions.edit'), edit_node_path(node), :remote => remote?, "data-type" => "html" %></td>
-    <td><%= link_to t('actions.destroy'), node, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= link_to t('actions.destroy'), node, confirm: 'Are you sure?', method: :delete, :remote => remote? %></td>
   </tr>
 <% end %>
 </table>

@@ -43,6 +43,6 @@
   <%= link_to t('actions.edit'), edit_node_path(@node), :remote => remote?, "data-type" => "html" %> |
 <% end %>
 <% if can?(:destroy, Node) %>
-  <%= link_to t('actions.destroy'), @node, confirm: 'Are you sure?', method: :delete %> |
+  <%= link_to t('actions.destroy'), @node, confirm: 'Are you sure?', method: :delete, :remote => remote? %> |
 <% end %>
 <%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>

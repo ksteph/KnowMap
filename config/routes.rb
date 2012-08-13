@@ -24,6 +24,13 @@ KnowledgeMap::Application.routes.draw do
   get "sign_up" => "users#new", :as => "sign_up"
   get "profile" => "users#profile", :as => "profile"
   
+  scope "account" do
+    get "/" => "users#account", :as => "account"
+    get "/edit" => "users#edit", :as => "edit_account"
+    get "/profile" => "users#profile", :as => "profile" # what other users see
+    match "/change_password" => "users#change_password", :as => "change_password"
+  end
+
   resources :users
   resources :sessions
   resources :roles

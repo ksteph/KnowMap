@@ -22,19 +22,30 @@ class User < ActiveRecord::Base
   
   attr_accessible :email, :password, :password_confirmation, :first, :last, :track, :as => :new
   attr_accessible :email, :first, :last, :track, :as => :update
-  attr_accessible :role, :as => :change_role
+  attr_accessible :email, :first, :last, :track, :role, :as => :change_role
   
   has_many :actions
   has_many :course_memberships
   has_many :courses, :through => :course_memberships 
   
-  attr_accessor :password
+  attr_accessor :password, :updating_password
   before_save :encrypt_password
   
-  validates_confirmation_of :password
-  validates_presence_of :password, :on => :create
+  validates :password, :presence => true, :confirmation => true, :on => :create
+  validates :password, :presence => true, :confirmation => true, :on => :update, :if => :should_validate_password?
+
+
+  validates :password, :confirmation => true
   validates_presence_of :email
   validates_uniqueness_of :email
+  
+  def should_validate_password?
+    updating_password || new_record?
+  end
+  
+  def validates_password?
+    password_changed?
+  end
   
   def self.authenticate(email, password)
     user = find_by_email(email)

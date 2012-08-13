@@ -12,8 +12,8 @@ class ApplicationController < ActionController::Base
     # overriding render to change default layout value
     # so we dont render a layout on ajax calls
     options ||= {}
-    options = options.merge(:layout => !request.xhr?) if options.is_a? Hash
-    extra_options = extra_options.merge(:layout => !request.xhr?) if extra_options.is_a? Hash
+    options = options.merge(:layout => false) if request.xhr? and options.is_a? Hash
+    extra_options = extra_options.merge(:layout => false) if request.xhr? and extra_options.is_a? Hash
     super options, extra_options, &block
   end
   

@@ -11,9 +11,7 @@
     <div class="title">
       <%= link_to 'Know Map', :root, :remote => remote? %>
     </div>
-    <div class="nav">
-      <%= link_to 'Courses', courses_path, :remote => remote? %>
-    </div>
+    <div class="nav"><%= render 'nav' %></div>
     <div class="user_nav"><%= render 'user_nav' %></div>
     <div class="search clear">
       <%= form_tag search_path, :method => 'get' do %>

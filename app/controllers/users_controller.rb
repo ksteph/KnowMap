@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
-      format.html { render :layout => !request.xhr? } # index.html.erb
+      format.html # index.html.erb
       format.json { render json: @users }
     end
   end
@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
-      format.html { render :layout => !request.xhr? } # show.html.erb
+      format.html # show.html.erb
       format.json { render json: @user }
     end
   end
@@ -34,13 +34,17 @@ class UsersController < ApplicationController
       redirect_to root_url
     else
       @user = User.new
-      render :layout => !request.xhr?
     end
   end
 
+  # GET /account/edit
   # GET /users/1/edit
   def edit
-    @user = User.find(params[:id])
+    if params.has_key? :id then
+      @user = User.find(params[:id])
+    else
+      @user = current_user
+    end
   end
 
   # POST /users
@@ -52,7 +56,7 @@ class UsersController < ApplicationController
       Action.log :controller => params[:controller], :action => params[:action], :user => @user
       redirect_to root_url, :notice => "Signed up!"
     else
-      render "new", :layout => !request.xhr?
+      render "new"
     end
   end
 
@@ -61,15 +65,11 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    respond_to do |format|
-      if @user.update_attributes(params[:user], :as => can?(:change_role, User) ? :change_role : :update)
-        Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit", :layout => !request.xhr? }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    if @user.update_attributes(params[:user], :as => can?(:change_role, User) ? :change_role : :update)
+      Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
+      redirect_to current_user == @user ? account_path : @user, notice: 'User was successfully updated.'
+    else
+      render action: "edit"
     end
   end
 
@@ -87,11 +87,36 @@ class UsersController < ApplicationController
     end
   end
   
+  # GET /account
+  def account
+    @user = current_user
+    redirect_to :root unless @user
+    render 'show'
+  end
+  
+  # GET /account/change_password
+  def change_password
+    @user = current_user
+    if request.post?
+      redirect_to change_password_path and flash[:error] = 'The current password you entered is invalid.' and return unless current_user == User.authenticate(current_user.email, params[:user][:current_password])
+      @user.password = params[:user][:new_password]
+      @user.password_confirmation = params[:user][:new_password_confirmation]
+      @user.updating_password = true
+      if @user.save
+        redirect_to account_path, notice: 'Password successfully updated.'
+      else
+        render 'change_password'
+      end
+    else
+      render 'change_password'
+    end
+  end
+  
   def profile
     @user = current_user
 
     Action.log :controller => params[:controller], :action => params[:action], :user => current_user
     
-    render "show", :layout => !request.xhr?
+    render "show"
   end
 end
