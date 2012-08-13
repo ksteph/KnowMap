@@ -1,10 +1,16 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.3'
-gem 'pg'
-
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
+
+gem 'pg'                                # Postgres
+gem 'jquery-rails'                      # jQuery
+gem "bcrypt-ruby", :require => "bcrypt" # encryption library
+gem 'dynamic_form'                      # helpers for error messages in forms
+gem 'cancan'                            # Authorization
+gem 'paper_trail'                       # Active Record Versioning
+gem "rufus-scheduler", "~> 2.0.17"      # Background Task Scheduler
 
 group :test do
   gem 'cucumber-rails', :require => false
@@ -14,30 +20,16 @@ group :test do
 end
 
 group :development, :test do
-  gem 'sqlite3', '1.3.5'
   gem "rspec-rails", "~> 2.0"
 end
-
-group :production do
-end
-
-gem 'dynamic_form'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', :platform => :ruby
-
   gem 'uglifier', '>= 1.0.3'
 end
-
-gem 'jquery-rails'
-gem "bcrypt-ruby", :require => "bcrypt"
-gem "rufus-scheduler", "~> 2.0.17"
-
-# Authorization
-gem 'cancan'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
