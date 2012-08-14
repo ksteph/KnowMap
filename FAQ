@@ -1,6 +1,14 @@
 What do I do to update the production machine to the latest version?
-(TODO: double check correct)
+
+  We do this by rebasing the production git branch. Below are the commands.
+
+  //Update master branch on local machine
+  - git checkout master 
   - git pull
+  //Move back to production branch and rebase
+  - git checkout production
+  - git rebase master
+  //Usual stuff after an update
   - bundle install
   - bundle exec rake db:migrate RAILS_ENV=production
   - bundle exec rake assets:precompile
