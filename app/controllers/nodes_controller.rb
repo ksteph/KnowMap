@@ -130,4 +130,9 @@ class NodesController < ApplicationController
 
     render :partial => 'node_widget'
   end
+  
+  def versions
+    @nodes = Node.find(params[:id]).versions.map { |v| v.item }
+    render 'index'
+  end
 end
