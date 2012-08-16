@@ -132,7 +132,13 @@ class NodesController < ApplicationController
   end
   
   def versions
-    @nodes = Node.find(params[:id]).versions.map { |v| v.item }
-    render 'index'
+    @node = Node.find(params[:node_id])
+    @versions = @node.versions
+  end
+  
+  def version
+    @node = Node.find(params[:node_id])
+    @version = @node.versions.keep_if { |v| v.id === params[:version].to_i }
+    @version = @version.first
   end
 end

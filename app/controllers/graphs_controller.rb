@@ -117,7 +117,13 @@ class GraphsController < ApplicationController
   end
   
   def versions
-    @graphs = Graph.find(params[:graph_id]).versions.map { |v| v.item }
-    render 'index'
+    @graph = Graph.find(params[:graph_id])
+    @versions = @graph.versions
+  end
+  
+  def version
+    @graph = Graph.find(params[:graph_id])
+    @version = @graph.versions.keep_if { |v| v.id === params[:version].to_i }
+    @version = @version.first
   end
 end
