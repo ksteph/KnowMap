@@ -138,7 +138,7 @@ class NodesController < ApplicationController
   
   def version
     @node = Node.find(params[:node_id])
-    @version = @node.versions.keep_if { |v| v.id === params[:version].to_i }
+    @version = @node.versions.keep_if { |v| v.index === params[:version].to_i }
     @version = @version.first
   end
 end

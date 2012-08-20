@@ -123,7 +123,7 @@ class GraphsController < ApplicationController
   
   def version
     @graph = Graph.find(params[:graph_id])
-    @version = @graph.versions.keep_if { |v| v.id === params[:version].to_i }
+    @version = @graph.versions.keep_if { |v| v.index === params[:version].to_i }
     @version = @version.first
   end
 end

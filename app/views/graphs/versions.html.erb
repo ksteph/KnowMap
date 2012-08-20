@@ -1,9 +1,9 @@
 <%= render :partial => "application/flash", :locals => { :flash => flash } %>
-<h1>Versions for: <%= @graph.name %></h1>
+<h1>Previous versions for: <%= @graph.name %></h1>
 <% if @versions.count == 0 %>
   <i>No previous versions exist</i>
 <% else %>
   <% @versions.each { |version| %>
-    <%= link_to version.reify, graph_version_path(@graph, :version => version.id) %><br />
+    <%= version.index %>. <%= link_to version.reify, graph_version_path(@graph, :version => version.index) %> - <%= version.created_at %><br />
   <% } %>
 <% end %>
