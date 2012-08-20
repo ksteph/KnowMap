@@ -8,11 +8,15 @@ KnowledgeMap::Application.routes.draw do
 
   resources :graphs do
     get "groups_widget" => "graphs#groups_widget", :as => "groups_widget"
+    get "versions" => "graphs#versions", :as => "versions"
+    get "versions/:version" => "graphs#version", :as => "version"
   end
 
   resources :nodes do
     get "learning_path" => "nodes#learning_path", :as => "learning_path"
     get "node_widget" => "nodes#node_widget", :as => "node_widget"
+    get "versions" => "nodes#versions", :as => "versions"
+    get "versions/:version" => "nodes#version", :as => "version"
   end
 
   resources :courses do

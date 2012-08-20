@@ -115,4 +115,15 @@ class GraphsController < ApplicationController
 
     render :partial => "groups_widget", :layout => false#, :layout => !request.xhr?
   end
+  
+  def versions
+    @graph = Graph.find(params[:graph_id])
+    @versions = @graph.versions
+  end
+  
+  def version
+    @graph = Graph.find(params[:graph_id])
+    @version = @graph.versions.keep_if { |v| v.index === params[:version].to_i }
+    @version = @version.first
+  end
 end

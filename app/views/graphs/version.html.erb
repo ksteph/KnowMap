@@ -1,0 +1,21 @@
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
+
+<h1>Version <%= @version.index %> for <%= @graph %></h1>
+
+<p>
+  <b>Name:</b>
+  <%= @version.reify.name %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @version.reify.content %>
+</p>
+
+<% if @version.previous %>
+  <%= link_to 'Previous', graph_version_path(:version => @version.previous.index), :remote => remote? %> | 
+<% end %>
+<% if @version.next %>
+  <%= link_to 'Next', graph_version_path(:version => @version.next.index), :remote => remote? %> | 
+<% end %>
+<%= link_to 'Show all versions', graph_versions_path(@graph), :remote => remote? %>

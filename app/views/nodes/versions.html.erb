@@ -1,0 +1,9 @@
+<%= render :partial => "application/flash", :locals => { :flash => flash } %>
+<h1>Previous Versions for: <%= @node.title %></h1>
+<% if @versions.count == 0 %>
+  <i>No previous versions exist</i>
+<% else %>
+  <% @versions.each { |version| %>
+    <%= version.index %>. <%= link_to version.reify, node_version_path(@node, :version => version.index) %> - <%= version.created_at %><br />
+  <% } %>
+<% end %>

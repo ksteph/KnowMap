@@ -14,6 +14,10 @@
        end
      }.each do |graph| %>
          <li>
+           <% if can?(:versions, Graph) %>
+            <%= link_to 'Versions', graph_versions_path(graph), :remote => remote? %> -
+           <% end %>
+           
            <% if can?(:edit, Graph) %>
             <%= link_to t('actions.edit'), edit_graph_path(graph), :remote => remote? %> -
            <% end %>

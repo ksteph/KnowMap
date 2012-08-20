@@ -14,6 +14,8 @@ class Graph < ActiveRecord::Base
   # Validations
   validates :name, :presence => true, :uniqueness => true
   
+  has_paper_trail
+  
   def all_subgraphs_naive
     return [] if subgraphs.nil?
     result = subgraphs
