@@ -21,6 +21,8 @@ class Node < ActiveRecord::Base
   # Validations
   validates :title, :presence => true, :uniqueness => true
   
+  has_paper_trail
+  
   def related_nodes
     related_nodes_A | related_nodes_B
   end

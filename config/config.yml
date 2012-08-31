@@ -2,6 +2,8 @@
 
 defaults: &defaults
   remote: true
+  track: true
+  website_name: "Know Map"
 
 development:
   <<: *defaults

@@ -4,6 +4,8 @@ class CoursesController < ApplicationController
   # GET /courses.json
   def index
     @courses = Course.all
+    
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # index.html.erb
@@ -16,6 +18,8 @@ class CoursesController < ApplicationController
   def show
     @course = Course.find(params[:id])
     @course.update_nodes_rank
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # show.html.erb
@@ -30,6 +34,8 @@ class CoursesController < ApplicationController
     @course.instructors << current_user
     3.times { @course.instructor_memberships.build }
     10.times { @course.student_memberships.build }
+    
+    Action.log :controller => params[:controller], :action => params[:action], :user => current_user
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? } # new.html.erb
@@ -42,6 +48,10 @@ class CoursesController < ApplicationController
     @course = Course.find(params[:id])
     @course.instructor_memberships.build
     3.times { @course.student_memberships.build }
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
+    
+    render :layout => !request.xhr?
   end
 
   # POST /courses
@@ -52,6 +62,7 @@ class CoursesController < ApplicationController
 
     respond_to do |format|
       if @course.save
+        Action.log :controller => params[:controller], :action => params[:action], :target_id => @course.id, :user => current_user
         format.html { redirect_to @course, notice: 'Course was successfully created.' }
         format.json { render json: @course, status: :created, location: @course }
       else
@@ -68,6 +79,7 @@ class CoursesController < ApplicationController
 
     respond_to do |format|
       if @course.update_attributes(params[:course])
+        Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
         format.html { redirect_to @course, notice: 'Course was successfully updated.' }
         format.json { head :no_content }
       else
@@ -82,6 +94,8 @@ class CoursesController < ApplicationController
   def destroy
     @course = Course.find(params[:id])
     @course.destroy
+    
+    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
 
     respond_to do |format|
       format.html { redirect_to courses_url, notice: 'Course was successfully deleted.' }

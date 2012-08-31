@@ -130,4 +130,15 @@ class NodesController < ApplicationController
 
     render :partial => 'node_widget'
   end
+  
+  def versions
+    @node = Node.find(params[:node_id])
+    @versions = @node.versions
+  end
+  
+  def version
+    @node = Node.find(params[:node_id])
+    @version = @node.versions.keep_if { |v| v.index === params[:version].to_i }
+    @version = @version.first
+  end
 end

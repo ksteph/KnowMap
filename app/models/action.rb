@@ -12,7 +12,7 @@ class Action < ActiveRecord::Base
       :controller => data[:controller].downcase.classify,
       :action => data[:action].downcase,
       :target_id => data[:target_id]
-    ) if data[:user]
+    ) if data[:user] and data[:user].track and Rails.configuration.track
   end
   
   def target

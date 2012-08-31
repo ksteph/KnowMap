@@ -60,10 +60,11 @@ body {
 
 .nav {
   display: inline-block;
+  margin: 0 20px;
 }
 
 .nav a {
-  margin: 0 20px;
+  margin: 0 5px;
   color: #FFF;
   text-decoration: none;
 }

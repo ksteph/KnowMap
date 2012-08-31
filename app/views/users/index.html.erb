@@ -1,13 +1,12 @@
 <%= render :partial => "application/flash", :locals => { :flash => flash } %>
-<h1>Listing users</h1>
+<h1>Users</h1>
 
 <table>
   <tr>
-    <th>First</th>
-    <th>Last</th>
+    <th>Name</th>
     <th>Email</th>
-    <th>Password hash</th>
-    <th>Password salt</th>
+    <th>Role</th>
+    <th>Track</th>
     <th></th>
     <th></th>
     <th></th>
@@ -15,18 +14,13 @@
 
 <% @users.each do |user| %>
   <tr>
-    <td><%= user.first %></td>
-    <td><%= user.last %></td>
+    <td><%= "#{user.first} #{user.last}" %></td>
     <td><%= user.email %></td>
-    <td><%= user.password_hash %></td>
-    <td><%= user.password_salt %></td>
-    <td><%= link_to 'Show', user %></td>
-    <td><%= link_to 'Edit', edit_user_path(user) %></td>
-    <td><%= link_to 'Destroy', user, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= user.role %></td>
+    <td><%= user.track %></td>
+    <td><%= link_to 'Show', user, :remote => remote? %></td>
+    <td><%= link_to 'Edit', edit_user_path(user), :remote => remote? %></td>
+    <td><%= link_to 'Destroy', user, confirm: 'Are you sure?', method: :delete, :remote => remote? %></td>
   </tr>
 <% end %>
 </table>
-
-<br />
-
-<%= link_to 'New User', new_user_path %>

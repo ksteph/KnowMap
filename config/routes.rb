@@ -8,11 +8,15 @@ KnowledgeMap::Application.routes.draw do
 
   resources :graphs do
     get "groups_widget" => "graphs#groups_widget", :as => "groups_widget"
+    get "versions" => "graphs#versions", :as => "versions"
+    get "versions/:version" => "graphs#version", :as => "version"
   end
 
   resources :nodes do
     get "learning_path" => "nodes#learning_path", :as => "learning_path"
     get "node_widget" => "nodes#node_widget", :as => "node_widget"
+    get "versions" => "nodes#versions", :as => "versions"
+    get "versions/:version" => "nodes#version", :as => "version"
   end
 
   resources :courses do
@@ -24,6 +28,13 @@ KnowledgeMap::Application.routes.draw do
   get "sign_up" => "users#new", :as => "sign_up"
   get "profile" => "users#profile", :as => "profile"
   
+  scope "account" do
+    get "/" => "users#account", :as => "account"
+    get "/edit" => "users#edit", :as => "edit_account"
+    get "/profile" => "users#profile", :as => "profile" # what other users see
+    match "/change_password" => "users#change_password", :as => "change_password"
+  end
+
   resources :users
   resources :sessions
   resources :roles

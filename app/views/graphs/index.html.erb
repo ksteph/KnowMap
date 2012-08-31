@@ -14,12 +14,16 @@
        end
      }.each do |graph| %>
          <li>
+           <% if can?(:versions, Graph) %>
+            <%= link_to 'Versions', graph_versions_path(graph), :remote => remote? %> -
+           <% end %>
+           
            <% if can?(:edit, Graph) %>
-            <%= link_to t('actions.edit'), edit_graph_path(graph) %> -
+            <%= link_to t('actions.edit'), edit_graph_path(graph), :remote => remote? %> -
            <% end %>
             
            <% if can?(:destroy, Graph) %>
-            <%= link_to t('actions.destroy'), graph, confirm: 'Are you sure?', method: :delete %> -
+            <%= link_to t('actions.destroy'), graph, confirm: 'Are you sure?', method: :delete, :remote => remote? %> -
            <% end %>
            
            <%= link_to graph.name, graph, :remote => remote?, "data-type" => "html" %>

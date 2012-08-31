@@ -14,7 +14,13 @@
   <b>Email:</b>
   <%= @user.email %>
 </p>
-<% if can?(:view_detailed_profile, @user) %>
+
+<p>
+  <b>Help improve <%= Rails.configuration.website_name %>:</b>
+  <%= @user.track %>
+</p>
+
+<% if false and can?(:view_detailed_profile, @user) %>
 <p>
   <b>Role:</b>
   <%= @user.role %>
@@ -30,5 +36,6 @@
 </table>
 <% end %>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<%= link_to 'Edit', edit_account_path, :remote => remote? %> |
+<%= link_to 'Change Password', change_password_path, :remote => remote? %><!-- |
+<%= link_to 'View Profile', profile_path, :remote => remote? %>-->

@@ -36,34 +36,38 @@ class Ability
     can [:show, :edit, :update, :profile], User, :id => @user.id
     
     def student
-      can [:new, :create, :edit, :update, :destroy], [Graph, Node]
+      can [:new, :create, :edit, :update, :destroy, :versions, :version], [Graph, Node]
+      can [:account, :profile, :change_password], [User], :id => @user.id
     end
     def instructor
       student
-      can [:manage], [Course]
+      can [:manage], [Course], :course_memberships => { :user_id => @user.id, :role => CourseMembership.instructorRole }
       can [:view_detailed_profile], User, :role => User.Roles.Student
     end
     def admin
       instructor
+      can [:manage], [Course]
       can [:change_role, :view_detailed_profile], User
+      can [:manage], [User]
     end
     def super_admin
       admin
       can :manage, :all
     end
-        
     
-    if @user.role == User.Roles.Student
-      student
-    end
-    if @user.role == User.Roles.Instructor
-      instructor
-    end
-    if @user.role == User.Roles.Admin
-      admin
-    end
-    if @user.role == User.Roles.SuperAdmin
-      super_admin
+    unless @user.new_record? then # this is to distinguish the guest account we created above
+      if @user.role == User.Roles.Student
+        student
+      end
+      if @user.role == User.Roles.Instructor
+        instructor
+      end
+      if @user.role == User.Roles.Admin
+        admin
+      end
+      if @user.role == User.Roles.SuperAdmin
+        super_admin
+      end
     end
   end
 end

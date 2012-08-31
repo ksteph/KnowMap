@@ -19,20 +19,38 @@
   </p>
   <p>
     <%= f.label :email %><br />
-    <%= f.text_field :email %>
+    <%= f.email_field :email %>
   </p>
+  <% if @user.new_record? %>
+    <p>
+      <%= f.label :password %><br />
+      <%= f.password_field :password %>
+    </p>
+    <p>
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation %>
+    </p>
+  <% end %>
+  <% if can?(:change_role, User) %>
+    <p>
+      <%= f.label :role %><br />
+      <%= f.select :role, User.Roles.all.collect { |r| [r, r] } %>
+    </p>
+  <% end %>
   <p>
-    <%= f.label :password %><br />
-    <%= f.password_field :password %>
+    <%= f.label "Help improve #{Rails.configuration.website_name}" %><br />
+    <%= f.check_box :track %> Yes, allow <%= Rails.configuration.website_name %> to collect my usage information.
   </p>
-  <p>
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation %>
+  
+  <p class="button">
+    <%= f.submit @user.new_record? ? "Sign up" : current_user == @user ? "Update Account" : "Update User" %>
+    <% unless @user.new_record? %>
+      <% if current_user == @user %>
+         - <%= link_to 'Cancel', account_path, :remote => remote? %>
+      <% else %>
+         - <%= link_to 'Show', @user, :remote => remote? %>
+         - <%= link_to 'Back', users_path, :remote => remote? %>    
+      <% end %>
+    <% end %>
   </p>
-  <p>
-    <%= f.label :role %><br />
-    <%= f.text_field :role %>
-  </p>
-
-  <p class="button"><%= f.submit @user.new_record? ? "Sign up" : "Update User" %></p>
 <% end %>
