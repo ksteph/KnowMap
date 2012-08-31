@@ -1,7 +1,7 @@
-CourseShare-KnowledgeMap
+KnowMap
 ========================
 
-Knowledge Map interface for CourseShare
+Knowledge Map interface
 
 For something simple:
 In the graphiz directory is the script
