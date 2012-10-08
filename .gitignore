@@ -26,3 +26,4 @@ capybara-*.html
 .rspec
 bundler_stubs/
 spreadsheets/export
+config/database.yml
