@@ -112,6 +112,8 @@ var Map = (function(Map, $, undefined){
       node_ids = node_ids.substr(1, node_ids.length-2);
       if(node_ids) { url = url + node_ids; }
       d3.json(url, function(json) {
+
+              console.log(json);
         Map.Node.update(json.nodes);
         Map.Edge.update(json.lines, Map.Node.MapId2Data);
       });
@@ -179,6 +181,9 @@ var Map = (function(Map, $, undefined){
       // actual height while expanding the div
       var lpHeight = parseInt(d3.select("#learning-path-widget-content")
                               .style("height"));
+      
+      LearningPathWidget.Svg.style("height", lpHeight);
+
       // Clear old learning path stuff
       LearningPathWidget.SvgG.selectAll("g").remove();
       LearningPathWidget.TransMatrix = [1,0,0,1,0,0,];
