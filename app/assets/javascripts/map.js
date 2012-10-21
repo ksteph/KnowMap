@@ -14,6 +14,8 @@ var MAP_CONSTANTS = {
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
     highlight_opacity : 0.5,
+    
+    finished_opacity : 0.3, //added by haotian for opacity of finished nodes
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -326,7 +328,8 @@ var Map = (function(Map, $, undefined){
 
         nodeGNode.append("circle")
           .attr("class", "lp-node")
-          .attr("r", MAP_CONSTANTS.lp_node_radius);
+          .attr("r", MAP_CONSTANTS.lp_node_radius)
+          .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity}); //added by Haotian
 
         nodeGNode.append("g")
           .attr("id","lp-node-label")
@@ -339,7 +342,8 @@ var Map = (function(Map, $, undefined){
                  .attr("class","lp-node-text")
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
-           });
+           })
+           .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity}); //added by Haotian
       });
     }
 
@@ -632,10 +636,16 @@ var Map = (function(Map, $, undefined){
 
       Node.SvgNodesInner = Node.SvgNodes.append("g")
         .attr("id","map-node-inner");
+        
+      //added by haotian
+      Node.SvgNodesInner.append("circle")
+        .attr("r", MAP_CONSTANTS.node_radius)
+        .style("fill",$("#window").css("background-color"));
 
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
-        .attr("r", MAP_CONSTANTS.node_radius);
+        .attr("r", MAP_CONSTANTS.node_radius)
+        .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});//added by haotian
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -646,7 +656,8 @@ var Map = (function(Map, $, undefined){
           for(var i=0; i<d.aryLabel.length ;i++) {
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
-              .attr("dy",(startDY+parseInt(i))+"em");
+              .attr("dy",(startDY+parseInt(i))+"em")
+              .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity}); //added by haotian
           }
         });
     }
