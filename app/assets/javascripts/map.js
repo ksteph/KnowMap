@@ -49,6 +49,11 @@ var Map = (function(Map, $, undefined){
   Map.setup = function() {
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
+	
+	// added by haotian, CHANGE HARDCODING IF POSSIBLE
+	$("#groups-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("groups-widget-content", "groups-tab-button")});
+	$("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("node-stats-widget-content", "node-stats-tab-button")});
+	$("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("student-stats-widget-content", "student-stats-tab-button")});
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -575,7 +580,18 @@ var Map = (function(Map, $, undefined){
       });
     }
     
-    return GroupsWidget;
+    // added by haotian, CHANGE HARDCODING LATER
+	GroupsWidget.toggleContent = function(contentString, buttonString) {
+		contentString = "#" + contentString;
+		$(".side-widget-content").css("display", "none");
+		$(contentString).css("display", "block");
+		
+		buttonString = "#" + buttonString;
+		$(".side-widget-tab-button").css("background-color", "grey");
+		$(buttonString).css("background-color", "");
+	}
+	
+	return GroupsWidget;
   })({});
   
   Map.NodeWidget = (function(NodeWidget) {

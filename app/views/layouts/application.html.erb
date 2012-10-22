@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <title>Know Map</title>
@@ -37,9 +37,36 @@
         <div id="map" style="position:relative; overflow:hidden;<% if params[:controller] != 'graphs' %>display:none<% end %>">
           <div id="groups-widget" style="position:absolute;right:-280px;top:0; ">
             <div id="groups-widget-button" style="position:absolute;top:-1px;left:-21px;line-height:100%; padding:5px;background-color:grey;margin:0">&laquo;</div>
-            <div id="groups-widget-content" style="margin-left:18px;width:250px;float:right;min-height:100px;max-height:490px;padding:5px;overflow-y:scroll">
+            <%# BEGIN changes by haotian%>
+            <% if !params[:controller].nil? %><%# change this to if user == instructor later %>
+            <div id="tabs" style="margin-left:25px; margin-top:1px">
+              <div id="groups-tab-button" class="side-widget-tab-button" style="text-align:center;display:inline-block;width:25%;border: 1px solid black;border-bottom:0">
+                groups
+              </div>
+              <div id="node-stats-tab-button" class="side-widget-tab-button" style="text-align:center;display:inline-block;width:25%;border: 1px solid black;border-bottom:0;background-color:grey;">
+                node stats
+              </div>
+              <div id="student-stats-tab-button" class="side-widget-tab-button" style="text-align:center;display:inline-block;width:25%;border: 1px solid black;border-bottom:0;background-color:grey;">  
+                student stats
+              </div>
+            </div>
+            <% end %>
+            <%# END changes by haotian%>
+            <div id="groups-widget-content" class="side-widget-content" style="margin-left:18px;width:250px;float:right;min-height:100px;max-height:490px;padding:5px;overflow-y:scroll">
               <% render 'graphs/groups_widget', :locals => { :graph => @graph } %>
             </div>
+            <%# BEGIN changes by haotian%>
+            <% if !params[:controller].nil? %><%# change this to if user == instructor later %>
+            <div id="node-stats-widget-content" class="side-widget-content" style="display:none;margin-left:18px;width:250px;float:right;min-height:100px;max-height:490px;padding:5px;overflow-y:scroll">
+              <%# insert what to render here#%>
+              insert what to render for node-stats-widget-content here
+            </div>
+            <div id="student-stats-widget-content" class="side-widget-content" style="display:none;margin-left:18px;width:250px;float:right;min-height:100px;max-height:490px;padding:5px;overflow-y:scroll">
+              <%# insert what to render here%>
+              insert what to render for student-stats-widget-content here
+            </div>
+            <% end %>
+            <%# END changes by haotian%>
           </div>
           <%= render 'graphs/graph_window' %>
         </div>
