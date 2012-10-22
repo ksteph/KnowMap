@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120814002222) do
+ActiveRecord::Schema.define(:version => 20121022153843) do
 
   create_table "actions", :force => true do |t|
     t.integer  "user_id"
@@ -103,6 +103,28 @@ ActiveRecord::Schema.define(:version => 20120814002222) do
   end
 
   add_index "nodes", ["id"], :name => "index_nodes_on_id"
+
+  create_table "question_submissions", :force => true do |t|
+    t.integer  "user_id",         :null => false
+    t.integer  "node_id",         :null => false
+    t.integer  "question_id",     :null => false
+    t.text     "student_answers"
+    t.boolean  "correct"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  create_table "questions", :force => true do |t|
+    t.integer  "node_id",      :null => false
+    t.string   "type"
+    t.text     "prompt",       :null => false
+    t.text     "choices"
+    t.text     "answers",      :null => false
+    t.text     "explanations"
+    t.text     "hint"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "roles", :force => true do |t|
     t.string   "name"
