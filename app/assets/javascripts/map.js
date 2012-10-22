@@ -1,5 +1,7 @@
 var MAP_CONSTANTS = {
     zoom_scale : 1.1,
+	zoom_in_limit : 30.0, //Added by Alan
+    zoom_out_limit : 0.3, //Added by Alan
     pan_step : 10,
 
     node_radius : 8,
@@ -10,6 +12,7 @@ var MAP_CONSTANTS = {
 
     edge_style_related : "1,2",
     edge_style_dependent : "1,0",
+	edge_completed_opacity : 0.5
 
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
@@ -279,7 +282,7 @@ var Map = (function(Map, $, undefined){
         svgLinkGroup.selectAll("path.lp-edge")
           .data(lpLinks)
           .enter().append("path")
-            .attr("class","lp-edge")
+            .attr("class", function(d){ if (d.source == 2) { return "lp-edge-completed"; } else { return "lp-edge"; }}) //Added by Alan
             .style("fill","none")
             .style("marker-end", function(d){
                var diff = lpNodesMap[d.target].pos - lpNodesMap[d.source].pos;
@@ -777,11 +780,12 @@ var Map = (function(Map, $, undefined){
       Edge.SvgEdges = Edge.SvgG.selectAll(".edge")
         .data(Edge.Data)
         .enter().append("line")
-          .attr("class", "map-edge")
+          .attr("class", function(d){if (d.source == 5) { return "map-edge-completed"; } else { return "map-edge"; }}) //Added by Alan
           .attr("x1", function(d){return Edge.MapNodeId2Node[d.source].x;})
           .attr("y1", function(d){return Edge.MapNodeId2Node[d.source].y;})
           .attr("x2", function(d){return Edge.MapNodeId2Node[d.target].x;})
           .attr("y2", function(d){return Edge.MapNodeId2Node[d.target].y;})
+		  		  .attr("opacity", function(d){if (d.source >= 5) { return 1; } else { return MAP_CONSTANTS.edge_completed_opacity; }}) //Added by Alan
           .style("stroke-dasharray", function(d){
               return Edge.StrokeStyle[d.type]
             })
@@ -1082,6 +1086,11 @@ var Map = (function(Map, $, undefined){
 
   Map.zoom = function(scale) {
     if (Map.SvgChartG == null)
+      return;
+	  
+	//added by Alan
+    if (Map.TransMatrix[0]*scale > MAP_CONSTANTS.zoom_in_limit || 
+        Map.TransMatrix[0]*scale < MAP_CONSTANTS.zoom_out_limit)
       return;
 
     for(var i = 0; i < Map.TransMatrix.length; i++) {
