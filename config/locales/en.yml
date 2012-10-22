@@ -33,5 +33,8 @@ en:
     add_related: "Add related node"
     add_previous: "Add previous node"
     add_next: "Add next node"
+    content_explanation: "Content is interpreted as"
+    content_explanation_link_text: "textile"
+    content_explanation_url: "http://redcloth.org/textile"
   search_box:
     default_text: "Search..."

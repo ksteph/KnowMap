@@ -3,6 +3,33 @@
   They will automatically be included in application.css.
 */
 
+body.nodes .field {
+  margin: 5px 0;
+}
+
+body.nodes .field .field-explanation{
+  font-size: 0.8em;
+  font-weight: bold;
+  color: #999;
+  float: right;
+  padding-top: 2px;
+}
+
+body.nodes .field.with-explanation { overflow: hidden }
+
+body.nodes .field.with-explanation label {
+  float: left;
+}
+
+body.nodes .field-explanation-wrapper {
+  float: left;
+}
+
+body.nodes .field-explanation-wrapper .input-field {
+  clear: both;
+  display: block;
+}
+
 .nodeslistTitle {
   display: inline-block;
   background-color: yellow;
@@ -36,3 +63,5 @@ table.nodesTable ul {
   padding: 0;
   padding-left: 20px;
 }
+
+p { line-height: 1.3em; }
