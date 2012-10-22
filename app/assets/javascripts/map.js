@@ -468,8 +468,11 @@ var Map = (function(Map, $, undefined){
         LearningPathWidget.panScroller((dx * -1.0)/
                                        LearningPathWidget.ScrollScale);
       } else if (LearningPathWidget.BScrollerMouseDown) {
-    
-		if (((LearningPathWidget.ScrollerTransMatrix[4]+dx)>width-20) || ((LearningPathWidget.ScrollerTransMatrix[4]+dx)<0)){
+		var limit;
+    		if (pathlength<width)
+			limit = pathlength;
+		else limit = width-20;
+		if (((LearningPathWidget.ScrollerTransMatrix[4]+dx)>limit) || ((LearningPathWidget.ScrollerTransMatrix[4]+dx)<0)){
 			dx=0;}
     
         LearningPathWidget.TransMatrix[4] +=
