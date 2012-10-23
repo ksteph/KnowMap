@@ -179,6 +179,7 @@ var Map = (function(Map, $, undefined){
       // actual height while expanding the div
       var lpHeight = parseInt(d3.select("#learning-path-widget-content")
                               .style("height"));
+      LearningPathWidget.Svg.style("height", lpHeight);
       // Clear old learning path stuff
       LearningPathWidget.SvgG.selectAll("g").remove();
       LearningPathWidget.TransMatrix = [1,0,0,1,0,0,];
@@ -451,28 +452,28 @@ var Map = (function(Map, $, undefined){
       if (LearningPathWidget.SvgG == null)
         return;
 
-	  var pathlength = LearningPathWidget.pathlength;
-	  var width = LearningPathWidget.width;
-	  if (pathlength>width){
-		pathlength = pathlength - width;}
-		else pathlength=100;
+      var pathlength = LearningPathWidget.pathlength;
+      var width = LearningPathWidget.width;
+      if (pathlength>width){
+	pathlength = pathlength - width;
+      } else pathlength=0;
 
 
       if (LearningPathWidget.BMouseDown) {
-      
-		if (((LearningPathWidget.TransMatrix[4]+dx)<-pathlength) || ((LearningPathWidget.TransMatrix[4]+dx)>0)){
-			dx=0;}
+	if ( ((LearningPathWidget.TransMatrix[4]+dx)<-pathlength) || ((LearningPathWidget.TransMatrix[4]+dx)>0) ){
+	    dx=0;}
       
         LearningPathWidget.TransMatrix[4] += dx;
 
         LearningPathWidget.panScroller((dx * -1.0)/
                                        LearningPathWidget.ScrollScale);
       } else if (LearningPathWidget.BScrollerMouseDown) {
-		var limit;
-    		if (pathlength<width)
-			limit = pathlength;
-		else limit = width-20;
-		if (((LearningPathWidget.ScrollerTransMatrix[4]+dx)>limit) || ((LearningPathWidget.ScrollerTransMatrix[4]+dx)<0)){
+	var limit;
+    	if (pathlength<width)
+	    limit = pathlength;
+	else limit = width-MAP_CONSTANTS.lp_scroller_padding-MAP_CONSTANTS.lp_scroller_min_width;
+		
+	if (((LearningPathWidget.ScrollerTransMatrix[4]+dx)>limit) || ((LearningPathWidget.ScrollerTransMatrix[4]+dx)<0)){
 			dx=0;}
     
         LearningPathWidget.TransMatrix[4] +=
