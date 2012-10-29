@@ -15,4 +15,14 @@ module ApplicationHelper
     Rails.configuration.remote && cookies[:remote]
     true
   end
+
+  def extract_layout_classes controller
+    [
+      controller.class.name.downcase.split('::').first,
+      controller.controller_name,
+      controller.action_name,
+      @layout
+    ].join(' ').strip
+  end
+
 end
