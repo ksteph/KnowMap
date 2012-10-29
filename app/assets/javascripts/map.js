@@ -335,7 +335,7 @@ var Map = (function(Map, $, undefined){
         nodeGNode.append("circle")
           .attr("class", "lp-node")
           .attr("r", MAP_CONSTANTS.lp_node_radius)
-          .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
+          .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
 
         nodeGNode.append("g")
           .attr("id","lp-node-label")
@@ -349,7 +349,7 @@ var Map = (function(Map, $, undefined){
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
            })
-           .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
+           .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
       });
     }
 
@@ -660,7 +660,7 @@ var Map = (function(Map, $, undefined){
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
         .attr("r", MAP_CONSTANTS.node_radius)
-        .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
+        .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -672,7 +672,7 @@ var Map = (function(Map, $, undefined){
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
               .attr("dy",(startDY+parseInt(i))+"em")
-              .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
+              .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
           }
         });
     }
@@ -1195,6 +1195,11 @@ var Map = (function(Map, $, undefined){
         break; // Do nothing
     }
   }
+  
+    Map.isNodeComplete = function(nodeID) {
+        if (nodeID <= 5) return true;
+        return false;
+    }
 
   return Map;
 })({}, jQuery);
