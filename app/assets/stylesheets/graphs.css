@@ -25,7 +25,6 @@
   stroke: black;
   stroke-width: 0.75;
 }
-
 .map-edge-completed {
   stroke: #2FFF37;
   stroke-width: 0.75;
@@ -34,7 +33,6 @@
 .lp-node {
   fill : silver;
 }
-
 .lp-node-text {
   font-size : 8pt;
   text-anchor : middle;
@@ -48,12 +46,10 @@
   stroke : deepskyblue;
   stroke-width: 3;
 }
-
 .lp-edge-completed {
   stroke: #2FFF37;
   stroke-width: 2;
 }
-
 .lp-edge-completed:hover {
   stroke: deepskyblue;
   stroke-width: 3;
