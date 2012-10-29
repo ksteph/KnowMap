@@ -282,8 +282,8 @@ var Map = (function(Map, $, undefined){
         svgLinkGroup.selectAll("path.lp-edge")
           .data(lpLinks)
           .enter().append("path")
-            .attr("class", function(d){ if (Edge.MapNodeId2Node[d.source].completed == "true" && 
-			                                Edge.MapNodeId2Node[d.target].completed != "true") 
+            .attr("class", function(d){ if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
+			                                Map.Edge.MapNodeId2Node[d.target].completed != "true") 
 											{ return "lp-edge-completed"; } else { return "lp-edge"; }})
             .style("fill","none")
             .style("marker-end", function(d){
