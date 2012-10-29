@@ -9,7 +9,9 @@ class QuestionsController < ApplicationController
   def create
     editor_data = ActiveSupport::JSON.decode(params[:question][:data])
     puts editor_data
+    binding.pry
     @question = Question.from_editor_data(editor_data, :course=>@course)
+    binding.pry
     respond_to do |format|
       if @question
         format.json { render :json => {:redirectURL => course_questions_url(@course), :id => @question.id} }
