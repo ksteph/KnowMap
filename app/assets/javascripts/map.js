@@ -12,7 +12,7 @@ var MAP_CONSTANTS = {
 
     edge_style_related : "1,2",
     edge_style_dependent : "1,0",
-    edge_completed_style_opacity : 0.4
+    edge_completed_style_opacity : 0.4,
 
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
