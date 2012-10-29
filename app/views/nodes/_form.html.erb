@@ -15,10 +15,20 @@
     <%= f.label :title %><br />
     <%= f.text_field :title %>
   </div>
-  <div class="field">
-    <%= f.label :content %><br />
-    <%= f.text_area :content %>
+
+  <div class="field with-explanation">
+    <div class="field-explanation-wrapper">
+      <%= f.label :content %>
+      <div class="field-explanation">
+        <%= t 'nodes.content_explanation' %>
+        <%= link_to t('nodes.content_explanation_link_text'), 
+          t('nodes.content_explanation_url'), 
+          :target => "_blank" %>
+      </div>
+      <%= f.text_area :content, :class => 'input-field' %>
+    </div>
   </div>
+
   <div class="field">
     <%= f.label :pos_x %><br />
     <%= f.text_field :pos_x %>

@@ -6,7 +6,7 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
-<body><div id="container">
+<body class="<%= extract_layout_classes(controller) %>"><div id="container">
   <div id="header">
     <div class="title">
       <%= link_to 'Know Map', :root, :remote => remote? %>

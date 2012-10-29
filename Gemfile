@@ -8,9 +8,11 @@ gem 'pg'                                # Postgres
 gem 'jquery-rails'                      # jQuery
 gem "bcrypt-ruby", :require => "bcrypt" # encryption library
 gem 'dynamic_form'                      # helpers for error messages in forms
+gem 'RedCloth'                          # For node content presentation http://redcloth.org/
 gem 'cancan'                            # Authorization
 gem 'paper_trail'                       # Active Record Versioning
 gem "rufus-scheduler", "~> 2.0.17"      # Background Task Scheduler
+
 
 group :test do
   gem 'cucumber-rails', :require => false
