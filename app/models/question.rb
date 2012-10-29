@@ -22,11 +22,10 @@ class Question < ActiveRecord::Base
     case type
       when "QuestionGroup", "SelectAllQuestion", "MultipleChoiceQuestion", "EssayQuestion"#, "CustomHTMLChooseAll", "CustomHTMLMultipleChoice"
         question        = type.constantize.new
-        question.course = params[:course] if params[:course]
+        question.node_id = params[:node_id]
         question.json   = data.to_json
         question.text   = process_text(data[:description])
         question.title  = strip_paragraph(process_text(data[:title]))
-        question.weight = data[:score]
         if data[:explanation] and data[:explanation].strip != ""
           question.explanations     = process_text(data[:explanation])
         end

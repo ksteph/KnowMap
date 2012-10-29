@@ -115,7 +115,7 @@ class QuestionEditor
       path = cur.config.formPath or $('form').attr('action')
       $.ajax {
         type: "POST"
-        url: path
+        url: $('#question_form').attr('data-submit-url')
         data: post_data
         dataType: "json"
         success: cur.config.onSubmitSuccess
