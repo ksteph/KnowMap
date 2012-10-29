@@ -1,3 +1,4 @@
+
 var MAP_CONSTANTS = {
     zoom_scale : 1.1,
     pan_step : 10,
