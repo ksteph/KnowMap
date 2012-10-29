@@ -25,8 +25,6 @@
 //= require init
 //
 //= require timer
-//= require assignments
-//= require lectures
 //= require questions
 //= require page_specific_execution
 //= require_tree .
