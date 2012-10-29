@@ -9,7 +9,7 @@
     "HTML-CSS": { availableFonts: ["TeX"] }
     });
 
-#question_form
+#question_form{'data-submit-url' => node_questions_path(@node)}
   %h1 New Question
   %br
   = form_for [@node, @question] do |f|

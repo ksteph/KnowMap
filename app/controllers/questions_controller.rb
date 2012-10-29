@@ -7,14 +7,13 @@ class QuestionsController < ApplicationController
   end
 
   def create
+    @node = Node.find(params[:node_id])
     editor_data = ActiveSupport::JSON.decode(params[:question][:data])
-    puts editor_data
-    binding.pry
-    @question = Question.from_editor_data(editor_data, :course=>@course)
+    @question = Question.from_editor_data(editor_data, :node_id => params[:node_id])
     binding.pry
     respond_to do |format|
       if @question
-        format.json { render :json => {:redirectURL => course_questions_url(@course), :id => @question.id} }
+        format.json { render :json => {:redirectURL => edit_node_path(@node), :id => @question.id} }
       else
         format.json { render :json => "There was a problem saving your question.", :status => :unprocessable_entity }
       end
