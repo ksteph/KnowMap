@@ -5,5 +5,6 @@
           "row": "<%= node.row %>",<% end %><% if node.respond_to? 'index' and node.index %>
           "index": "<%= node.index %>",<% end %>
           "x": "<%= node.pos_x %>",
-          "y": "<%= node.pos_y %>"
+          "y": "<%= node.pos_y %>",
+          "completed": "<%= current_user!=nil ?  current_user.completed?(node) : false %>"
         }

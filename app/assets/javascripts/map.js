@@ -17,6 +17,8 @@ var MAP_CONSTANTS = {
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
     highlight_opacity : 0.5,
+    
+    completed_opacity : 0.4,
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -50,6 +52,12 @@ var Map = (function(Map, $, undefined){
   Map.setup = function() {
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
+	
+	  $("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
+	  $("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
+	  $("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("student-stats-widget-content", "student-stats-tab-button")});
+	  
+	  Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -331,7 +339,8 @@ var Map = (function(Map, $, undefined){
 
         nodeGNode.append("circle")
           .attr("class", "lp-node")
-          .attr("r", MAP_CONSTANTS.lp_node_radius);
+          .attr("r", MAP_CONSTANTS.lp_node_radius)
+          .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
 
         nodeGNode.append("g")
           .attr("id","lp-node-label")
@@ -344,7 +353,8 @@ var Map = (function(Map, $, undefined){
                  .attr("class","lp-node-text")
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
-           });
+           })
+           .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
       });
     }
 
@@ -594,7 +604,17 @@ var Map = (function(Map, $, undefined){
       });
     }
     
-    return GroupsWidget;
+	GroupsWidget.displayTab = function(strContent, strButton) {
+		strContent = "#" + strContent;
+		$(".side-widget-content").css("display", "none");
+		$(strContent).css("display", "block");
+		
+		strButton = "#" + strButton;
+		$(".side-widget-tab-button").css("background-color", "grey");
+		$(strButton).css("background-color", "");
+	}
+	
+	return GroupsWidget;
   })({});
   
   Map.NodeWidget = (function(NodeWidget) {
@@ -655,10 +675,15 @@ var Map = (function(Map, $, undefined){
 
       Node.SvgNodesInner = Node.SvgNodes.append("g")
         .attr("id","map-node-inner");
+        
+      Node.SvgNodesInner.append("circle")
+        .attr("r", MAP_CONSTANTS.node_radius)
+        .style("fill",$("#window").css("background-color"));
 
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
-        .attr("r", MAP_CONSTANTS.node_radius);
+        .attr("r", MAP_CONSTANTS.node_radius)
+        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -669,7 +694,8 @@ var Map = (function(Map, $, undefined){
           for(var i=0; i<d.aryLabel.length ;i++) {
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
-              .attr("dy",(startDY+parseInt(i))+"em");
+              .attr("dy",(startDY+parseInt(i))+"em")
+              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
           }
         });
     }
@@ -1200,6 +1226,11 @@ var Map = (function(Map, $, undefined){
       default:
         break; // Do nothing
     }
+  }
+  
+  Map.isNodeComplete = function(nodeID) {
+    if (nodeID <= 5) return true;
+    return false;
   }
 
   return Map;
