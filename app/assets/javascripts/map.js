@@ -1,4 +1,12 @@
 
+
+
+
+
+
+
+
+
 var MAP_CONSTANTS = {
     zoom_scale : 1.1,
     zoom_in_limit : 30.0,
