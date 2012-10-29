@@ -14,6 +14,21 @@
 //=  require jquery-ui
 //= require jquery_ujs
 //          history_jquery_html5
+//
+//= require bootstrap-dropdown
+//= require bootstrap-collapse
+//
+//= require kalendae.js
+//
+//= require d3.v2.min.js
+//
+//= require init
+//
+//= require timer
+//= require assignments
+//= require lectures
+//= require questions
+//= require page_specific_execution
 //= require_tree .
 
 function remove_fields(link) {
