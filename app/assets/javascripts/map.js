@@ -15,7 +15,7 @@ var MAP_CONSTANTS = {
     highlight_radius : 11,
     highlight_opacity : 0.5,
     
-    finished_opacity : 0.4,
+    completed_opacity : 0.4,
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -50,11 +50,11 @@ var Map = (function(Map, $, undefined){
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
 	
-	  $("#groups-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("groups-widget-content", "groups-tab-button")});
-	  $("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("node-stats-widget-content", "node-stats-tab-button")});
-	  $("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("student-stats-widget-content", "student-stats-tab-button")});
+	  $("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
+	  $("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
+	  $("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("student-stats-widget-content", "student-stats-tab-button")});
 	  
-	  Map.GroupsWidget.toggleContent("groups-widget-content", "groups-tab-button");
+	  Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -581,14 +581,14 @@ var Map = (function(Map, $, undefined){
       });
     }
     
-	GroupsWidget.toggleContent = function(contentString, buttonString) {
-		contentString = "#" + contentString;
+	GroupsWidget.displayTab = function(strContent, strButton) {
+		strContent = "#" + strContent;
 		$(".side-widget-content").css("display", "none");
-		$(contentString).css("display", "block");
+		$(strContent).css("display", "block");
 		
-		buttonString = "#" + buttonString;
+		strButton = "#" + strButton;
 		$(".side-widget-tab-button").css("background-color", "grey");
-		$(buttonString).css("background-color", "");
+		$(strButton).css("background-color", "");
 	}
 	
 	return GroupsWidget;
