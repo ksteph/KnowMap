@@ -660,7 +660,7 @@ var Map = (function(Map, $, undefined){
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
         .attr("r", MAP_CONSTANTS.node_radius)
-        .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
+        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -672,7 +672,7 @@ var Map = (function(Map, $, undefined){
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
               .attr("dy",(startDY+parseInt(i))+"em")
-              .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
+              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
           }
         });
     }
