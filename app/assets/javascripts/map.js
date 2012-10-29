@@ -208,6 +208,10 @@ var Map = (function(Map, $, undefined){
         var pathWidth = LearningPathWidget.getNodePosX(lpNodes.length-1) +
             MAP_CONSTANTS.lp_node_radius + MAP_CONSTANTS.lp_node_spacer;
 
+        LearningPathWidget.pathlength = LearningPathWidget.getNodePosX(lpNodes.length-1) +
+            MAP_CONSTANTS.lp_node_radius + MAP_CONSTANTS.lp_node_spacer;
+        LearningPathWidget.width = $("#learning-path-widget-content").width();
+
         var nodeY = lpHeight - MAP_CONSTANTS.lp_scroller_padding*2 -
             MAP_CONSTANTS.lp_scroller_height - MAP_CONSTANTS.lp_node_radius;
 
@@ -452,12 +456,30 @@ var Map = (function(Map, $, undefined){
       if (LearningPathWidget.SvgG == null)
         return;
 
+      var pathlength = LearningPathWidget.pathlength;
+      var width = LearningPathWidget.width;
+      if (pathlength>width){
+        pathlength = pathlength - width;
+      } else pathlength=0;
+
       if (LearningPathWidget.BMouseDown) {
+        if ( ((LearningPathWidget.TransMatrix[4]+dx)<-pathlength) || ((LearningPathWidget.TransMatrix[4]+dx)>0) ){
+          dx=0;}
+
         LearningPathWidget.TransMatrix[4] += dx;
 
         LearningPathWidget.panScroller((dx * -1.0)/
                                        LearningPathWidget.ScrollScale);
       } else if (LearningPathWidget.BScrollerMouseDown) {
+
+        var limit;
+        if (pathlength<width)
+          limit = pathlength;
+        else limit = width-MAP_CONSTANTS.lp_scroller_padding-MAP_CONSTANTS.lp_scroller_min_width;
+
+        if (((LearningPathWidget.ScrollerTransMatrix[4]+dx)>limit) || ((LearningPathWidget.ScrollerTransMatrix[4]+dx)<0)){
+          dx=0;}
+
         LearningPathWidget.TransMatrix[4] +=
             (dx * -1.0 * LearningPathWidget.ScrollScale);
         LearningPathWidget.panScroller(dx);
