@@ -1196,10 +1196,10 @@ var Map = (function(Map, $, undefined){
     }
   }
   
-    Map.isNodeComplete = function(nodeID) {
-        if (nodeID <= 5) return true;
-        return false;
-    }
+  Map.isNodeComplete = function(nodeID) {
+    if (nodeID <= 5) return true;
+    return false;
+  }
 
   return Map;
 })({}, jQuery);
