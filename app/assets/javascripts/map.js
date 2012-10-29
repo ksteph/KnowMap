@@ -15,7 +15,7 @@ var MAP_CONSTANTS = {
     highlight_radius : 11,
     highlight_opacity : 0.5,
     
-    finished_opacity : 0.3, //added by haotian for opacity of finished nodes
+    finished_opacity : 0.4,
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -50,10 +50,11 @@ var Map = (function(Map, $, undefined){
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
 	
-	// added by haotian, CHANGE HARDCODING IF POSSIBLE
-	$("#groups-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("groups-widget-content", "groups-tab-button")});
-	$("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("node-stats-widget-content", "node-stats-tab-button")});
-	$("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("student-stats-widget-content", "student-stats-tab-button")});
+	  $("#groups-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("groups-widget-content", "groups-tab-button")});
+	  $("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("node-stats-widget-content", "node-stats-tab-button")});
+	  $("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.toggleContent("student-stats-widget-content", "student-stats-tab-button")});
+	  
+	  Map.GroupsWidget.toggleContent("groups-widget-content", "groups-tab-button");
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -334,7 +335,7 @@ var Map = (function(Map, $, undefined){
         nodeGNode.append("circle")
           .attr("class", "lp-node")
           .attr("r", MAP_CONSTANTS.lp_node_radius)
-          .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity}); //added by Haotian
+          .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
 
         nodeGNode.append("g")
           .attr("id","lp-node-label")
@@ -348,7 +349,7 @@ var Map = (function(Map, $, undefined){
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
            })
-           .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity}); //added by Haotian
+           .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
       });
     }
 
@@ -580,7 +581,6 @@ var Map = (function(Map, $, undefined){
       });
     }
     
-    // added by haotian, CHANGE HARDCODING LATER
 	GroupsWidget.toggleContent = function(contentString, buttonString) {
 		contentString = "#" + contentString;
 		$(".side-widget-content").css("display", "none");
@@ -653,7 +653,6 @@ var Map = (function(Map, $, undefined){
       Node.SvgNodesInner = Node.SvgNodes.append("g")
         .attr("id","map-node-inner");
         
-      //added by haotian
       Node.SvgNodesInner.append("circle")
         .attr("r", MAP_CONSTANTS.node_radius)
         .style("fill",$("#window").css("background-color"));
@@ -661,7 +660,7 @@ var Map = (function(Map, $, undefined){
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
         .attr("r", MAP_CONSTANTS.node_radius)
-        .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});//added by haotian
+        .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -673,7 +672,7 @@ var Map = (function(Map, $, undefined){
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
               .attr("dy",(startDY+parseInt(i))+"em")
-              .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity}); //added by haotian
+              .attr("opacity", function(d){if (d.id == 5) return 1; return MAP_CONSTANTS.finished_opacity});
           }
         });
     }
