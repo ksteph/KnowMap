@@ -42,6 +42,10 @@ class User < ActiveRecord::Base
   def should_validate_password?
     updating_password || new_record?
   end
+
+  def completed?(node)
+    node.id>5
+  end
   
   def validates_password?
     password_changed?
