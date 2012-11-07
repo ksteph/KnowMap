@@ -10,7 +10,7 @@ class Question < ActiveRecord::Base
   belongs_to :node
   has_many :question_submissions, :dependent => :delete_all
 
-  validates :node_id, :answers, :presence => true
+  validates :node_id, :answers, :title, :presence => true
 
   def self.from_editor_data(data, params={})
 
