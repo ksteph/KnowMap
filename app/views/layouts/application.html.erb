@@ -69,16 +69,17 @@
                 student stats
               </div>
             </div>
+			<div id="side-widget-refresh-button" style="padding:5px;background-color:grey;margin:2px;width:30%;margin-left:auto;margin-right:auto;text-align:center;cursor:pointer;">
+			  refresh
+			</div>
             <% end %>
             <div id="groups-widget-content" class="side-widget-content">
               <% render 'graphs/groups_widget', :locals => { :graph => @graph } %>
             </div>
             <% if can?(:manage, Course) %>
             <div id="node-stats-widget-content" class="side-widget-content">
-              insert what to render for node-stats-widget-content here
             </div>
             <div id="student-stats-widget-content" class="side-widget-content">
-              insert what to render for student-stats-widget-content here
             </div>
             <% end %>
           </div>

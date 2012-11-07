@@ -43,6 +43,7 @@ var Map = (function(Map, $, undefined){
   Map.MousePos = [0,0];
   Map.WinMousePos = [0,0];
   Map.BMouseDown = false;
+ 
   Map.DragOldMousePos = [0,0];
   Map.DragStartMousePos = [0,0];
   Map.DragEndMousePos = [0,0];
@@ -53,11 +54,15 @@ var Map = (function(Map, $, undefined){
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
 	
-	  $("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
-	  $("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
-	  $("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("student-stats-widget-content", "student-stats-tab-button")});
-	  
-	  Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
+	// prepare event listeners for the tab buttons
+	$("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
+	$("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
+	$("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("student-stats-widget-content", "student-stats-tab-button")});
+	
+	$("#side-widget-refresh-button").on("click", function(){Map.GroupsWidget.updateTabContent(null, true)});
+
+	// displays the group-widget-content by default
+	Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -122,6 +127,9 @@ var Map = (function(Map, $, undefined){
       node_ids = $("#graphData").attr("data-all_graph_nodes");
       node_ids = node_ids.substr(1, node_ids.length-2);
       if(node_ids) { url = url + node_ids; }
+      
+      url = url + "&TestGraphID=" + $("#graphData").attr("data-graph_id"); // need to pass graph-id to collect statistics
+ 
       d3.json(url, function(json) {
         Map.Node.update(json.nodes);
         Map.Edge.update(json.lines, Map.Node.MapId2Data);
@@ -340,7 +348,7 @@ var Map = (function(Map, $, undefined){
         nodeGNode.append("circle")
           .attr("class", "lp-node")
           .attr("r", MAP_CONSTANTS.lp_node_radius)
-          .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
+          .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
 
         nodeGNode.append("g")
           .attr("id","lp-node-label")
@@ -354,7 +362,7 @@ var Map = (function(Map, $, undefined){
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
            })
-           .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
+           .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
       });
     }
 
@@ -511,6 +519,7 @@ var Map = (function(Map, $, undefined){
     GroupsWidget.UnUsedColor = MAP_CONSTANTS.highlight_colors;
     GroupsWidget.NodeColors = {};
     GroupsWidget.BtnDefaultColor = null;
+	GroupsWidget.currentNodeId = null;
 
     GroupsWidget.update = function() {
       var url = '/graphs/'+ $("#graphData").attr("data-graph_id") +'/groups_widget';
@@ -604,14 +613,66 @@ var Map = (function(Map, $, undefined){
       });
     }
     
-	GroupsWidget.displayTab = function(strContent, strButton) {
-		strContent = "#" + strContent;
-		$(".side-widget-content").css("display", "none");
-		$(strContent).css("display", "block");
-		
-		strButton = "#" + strButton;
-		$(".side-widget-tab-button").css("background-color", "grey");
-		$(strButton).css("background-color", "");
+    GroupsWidget.displayTab = function(strContent, strButton) {
+      strContent = "#" + strContent;
+      $(".side-widget-content").css("display", "none");
+      $(strContent).css("display", "block");
+    
+      strButton = "#" + strButton;
+	  if ($(".side-widget-tab-button").data("original-background") == null) {
+	      $(".side-widget-tab-button").data("original-background", $(".side-widget-tab-button").css("background-color"));
+	  }
+      $(".side-widget-tab-button").css("background-color", $(".side-widget-tab-button").data("original-background"));
+      $(strButton).css("background-color",$("#groups-widget").css("background-color"));
+    }
+	
+	GroupsWidget.updateTabContent = function(intNodeId, boolForced) { 
+	  //inputs are intNodeID (for node-statistics updates) and boolForced (to force an update, even if there's already content)
+	  //intNodeId could be null, if the refresh-button is clicked instead of a node clicked, in which case use the last-recorded node-id.
+	  
+	  if (intNodeId == null && GroupsWidget.currentNodeId == null) return;
+	 
+	  if (intNodeId != null) {
+	    GroupsWidget.currentNodeId = intNodeId;
+	  }
+	 
+	  intNodeId = GroupsWidget.currentNodeId;
+	  
+	  strActiveTab = []
+	  $('.side-widget-content').each(function(i, obj) {
+	      if ($(this).css("display") != "none") {
+		    strActiveTab[0] = $(this).attr("id")
+	      }
+      });
+	  
+	  if (strActiveTab[0] == null) return;
+	  
+	  if (strActiveTab[0] == "groups-widget-content") return;
+	  
+	  if (!boolForced && $.trim($("#" + strActiveTab[0]).html()).length > 0) return;
+	  
+	  console.log(strActiveTab);
+	  
+	  //parse the uri from the div-id of the tabContent we're trying to fill in
+	  contentIdArray = strActiveTab[0].split("-");
+	  viewName = "";
+	  index = contentIdArray.indexOf("content");
+	  for (i = 0; i < index; i++) {
+	    viewName = viewName + contentIdArray[i] + "_";
+	  }
+	  viewName = viewName + contentIdArray[index];
+	  
+	  console.log(viewName);
+	  
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName;
+	  
+      $.ajax({
+        url: url,
+        dataType: 'html'
+      }).done(function(data) {
+		$("#" + strActiveTab[0]).html(data);
+		//var urlJson = "../nodes/"+intNodeId+"/learning_path.json";
+      })
 	}
 	
 	return GroupsWidget;
@@ -683,7 +744,7 @@ var Map = (function(Map, $, undefined){
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
         .attr("r", MAP_CONSTANTS.node_radius)
-        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
+        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -695,7 +756,7 @@ var Map = (function(Map, $, undefined){
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
               .attr("dy",(startDY+parseInt(i))+"em")
-              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
+              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
           }
         });
     }
@@ -792,6 +853,7 @@ var Map = (function(Map, $, undefined){
       node_id = this.__data__.id;
       Map.LearningPathWidget.update(node_id); // update LearningPath Widget
       Map.LearningPathWidget.expand(); // expand LearningPath Widget
+	  Map.GroupsWidget.updateTabContent(node_id, false); // update statistics tabs when in instructor mode
     }
     
     return Node;
@@ -1226,11 +1288,6 @@ var Map = (function(Map, $, undefined){
       default:
         break; // Do nothing
     }
-  }
-  
-  Map.isNodeComplete = function(nodeID) {
-    if (nodeID <= 5) return true;
-    return false;
   }
 
   return Map;
