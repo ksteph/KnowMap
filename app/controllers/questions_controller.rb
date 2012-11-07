@@ -51,11 +51,41 @@ class QuestionsController < ApplicationController
   end
 
   def submit
-    # create a Question_Submission entry
-    @node_id = params[:node_id].to_i
-    @answer = params[:answer].to_i
-    flash[:warning] = "QUESTION SUBMISSION ISN'T READY YET!"
-    # redirect_to node_path(@node_id) and return
+    if !current_user  # SHOULD WE REQUIRE USERS TO LOG IN TO SUBMIT AN ANSWER??
+      flash[:error] = "You must be logged in to submit an answer!"
+      redirect_to node_path(node_id) and return 
+    end
+
+    node_id = params[:node_id].to_i
+    question_id = params[:question_id].to_i
+    question = Question.find_by_id(question_id)
+    if !question
+      flash[:error] = "This question does not exist!"
+      redirect_to node_path(node_id) and return
+    end
+    if !params[:answer]
+      flash[:error] = "Please select an answer"
+      redirect_to node_path(node_id) and return 
+    end 
+    submitted_answer = params[:answer].to_i    # index of submitted answer
+    is_correct = question.grade(submitted_answer)
+    
+    submission = question.question_submissions.new
+    submission.user_id = current_user.id
+    submission.node_id = node_id
+    # submission.question_id = question_id
+    submission.student_answers = submitted_answer
+    submission.correct = is_correct
+    if !submission.save
+      flash[:error] = "There was a problem with your submission, please try again"
+      redirect_to node_path(node_id) and return
+    elsif is_correct
+      flash[:notice] = "Correct!"
+      redirect_to node_path(node_id) and return
+    else
+      flash[:error] = "Incorrect!"
+      redirect_to node_path(node_id) and return
+    end    
   end
 
 end

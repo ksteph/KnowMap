@@ -7,4 +7,8 @@ class MultipleChoiceQuestion < Question
     return true
   end
 
+  def grade(resp)
+  	return self.answers[0] == resp
+  end
+
 end
