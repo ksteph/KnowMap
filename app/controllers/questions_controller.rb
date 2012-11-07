@@ -50,4 +50,12 @@ class QuestionsController < ApplicationController
     redirect_to course_questions_path
   end
 
+  def submit
+    # create a Question_Submission entry
+    @node_id = params[:node_id].to_i
+    @answer = params[:answer].to_i
+    flash[:warning] = "QUESTION SUBMISSION ISN'T READY YET!"
+    # redirect_to node_path(@node_id) and return
+  end
+
 end

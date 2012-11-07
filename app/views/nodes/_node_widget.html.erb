@@ -38,6 +38,22 @@
   </tr>
 </table>
 
+<h2>Questions</h2>
+<% @node.questions.each do |q| %>
+  <h3><%= q.title %></h3> <%= q.text %> 
+
+  <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id), do |f| %>
+    <% q.choices.each_with_index do |choice, index| %>  
+      <%= radio_button_tag("answer", index) %>
+      <%= label_tag(index, choice) %><br>
+    <% end %>
+    <%= f.submit "Submit" %>
+  <% end %>
+
+<% end %>
+
+</table>
+
 <%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
 <% if can?(:edit, Node) %>
   <%= link_to t('actions.edit'), edit_node_path(@node), :remote => remote?, "data-type" => "html" %> |
