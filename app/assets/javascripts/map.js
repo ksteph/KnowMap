@@ -17,7 +17,7 @@ var MAP_CONSTANTS = {
     highlight_radius : 11,
     highlight_opacity : 0.5,
     
-    completed_opacity : 0.4,
+    completed_opacity : 0.2,
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -300,8 +300,7 @@ var Map = (function(Map, $, undefined){
             .attr("class", function(d){ if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
 			                                Map.Edge.MapNodeId2Node[d.target].completed != "true") 
 											{ return "lp-edge-completed"; } else { return "lp-edge"; }})
-			.attr("opacity", function(d){if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
-		                                     Map.Edge.MapNodeId2Node[d.target].completed == "true") 
+			.attr("opacity", function(d){if (Map.Edge.MapNodeId2Node[d.target].completed == "true") 
 										    { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
             .style("fill","none")
             .style("marker-end", function(d){
@@ -653,8 +652,6 @@ var Map = (function(Map, $, undefined){
 	  
 	  if (!boolForced && $.trim($("#" + strActiveTab[0]).html()).length > 0) return;
 	  
-	  console.log(strActiveTab);
-	  
 	  //parse the uri from the div-id of the tabContent we're trying to fill in
 	  contentIdArray = strActiveTab[0].split("-");
 	  viewName = "";
@@ -664,8 +661,6 @@ var Map = (function(Map, $, undefined){
 	  }
 	  viewName = viewName + contentIdArray[index];
 	  
-	  console.log(viewName);
-	  
 	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName;
 	  
       $.ajax({
@@ -673,8 +668,15 @@ var Map = (function(Map, $, undefined){
         dataType: 'html'
       }).done(function(data) {
 		$("#" + strActiveTab[0]).html(data);
-		//var urlJson = "../nodes/"+intNodeId+"/learning_path.json";
       })
+	  
+	  var url = '/nodes/'+ intNodeId +'/node_stats.json';
+	  $.ajax({
+	    url: url,
+		dataType: 'html',
+	  }).done(function(data) {
+	    console.log("got past ajax, return value was", data);
+	  })
 	}
 	
 	return GroupsWidget;
@@ -897,8 +899,7 @@ var Map = (function(Map, $, undefined){
           .attr("y1", function(d){return Edge.MapNodeId2Node[d.source].y;})
           .attr("x2", function(d){return Edge.MapNodeId2Node[d.target].x;})
           .attr("y2", function(d){return Edge.MapNodeId2Node[d.target].y;})
-          .attr("opacity", function(d){if (Edge.MapNodeId2Node[d.source].completed == "true" && 
-		                                   Edge.MapNodeId2Node[d.target].completed == "true") 
+          .attr("opacity", function(d){if (Edge.MapNodeId2Node[d.target].completed == "true") 
 										   { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
           .style("stroke-dasharray", function(d){
               return Edge.StrokeStyle[d.type]
