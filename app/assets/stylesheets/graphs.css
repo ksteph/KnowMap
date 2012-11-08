@@ -104,7 +104,7 @@
 #groups-widget-button{ border: 1px solid black }
 #learning-path-widget-button:hover, #groups-widget-button:hover { cursor: pointer }
 
-#groups-widget-content { max-height:500px; }
+#groups-widget-content { max-height:420px; }
 
 #node-widget {
   border: 1px solid black;
