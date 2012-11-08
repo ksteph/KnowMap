@@ -162,7 +162,7 @@ a {
   width:25%;
   border: 1px solid black;
   border-bottom:0;
-  background-color:grey;
+  background-color:gray;
   cursor:pointer;
 }
 
@@ -171,7 +171,7 @@ a {
   width:250px;
   float:right;
   min-height:100px;
-  max-height:490px;
+  max-height:300px;
   padding:5px;
   overflow-y:scroll;
 }
