@@ -17,6 +17,7 @@ KnowledgeMap::Application.routes.draw do
     get "node_widget" => "nodes#node_widget", :as => "node_widget"
     get "versions" => "nodes#versions", :as => "versions"
     get "versions/:version" => "nodes#version", :as => "version"
+    get "node_stats" => "nodes#node_stats", :as => "node_stats"
   end
 
   resources :courses do

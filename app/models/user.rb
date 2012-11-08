@@ -44,7 +44,8 @@ class User < ActiveRecord::Base
   end
 
   def completed?(node)
-    node.id>5
+    num = rand(10)
+    num>4
   end
   
   def validates_password?
