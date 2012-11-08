@@ -1,5 +1,7 @@
 var MAP_CONSTANTS = {
     zoom_scale : 1.1,
+    zoom_in_limit : 30.0,
+    zoom_out_limit : 0.3,
     pan_step : 10,
 
     node_radius : 8,
@@ -10,6 +12,7 @@ var MAP_CONSTANTS = {
 
     edge_style_related : "1,2",
     edge_style_dependent : "1,0",
+    edge_completed_style_opacity : 0.4,
 
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
@@ -128,8 +131,6 @@ var Map = (function(Map, $, undefined){
       url = url + "&TestGraphID=" + $("#graphData").attr("data-graph_id"); // need to pass graph-id to collect statistics
  
       d3.json(url, function(json) {
-
-              console.log(json);
         Map.Node.update(json.nodes);
         Map.Edge.update(json.lines, Map.Node.MapId2Data);
       });
@@ -197,9 +198,7 @@ var Map = (function(Map, $, undefined){
       // actual height while expanding the div
       var lpHeight = parseInt(d3.select("#learning-path-widget-content")
                               .style("height"));
-      
       LearningPathWidget.Svg.style("height", lpHeight);
-
       // Clear old learning path stuff
       LearningPathWidget.SvgG.selectAll("g").remove();
       LearningPathWidget.TransMatrix = [1,0,0,1,0,0,];
@@ -228,6 +227,10 @@ var Map = (function(Map, $, undefined){
             MAP_CONSTANTS.lp_scroller_height - MAP_CONSTANTS.lp_node_radius;
 
         LearningPathWidget.updateScrollRect(lpHeight, lpWidth, pathWidth);
+        
+        LearningPathWidget.pathlength = LearningPathWidget.getNodePosX(lpNodes.length-1) +
+            MAP_CONSTANTS.lp_node_radius + MAP_CONSTANTS.lp_node_spacer;
+        LearningPathWidget.width = $("#learning-path-widget-content").width();
 
         for(var i=0; i < lpNodes.length; i++) {
           lpNodes[i].aryLabel = Map.Node.getAryLabel(lpNodes[i].title);
@@ -295,7 +298,9 @@ var Map = (function(Map, $, undefined){
         svgLinkGroup.selectAll("path.lp-edge")
           .data(lpLinks)
           .enter().append("path")
-            .attr("class","lp-edge")
+            .attr("class", function(d){ if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
+			                                Map.Edge.MapNodeId2Node[d.target].completed != "true") 
+											{ return "lp-edge-completed"; } else { return "lp-edge"; }})
             .style("fill","none")
             .style("marker-end", function(d){
                var diff = lpNodesMap[d.target].pos - lpNodesMap[d.source].pos;
@@ -470,12 +475,30 @@ var Map = (function(Map, $, undefined){
       if (LearningPathWidget.SvgG == null)
         return;
 
+      var pathlength = LearningPathWidget.pathlength;
+      var width = LearningPathWidget.width;
+      if (pathlength>width){
+	pathlength = pathlength - width;
+      } else pathlength=0;
+
+
       if (LearningPathWidget.BMouseDown) {
+	if ( ((LearningPathWidget.TransMatrix[4]+dx)<-pathlength) || ((LearningPathWidget.TransMatrix[4]+dx)>0) ){
+	    dx=0;}
+      
         LearningPathWidget.TransMatrix[4] += dx;
 
         LearningPathWidget.panScroller((dx * -1.0)/
                                        LearningPathWidget.ScrollScale);
       } else if (LearningPathWidget.BScrollerMouseDown) {
+	var limit;
+    	if (pathlength<width)
+	    limit = pathlength;
+	else limit = width-MAP_CONSTANTS.lp_scroller_padding-MAP_CONSTANTS.lp_scroller_min_width;
+		
+	if (((LearningPathWidget.ScrollerTransMatrix[4]+dx)>limit) || ((LearningPathWidget.ScrollerTransMatrix[4]+dx)<0)){
+			dx=0;}
+    
         LearningPathWidget.TransMatrix[4] +=
             (dx * -1.0 * LearningPathWidget.ScrollScale);
         LearningPathWidget.panScroller(dx);
@@ -865,11 +888,16 @@ var Map = (function(Map, $, undefined){
       Edge.SvgEdges = Edge.SvgG.selectAll(".edge")
         .data(Edge.Data)
         .enter().append("line")
-          .attr("class", "map-edge")
+          .attr("class", function(d){if (Edge.MapNodeId2Node[d.source].completed == "true" && 
+		                                 Edge.MapNodeId2Node[d.target].completed != "true") 
+										 { return "map-edge-completed"; } else { return "map-edge"; }})
           .attr("x1", function(d){return Edge.MapNodeId2Node[d.source].x;})
           .attr("y1", function(d){return Edge.MapNodeId2Node[d.source].y;})
           .attr("x2", function(d){return Edge.MapNodeId2Node[d.target].x;})
           .attr("y2", function(d){return Edge.MapNodeId2Node[d.target].y;})
+          .attr("opacity", function(d){if (Edge.MapNodeId2Node[d.source].completed == "true" && 
+		                                   Edge.MapNodeId2Node[d.target].completed == "true") 
+										   { return MAP_CONSTANTS.edge_completed_style_opacity; } else { return 1.0; }})
           .style("stroke-dasharray", function(d){
               return Edge.StrokeStyle[d.type]
             })
@@ -1170,6 +1198,10 @@ var Map = (function(Map, $, undefined){
 
   Map.zoom = function(scale) {
     if (Map.SvgChartG == null)
+      return;
+      
+    if (Map.TransMatrix[0]*scale > MAP_CONSTANTS.zoom_in_limit || 
+        Map.TransMatrix[0]*scale < MAP_CONSTANTS.zoom_out_limit)
       return;
 
     for(var i = 0; i < Map.TransMatrix.length; i++) {
