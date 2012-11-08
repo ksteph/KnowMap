@@ -12,7 +12,6 @@ var MAP_CONSTANTS = {
 
     edge_style_related : "1,2",
     edge_style_dependent : "1,0",
-    edge_completed_style_opacity : 0.4,
 
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
@@ -301,6 +300,9 @@ var Map = (function(Map, $, undefined){
             .attr("class", function(d){ if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
 			                                Map.Edge.MapNodeId2Node[d.target].completed != "true") 
 											{ return "lp-edge-completed"; } else { return "lp-edge"; }})
+			.attr("opacity", function(d){if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
+		                                     Map.Edge.MapNodeId2Node[d.target].completed == "true") 
+										    { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
             .style("fill","none")
             .style("marker-end", function(d){
                var diff = lpNodesMap[d.target].pos - lpNodesMap[d.source].pos;
@@ -348,7 +350,7 @@ var Map = (function(Map, $, undefined){
         nodeGNode.append("circle")
           .attr("class", "lp-node")
           .attr("r", MAP_CONSTANTS.lp_node_radius)
-          .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
+          .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
 
         nodeGNode.append("g")
           .attr("id","lp-node-label")
@@ -362,7 +364,7 @@ var Map = (function(Map, $, undefined){
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
            })
-           .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
+           .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
       });
     }
 
@@ -744,7 +746,7 @@ var Map = (function(Map, $, undefined){
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
         .attr("r", MAP_CONSTANTS.node_radius)
-        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
+        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -756,7 +758,7 @@ var Map = (function(Map, $, undefined){
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
               .attr("dy",(startDY+parseInt(i))+"em")
-              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1;});
+              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
           }
         });
     }
@@ -897,7 +899,7 @@ var Map = (function(Map, $, undefined){
           .attr("y2", function(d){return Edge.MapNodeId2Node[d.target].y;})
           .attr("opacity", function(d){if (Edge.MapNodeId2Node[d.source].completed == "true" && 
 		                                   Edge.MapNodeId2Node[d.target].completed == "true") 
-										   { return MAP_CONSTANTS.edge_completed_style_opacity; } else { return 1.0; }})
+										   { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
           .style("stroke-dasharray", function(d){
               return Edge.StrokeStyle[d.type]
             })
