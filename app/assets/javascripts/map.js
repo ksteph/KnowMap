@@ -661,7 +661,7 @@ var Map = (function(Map, $, undefined){
 	  }
 	  viewName = viewName + contentIdArray[index];
 	  
-	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName;
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId;
 	  
       $.ajax({
         url: url,
@@ -670,13 +670,6 @@ var Map = (function(Map, $, undefined){
 		$("#" + strActiveTab[0]).html(data);
       })
 	  
-	  var url = '/nodes/'+ intNodeId +'/node_stats.json';
-	  $.ajax({
-	    url: url,
-		dataType: 'html',
-	  }).done(function(data) {
-	    console.log("got past ajax, return value was", data);
-	  })
 	}
 	
 	return GroupsWidget;
@@ -857,7 +850,7 @@ var Map = (function(Map, $, undefined){
       node_id = this.__data__.id;
       Map.LearningPathWidget.update(node_id); // update LearningPath Widget
       Map.LearningPathWidget.expand(); // expand LearningPath Widget
-	  Map.GroupsWidget.updateTabContent(node_id, false); // update statistics tabs when in instructor mode
+	  Map.GroupsWidget.updateTabContent(node_id, true); // update statistics tabs when in instructor mode
     }
     
     return Node;
