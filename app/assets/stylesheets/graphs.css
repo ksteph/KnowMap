@@ -77,6 +77,11 @@
   cursor: pointer;
 }
 
+.stats-arrow {
+width: 10px;
+height: 10px;
+}
+
 .zoom-pan-button {
   fill:  #225EA8;
   stroke:  #0C2C84;
