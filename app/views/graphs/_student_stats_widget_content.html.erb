@@ -1,33 +1,37 @@
+<% if !can?(:manage, Course) %>
+	<% abort("you do not have permissions to view this page") %>
+<% end %>
+
 <div style="padding:3px 0;">
-  <svg class="student-button" id="john doe"><rect height=10 width=10 style="fill:#fff"></rect></svg> john doe
+  <svg class="student-button" id="3:john doe"><rect height=10 width=10 style="fill:#fff"></rect></svg> john doe
 </div>
 
 <div style="padding:3px 0;">
-  <svg class="student-button" id="jane bob"><rect height=10 width=10 style="fill:#fff"></rect></svg> jane bob
+  <svg class="student-button" id="2:jane bob"><rect height=10 width=10 style="fill:#fff"></rect></svg> jane bob
 </div>
 
 <div style="padding:3px 0;">
-  <svg class="student-button" id="foo bar"><rect height=10 width=10 style="fill:#fff"></rect></svg> foo bar
+  <svg class="student-button" id="9:foo bar"><rect height=10 width=10 style="fill:#fff"></rect></svg> foo bar
 </div>
 
 <div style="padding:3px 0;">
-  <svg class="student-button" id="jane doe"><rect height=10 width=10 style="fill:#fff"></rect></svg> jane doe
+  <svg class="student-button" id="11:jane doe"><rect height=10 width=10 style="fill:#fff"></rect></svg> jane doe
 </div>
 
 <div style="padding:3px 0;">
-  <svg class="student-button" id="john smith"><rect height=10 width=10 style="fill:#fff"></rect></svg> john smith
+  <svg class="student-button" id="40:john smith"><rect height=10 width=10 style="fill:#fff"></rect></svg> john smith
 </div>
 
 <div style="padding:3px 0;">
-  <svg class="student-button" id="adam smith"><rect height=10 width=10 style="fill:#fff"></rect></svg> adam smith
+  <svg class="student-button" id="33:adam smith"><rect height=10 width=10 style="fill:#fff"></rect></svg> adam smith
 </div>
 
 <div style="padding:3px 0;">
-  <svg class="student-button" id="barbara boxer"><rect height=10 width=10 style="fill:#fff"></rect></svg> barbara boxer
+  <svg class="student-button" id="24:barbara boxer"><rect height=10 width=10 style="fill:#fff"></rect></svg> barbara boxer
 </div>
 
 <div style="padding:3px 0;">
-  <svg class="student-button" id="barbara hightower"><rect height=10 width=10 style="fill:#fff"></rect></svg> barbara hightower
+  <svg class="student-button" id="19:barbara hightower"><rect height=10 width=10 style="fill:#fff"></rect></svg> barbara hightower
 </div>
 
 <div id="student-select-done-button" style="width:100px;border:1px solid black;text-align:center;background-color:grey;cursor:pointer">
