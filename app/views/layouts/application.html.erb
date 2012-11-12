@@ -58,20 +58,19 @@
           <div id="groups-widget" style="position:absolute;right:-280px;top:0; ">
             <div id="groups-widget-button" style="position:absolute;top:-1px;left:-21px;line-height:100%; padding:5px;background-color:grey;margin:0">&laquo;</div>
             <% if can?(:manage, Course) %>
-            <div id="tabs" style="margin-left:25px; margin-top:1px">
-              <div id="groups-tab-button" class="side-widget-tab-button">
-                groups
-              </div>
+            <div id="tabs" style="padding:25px; padding-top:1px; padding-right: 50px">
               <div id="node-stats-tab-button" class="side-widget-tab-button">
-                node stats
+                stats
               </div>
-              <div id="student-stats-tab-button" class="side-widget-tab-button">  
-                student stats
+              <div id="groups-tab-button" class="side-widget-tab-button">
+                topics
               </div>
             </div>
-			<div id="side-widget-refresh-button" style="padding:5px;background-color:grey;margin:2px;width:30%;margin-left:auto;margin-right:auto;text-align:center;cursor:pointer;">
-			  refresh
-			</div>
+            <div style="padding:30px; padding-top:1px; padding-right: 60px">
+			          <div id="show-students-button">
+			            display students
+			          </div>
+			      </div>
             <% end %>
             <div id="groups-widget-content" class="side-widget-content">
               <% render 'graphs/groups_widget', :locals => { :graph => @graph } %>
