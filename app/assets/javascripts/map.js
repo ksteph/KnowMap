@@ -12,13 +12,12 @@ var MAP_CONSTANTS = {
 
     edge_style_related : "1,2",
     edge_style_dependent : "1,0",
-    edge_completed_style_opacity : 0.4,
 
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
     highlight_radius : 11,
     highlight_opacity : 0.5,
     
-    completed_opacity : 0.4,
+    completed_opacity : 0.3,
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -43,6 +42,7 @@ var Map = (function(Map, $, undefined){
   Map.MousePos = [0,0];
   Map.WinMousePos = [0,0];
   Map.BMouseDown = false;
+ 
   Map.DragOldMousePos = [0,0];
   Map.DragStartMousePos = [0,0];
   Map.DragEndMousePos = [0,0];
@@ -53,11 +53,16 @@ var Map = (function(Map, $, undefined){
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
 	
-	  $("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
-	  $("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
-	  $("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("student-stats-widget-content", "student-stats-tab-button")});
-	  
-	  Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
+	// prepare event listeners for the tab buttons
+	$("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
+	$("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
+
+	// displays the group-widget-content by default
+	Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
+	
+	// prepare students list and toggle-button
+	Map.GroupsWidget.updateStudentsList();
+    $("#show-students-button").on("click", function(){Map.GroupsWidget.toggleStudentsList()});
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -122,6 +127,9 @@ var Map = (function(Map, $, undefined){
       node_ids = $("#graphData").attr("data-all_graph_nodes");
       node_ids = node_ids.substr(1, node_ids.length-2);
       if(node_ids) { url = url + node_ids; }
+      
+      url = url + "&TestGraphID=" + $("#graphData").attr("data-graph_id"); // need to pass graph-id to collect statistics
+ 
       d3.json(url, function(json) {
         Map.Node.update(json.nodes);
         Map.Edge.update(json.lines, Map.Node.MapId2Data);
@@ -293,6 +301,8 @@ var Map = (function(Map, $, undefined){
             .attr("class", function(d){ if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
 			                                Map.Edge.MapNodeId2Node[d.target].completed != "true") 
 											{ return "lp-edge-completed"; } else { return "lp-edge"; }})
+			.attr("opacity", function(d){if (Map.Edge.MapNodeId2Node[d.target].completed == "true") 
+										    { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
             .style("fill","none")
             .style("marker-end", function(d){
                var diff = lpNodesMap[d.target].pos - lpNodesMap[d.source].pos;
@@ -340,7 +350,7 @@ var Map = (function(Map, $, undefined){
         nodeGNode.append("circle")
           .attr("class", "lp-node")
           .attr("r", MAP_CONSTANTS.lp_node_radius)
-          .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
+          .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
 
         nodeGNode.append("g")
           .attr("id","lp-node-label")
@@ -354,7 +364,7 @@ var Map = (function(Map, $, undefined){
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
            })
-           .attr("opacity", function(d){if (Map.isNodeComplete(d.id)) return 1; return MAP_CONSTANTS.finished_opacity});
+           .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
       });
     }
 
@@ -511,6 +521,10 @@ var Map = (function(Map, $, undefined){
     GroupsWidget.UnUsedColor = MAP_CONSTANTS.highlight_colors;
     GroupsWidget.NodeColors = {};
     GroupsWidget.BtnDefaultColor = null;
+	// current node to display stats about: set to the last node that was clicked
+	GroupsWidget.currentNodeId = null;
+	// list of student ids to display stats about: set to empty to start (which means all students will be displayed)
+	GroupsWidget.selectedStudentIds = null;
 
     GroupsWidget.update = function() {
       var url = '/graphs/'+ $("#graphData").attr("data-graph_id") +'/groups_widget';
@@ -604,14 +618,121 @@ var Map = (function(Map, $, undefined){
       });
     }
     
-	GroupsWidget.displayTab = function(strContent, strButton) {
-		strContent = "#" + strContent;
-		$(".side-widget-content").css("display", "none");
-		$(strContent).css("display", "block");
+    GroupsWidget.displayTab = function(strContent, strButton) {
+	  // displays tab that was just clicked on
+      strContent = "#" + strContent;
+      $(".side-widget-content").css("display", "none");
+      $(strContent).css("display", "block");
+    
+      strButton = "#" + strButton;
+	  if ($(".side-widget-tab-button").data("original-background") == null) {
+	      $(".side-widget-tab-button").data("original-background", $(".side-widget-tab-button").css("background-color"));
+	  }
+      $(".side-widget-tab-button").css("background-color", $(".side-widget-tab-button").data("original-background"));
+      $(strButton).css("background-color",$("#groups-widget").css("background-color"));
+    }
+
+    GroupsWidget.toggleStudentsList = function() {
+	    //display/undisplay student list
+	    strButtonName = "show-students-button"
+	    strContentName = "student-stats-widget-content"
+		strViewName = "student_stats_widget_content"
 		
-		strButton = "#" + strButton;
-		$(".side-widget-tab-button").css("background-color", "grey");
-		$(strButton).css("background-color", "");
+		strCurrentDisplay = $("#" + strContentName).css("display");
+		strNewDisplay = "";
+		strNewButtonColor = "";
+		
+		switch(strCurrentDisplay)
+		{
+		case "none":
+		    $("#" + strContentName).css("display", "block");
+			if ($("#" + strButtonName).data("original-background") == null) {
+			    $("#" + strButtonName).data("original-background", $("#" + strButtonName).css("background-color"));
+			}
+			$("#" + strButtonName).css("background-color", $("#groups-widget").css("background-color"));
+			break;
+		case "block":
+		    $("#" + strContentName).css("display", "none");
+			$("#" + strButtonName).css("background-color", $("#" + strButtonName).data("original-background"));
+		    break;
+		default:
+		}
+	}
+	
+	GroupsWidget.updateStudentsList = function() {
+	  // fill students list with students from db, add event listeners to the buttons in the students-list page
+      contentName = "student-stats-widget-content";
+	  viewName = "student_stats_widget_content";
+		
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName;
+	  
+      $.ajax({
+        url: url,
+        dataType: 'html'
+      }).done(function(data) {
+		$("#" + contentName).html(data);
+		d3.select("#student-select-done-button").on("click",function(){Map.GroupsWidget.selectStudentsRefreshStats()});
+		d3.selectAll(".student-button")
+		  .attr("selected","true")
+		  .select("rect").style("fill","black");
+		  
+		d3.selectAll(".student-button").on("click",Map.GroupsWidget.clickStudent);
+      })
+	}
+	
+	GroupsWidget.updateStatsTab = function(intNodeId, boolForced) { 
+	  // update the stats with the new intNodeId, if boolForced
+	  contentName = "node-stats-widget-content";
+	  viewName = "node_stats_widget_content";
+	  
+	  if (intNodeId == null && GroupsWidget.currentNodeId == null) return;
+	 
+	  if (intNodeId != null) {
+	    GroupsWidget.currentNodeId = intNodeId;
+	  }
+	 
+	  intNodeId = GroupsWidget.currentNodeId;
+	  intStudentIds = GroupsWidget.selectedStudentIds;
+	  
+	  if (!boolForced) return;
+	  
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId + "&students=" + intStudentIds;
+	  
+      $.ajax({
+        url: url,
+        dataType: 'html'
+      }).done(function(data) {
+		$("#" + contentName).html(data);
+      })
+	  
+	}
+	
+	GroupsWidget.selectStudentsRefreshStats = function() {
+	    console.log("dummy refresh activated!");
+		GroupsWidget.selectedStudentIds = "";
+		d3.selectAll(".student-button")
+		.each(function(d){
+		    var g = d3.select(this);
+			if (g.attr("selected") == "true") {
+			    GroupsWidget.selectedStudentIds = GroupsWidget.selectedStudentIds + g.attr("id") + ",";
+			}
+		});
+		GroupsWidget.selectedStudentIds = GroupsWidget.selectedStudentIds.substring(0,GroupsWidget.selectedStudentIds.length-1);
+		console.log("student ids is now: " + GroupsWidget.selectedStudentIds);
+		GroupsWidget.updateStatsTab(null, true);
+	}
+	
+	GroupsWidget.clickStudent = function() {
+	    var btn = d3.select(this);
+        var btnRect = btn.select("rect");
+		if (btn.attr("selected") == "" || btn.attr("selected") == "true") {
+		    btnRect.style("fill", "white");
+			btn.attr("selected","false");
+		}
+		else {
+		    btnRect.style("fill", "black");
+			btn.attr("selected","true");
+		}
 	}
 	
 	return GroupsWidget;
@@ -683,7 +804,7 @@ var Map = (function(Map, $, undefined){
       Node.SvgNodesInner.append("circle")
         .attr("class", "map-node")
         .attr("r", MAP_CONSTANTS.node_radius)
-        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
+        .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
 
       Node.SvgNodesInner.append("g")
         .attr("id","map-node-label")
@@ -695,7 +816,7 @@ var Map = (function(Map, $, undefined){
             g.append("text").text(d.aryLabel[i])
               .attr("class","map-node-text")
               .attr("dy",(startDY+parseInt(i))+"em")
-              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.finished_opacity; return 1;});
+              .attr("opacity", function(d){if (d.completed=="true") return MAP_CONSTANTS.completed_opacity; return 1.0;});
           }
         });
     }
@@ -792,6 +913,7 @@ var Map = (function(Map, $, undefined){
       node_id = this.__data__.id;
       Map.LearningPathWidget.update(node_id); // update LearningPath Widget
       Map.LearningPathWidget.expand(); // expand LearningPath Widget
+	  Map.GroupsWidget.updateStatsTab(node_id, true); // update statistics tabs when in instructor mode
     }
     
     return Node;
@@ -833,9 +955,8 @@ var Map = (function(Map, $, undefined){
           .attr("y1", function(d){return Edge.MapNodeId2Node[d.source].y;})
           .attr("x2", function(d){return Edge.MapNodeId2Node[d.target].x;})
           .attr("y2", function(d){return Edge.MapNodeId2Node[d.target].y;})
-          .attr("opacity", function(d){if (Edge.MapNodeId2Node[d.source].completed == "true" && 
-		                                   Edge.MapNodeId2Node[d.target].completed == "true") 
-										   { return MAP_CONSTANTS.edge_completed_style_opacity; } else { return 1.0; }})
+          .attr("opacity", function(d){if (Edge.MapNodeId2Node[d.target].completed == "true") 
+										   { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
           .style("stroke-dasharray", function(d){
               return Edge.StrokeStyle[d.type]
             })
@@ -1226,11 +1347,6 @@ var Map = (function(Map, $, undefined){
       default:
         break; // Do nothing
     }
-  }
-  
-  Map.isNodeComplete = function(nodeID) {
-    if (nodeID <= 5) return true;
-    return false;
   }
 
   return Map;

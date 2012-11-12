@@ -1,1 +1,7 @@
-<% if @graph %><%= render :partial => 'groups_widget_button', :locals => { :g => @graph } %><% end %>
+<% if @graph %>
+    <% if params["contentType"] == nil %>
+	    <%= render :partial => 'groups_widget_button', :locals => { :g => @graph } %>
+	<% else %>
+	    <%= render :partial => params["contentType"], :locals => { :g => @graph } %>
+	<% end %>
+<% end %>
