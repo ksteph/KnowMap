@@ -68,12 +68,12 @@
   fill : #606060;
 }
 
-.group-button {
+.group-button, .student-button {
   width: 10px;
   height: 10px;
   border: 1px solid black;
 }
-.group-button:hover {
+.group-button, .student-button:hover {
   cursor: pointer;
 }
 
@@ -106,7 +106,7 @@ height: 10px;
 }
 
 #learning-path-widget { border-bottom:none }
-#groups-widget-button{ border: 1px solid black }
+#groups-widget-button { border: 1px solid black }
 #learning-path-widget-button:hover, #groups-widget-button:hover { cursor: pointer }
 
 #groups-widget-content { max-height:420px; }

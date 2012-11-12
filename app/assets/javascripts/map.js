@@ -56,12 +56,13 @@ var Map = (function(Map, $, undefined){
 	// prepare event listeners for the tab buttons
 	$("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
 	$("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
-	$("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("student-stats-widget-content", "student-stats-tab-button")});
-	
-	$("#side-widget-refresh-button").on("click", function(){Map.GroupsWidget.updateTabContent(null, true)});
 
 	// displays the group-widget-content by default
 	Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
+	
+	// prepare students list and toggle-button
+	Map.GroupsWidget.updateStudentsList();
+    $("#show-students-button").on("click", function(){Map.GroupsWidget.toggleStudentsList()});
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -615,6 +616,7 @@ var Map = (function(Map, $, undefined){
     }
     
     GroupsWidget.displayTab = function(strContent, strButton) {
+	  // displays tab that was just clicked on
       strContent = "#" + strContent;
       $(".side-widget-content").css("display", "none");
       $(strContent).css("display", "block");
@@ -626,10 +628,59 @@ var Map = (function(Map, $, undefined){
       $(".side-widget-tab-button").css("background-color", $(".side-widget-tab-button").data("original-background"));
       $(strButton).css("background-color",$("#groups-widget").css("background-color"));
     }
+
+    GroupsWidget.toggleStudentsList = function() {
+	    //display/undisplay student list
+	    strButtonName = "show-students-button"
+	    strContentName = "student-stats-widget-content"
+		strViewName = "student_stats_widget_content"
+		
+		strCurrentDisplay = $("#" + strContentName).css("display");
+		strNewDisplay = "";
+		strNewButtonColor = "";
+		
+		switch(strCurrentDisplay)
+		{
+		case "none":
+		    $("#" + strContentName).css("display", "block");
+			if ($("#" + strButtonName).data("original-background") == null) {
+			    $("#" + strButtonName).data("original-background", $("#" + strButtonName).css("background-color"));
+			}
+			$("#" + strButtonName).css("background-color", $("#groups-widget").css("background-color"));
+			break;
+		case "block":
+		    $("#" + strContentName).css("display", "none");
+			$("#" + strButtonName).css("background-color", $("#" + strButtonName).data("original-background"));
+		    break;
+		default:
+		}
+	}
 	
-	GroupsWidget.updateTabContent = function(intNodeId, boolForced) { 
-	  //inputs are intNodeID (for node-statistics updates) and boolForced (to force an update, even if there's already content)
-	  //intNodeId could be null, if the refresh-button is clicked instead of a node clicked, in which case use the last-recorded node-id.
+	GroupsWidget.updateStudentsList = function() {
+	  // fill students list with students from db
+      contentName = "student-stats-widget-content";
+	  viewName = "student_stats_widget_content";
+		
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName;
+	  
+      $.ajax({
+        url: url,
+        dataType: 'html'
+      }).done(function(data) {
+		$("#" + contentName).html(data);
+		d3.select("#student-select-done-button").on("click",function(){Map.GroupsWidget.selectStudentsRefreshStats()});
+		d3.selectAll(".student-button").select("rect")
+		  .attr("selected","true")
+		  .style("fill","black");
+		  
+		d3.selectAll(".student-button").on("click",Map.GroupsWidget.clickStudent);
+      })
+	}
+	
+	GroupsWidget.updateStatsTab = function(intNodeId, boolForced) { 
+	  // update the stats with the new intNodeId, if boolForced
+	  contentName = "node-stats-widget-content";
+	  viewName = "node_stats_widget_content";
 	  
 	  if (intNodeId == null && GroupsWidget.currentNodeId == null) return;
 	 
@@ -639,27 +690,7 @@ var Map = (function(Map, $, undefined){
 	 
 	  intNodeId = GroupsWidget.currentNodeId;
 	  
-	  strActiveTab = []
-	  $('.side-widget-content').each(function(i, obj) {
-	      if ($(this).css("display") != "none") {
-		    strActiveTab[0] = $(this).attr("id")
-	      }
-      });
-	  
-	  if (strActiveTab[0] == null) return;
-	  
-	  if (strActiveTab[0] == "groups-widget-content") return;
-	  
-	  if (!boolForced && $.trim($("#" + strActiveTab[0]).html()).length > 0) return;
-	  
-	  //parse the uri from the div-id of the tabContent we're trying to fill in
-	  contentIdArray = strActiveTab[0].split("-");
-	  viewName = "";
-	  index = contentIdArray.indexOf("content");
-	  for (i = 0; i < index; i++) {
-	    viewName = viewName + contentIdArray[i] + "_";
-	  }
-	  viewName = viewName + contentIdArray[index];
+	  if (!boolForced) return;
 	  
 	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId;
 	  
@@ -667,9 +698,26 @@ var Map = (function(Map, $, undefined){
         url: url,
         dataType: 'html'
       }).done(function(data) {
-		$("#" + strActiveTab[0]).html(data);
+		$("#" + contentName).html(data);
       })
 	  
+	}
+	
+	GroupsWidget.selectStudentsRefreshStats = function() {
+	    console.log("dummy refresh activated!");
+	}
+	
+	GroupsWidget.clickStudent = function() {
+	    var btn = d3.select(this);
+        var btnRect = btn.select("rect");
+		if (btnRect.attr("selected") == "" || btnRect.attr("selected") == "true") {
+		    btnRect.style("fill", "white");
+			btnRect.attr("selected","false");
+		}
+		else {
+		    btnRect.style("fill", "black");
+			btnRect.attr("selected","true");
+		}
 	}
 	
 	return GroupsWidget;
@@ -850,7 +898,7 @@ var Map = (function(Map, $, undefined){
       node_id = this.__data__.id;
       Map.LearningPathWidget.update(node_id); // update LearningPath Widget
       Map.LearningPathWidget.expand(); // expand LearningPath Widget
-	  Map.GroupsWidget.updateTabContent(node_id, true); // update statistics tabs when in instructor mode
+	  Map.GroupsWidget.updateStatsTab(node_id, true); // update statistics tabs when in instructor mode
     }
     
     return Node;
