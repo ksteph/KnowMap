@@ -17,7 +17,7 @@ var MAP_CONSTANTS = {
     highlight_radius : 11,
     highlight_opacity : 0.5,
     
-    completed_opacity : 0.2,
+    completed_opacity : 0.3,
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -521,7 +521,10 @@ var Map = (function(Map, $, undefined){
     GroupsWidget.UnUsedColor = MAP_CONSTANTS.highlight_colors;
     GroupsWidget.NodeColors = {};
     GroupsWidget.BtnDefaultColor = null;
+	// current node to display stats about: set to the last node that was clicked
 	GroupsWidget.currentNodeId = null;
+	// list of student ids to display stats about: set to empty to start (which means all students will be displayed)
+	GroupsWidget.selectedStudentIds = null;
 
     GroupsWidget.update = function() {
       var url = '/graphs/'+ $("#graphData").attr("data-graph_id") +'/groups_widget';
@@ -689,10 +692,11 @@ var Map = (function(Map, $, undefined){
 	  }
 	 
 	  intNodeId = GroupsWidget.currentNodeId;
+	  intStudentIds = GroupsWidget.selectedStudentIds;
 	  
 	  if (!boolForced) return;
 	  
-	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId;
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId + "&students=" + intStudentIds;
 	  
       $.ajax({
         url: url,
@@ -705,6 +709,17 @@ var Map = (function(Map, $, undefined){
 	
 	GroupsWidget.selectStudentsRefreshStats = function() {
 	    console.log("dummy refresh activated!");
+		GroupsWidget.selectedStudentIds = "";
+		d3.selectAll(".student-button")
+		.each(function(d){
+		    var g = d3.select(this);
+			if (g.attr("selected") == "true") {
+			    GroupsWidget.selectedStudentIds = GroupsWidget.selectedStudentIds + g.attr("id") + ",";
+			}
+		});
+		GroupsWidget.selectedStudentIds = GroupsWidget.selectedStudentIds.substring(0,GroupsWidget.selectedStudentIds.length-1);
+		console.log("student ids is now: " + GroupsWidget.selectedStudentIds);
+		GroupsWidget.updateStatsTab(null, true);
 	}
 	
 	GroupsWidget.clickStudent = function() {

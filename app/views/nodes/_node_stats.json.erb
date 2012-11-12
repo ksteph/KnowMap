@@ -1,10 +1,10 @@
 {
-    "percent_complete": "<%= rand(101) %>",
+    "percent_complete": "<%= params[:graph_id] %>",
     <% questions = [] %>
     <% for i in 1..(1+rand(11)) %>
     <% questions.push(rand(5)+1) %>
     <% end %>
-    "avg_retries": <%= questions %>,
+    "average_number_of_retries": <%= questions %>,
     <% students = [] %>
     <% for i in 1..(1+rand(11)) %>
     <% students.push(rand(5)+1) %>
