@@ -1,4 +1,9 @@
 <% require 'json' %>
+<% if !can?(:manage, Course) %>
+	<% abort("you do not have permissions to view this page") %>
+<% end %>
+
+
 <% @stats = render :partial => 'nodes/node_stats', :formats => [:json], :locals => {:node => @node} %>
 <% @statsJson = JSON.parse(@stats) %>
 
@@ -21,4 +26,3 @@
 	    <% end %>
     </div>
 <% end %>
-

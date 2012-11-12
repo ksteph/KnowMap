@@ -657,7 +657,7 @@ var Map = (function(Map, $, undefined){
 	}
 	
 	GroupsWidget.updateStudentsList = function() {
-	  // fill students list with students from db
+	  // fill students list with students from db, add event listeners to the buttons in the students-list page
       contentName = "student-stats-widget-content";
 	  viewName = "student_stats_widget_content";
 		
@@ -669,9 +669,9 @@ var Map = (function(Map, $, undefined){
       }).done(function(data) {
 		$("#" + contentName).html(data);
 		d3.select("#student-select-done-button").on("click",function(){Map.GroupsWidget.selectStudentsRefreshStats()});
-		d3.selectAll(".student-button").select("rect")
+		d3.selectAll(".student-button")
 		  .attr("selected","true")
-		  .style("fill","black");
+		  .select("rect").style("fill","black");
 		  
 		d3.selectAll(".student-button").on("click",Map.GroupsWidget.clickStudent);
       })
@@ -710,13 +710,13 @@ var Map = (function(Map, $, undefined){
 	GroupsWidget.clickStudent = function() {
 	    var btn = d3.select(this);
         var btnRect = btn.select("rect");
-		if (btnRect.attr("selected") == "" || btnRect.attr("selected") == "true") {
+		if (btn.attr("selected") == "" || btn.attr("selected") == "true") {
 		    btnRect.style("fill", "white");
-			btnRect.attr("selected","false");
+			btn.attr("selected","false");
 		}
 		else {
 		    btnRect.style("fill", "black");
-			btnRect.attr("selected","true");
+			btn.attr("selected","true");
 		}
 	}
 	
