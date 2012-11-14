@@ -2,9 +2,6 @@ What do I do to update the production machine to the latest version?
 
   We do this by rebasing the production git branch. Below are the commands.
 
-  //Update master branch on local machine
-  - git checkout master 
-  - git pull
   //Move back to production branch and rebase
   - git checkout production
   - git rebase master
@@ -14,8 +11,11 @@ What do I do to update the production machine to the latest version?
   - bundle exec rake assets:precompile
   - sudo service apache2 reload
 
+  //Update master branch on local machine, do this after update production branch so that whatever code is there will be rolled in for next week after being tested in dev.
+  - git checkout master 
+  - git pull
 
-How do I move data from the production version to the dev version? (Assuming we get two versions running)
+How do I move data from the production version to the dev version?
   Take a data dump from production and run rake pg:dumppimport. This may not work if the databases are different.
 
   - sudo service apache2 stop //Need to stop apache
