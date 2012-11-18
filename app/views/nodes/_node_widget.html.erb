@@ -40,8 +40,11 @@
 
 <h2>Questions</h2>
 <% @node.questions.each do |q| %>
-  <h3><%= q.title %></h3> <%= q.text %> 
-
+  <div class="questions-title">
+    <%= image_tag("/images/checkmark.png", :class => "questions-correct") if q.correct? %>
+    <h3><%= q.title %></h3>
+  </div>
+  <%= q.text %>
   <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id), do |f| %>
     <% q.choices.each_with_index do |choice, index| %>  
       <%= radio_button_tag("answer", index) %>
