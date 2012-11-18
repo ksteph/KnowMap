@@ -51,12 +51,11 @@ class QuestionsController < ApplicationController
   end
 
   def submit
+    node_id = params[:node_id].to_i
     if !current_user  # SHOULD WE REQUIRE USERS TO LOG IN TO SUBMIT AN ANSWER??
       flash[:error] = "You must be logged in to submit an answer!"
       redirect_to node_path(node_id) and return 
     end
-
-    node_id = params[:node_id].to_i
     question_id = params[:question_id].to_i
     question = Question.find_by_id(question_id)
     if !question

@@ -40,6 +40,11 @@ class Question < ActiveRecord::Base
     end
   end
 
+  def correct?
+    return false if self.question_submissions.where(:correct => true).blank?
+    return true
+  end
+
   protected
 
     def self.process_text(text)
