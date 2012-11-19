@@ -39,7 +39,7 @@
 </table>
 
 <h2>Questions</h2>
-<% @node.questions.each do |q| %>
+<% @node.questions.order("created_at").each do |q| %>
   <% if q.correct? %>
     <!-- CORRECT QUESTIONS -->
     <div class="questions-title">
