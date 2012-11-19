@@ -131,16 +131,6 @@ class NodesController < ApplicationController
     render :partial => 'node_widget'
   end
   
-  def node_stats
-    @node = Node.find(params[:id])
-    
-    Action.log :controller => params[:controller], :action => params[:action], :target_id => params[:id], :user => current_user
-
-    respond_to do |format|
-      format.json { render :partial => 'node_stats', :locals => {:node => @node}}
-    end
-  end
-  
   def versions
     @node = Node.find(params[:node_id])
     @versions = @node.versions

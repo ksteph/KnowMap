@@ -1,30 +1,28 @@
-<div style="padding:3px 0;">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> percentage completed:
-</div>
-<div style="padding:3px 0;padding-left:15px">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> 33%
-</div>
+<% require 'json' %>
+<% if !can?(:manage, Course) %>
+	<% abort("you do not have permissions to view this page") %>
+<% end %>
 
 
-<div style="padding:3px 0;">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> average question retries:
-</div>
-<div style="padding:3px 0;padding-left:15px">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> question1: 5
-</div>
-<div style="padding:3px 0;padding-left:15px">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> question2: 6
-</div>
+<% @stats = render :partial => 'nodes/node_stats', :formats => [:json], :locals => {:node => @node} %>
+<% @statsJson = JSON.parse(@stats) %>
 
 
+<div style="padding-bottom:5px"><b><%= Node.find(params[:node_id]) %> Statistics</b></div>
 
-<div style="padding:3px 0;">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> incompleted:
-</div>
-<div style="padding:3px 0;padding-left:15px">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> jane doe
-</div>
-<div style="padding:3px 0;padding-left:15px">
-  <svg class="group-button" id="blah" data-nodes="blah"><rect height=10 width=10 style="fill:#fff"></rect></svg> john doe
-</div>
-
+<% @statsJson.each do |key, value| %>
+    <div style="padding:3px 0;">
+        <svg class="stats-arrow"><polygon fill="black" stroke="black" stroke-width="1" points="0,0  0,10 10,5" /></svg> <%= key.split('_').join(' ') %>:
+        <% if value.respond_to? :each %>
+            <% value.each_with_index do |val, index| %>
+    		    <div style="padding:3px 0;padding-left:20px">
+                    <%= index+1 %>: <%= val %>
+		    	</div>
+            <% end %>
+	    <% else %>
+            <div style="padding:3px 0;padding-left:20px">
+                <%= value %>
+            </div>
+	    <% end %>
+    </div>
+<% end %>
