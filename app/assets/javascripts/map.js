@@ -17,7 +17,7 @@ var MAP_CONSTANTS = {
     highlight_radius : 11,
     highlight_opacity : 0.5,
     
-    completed_opacity : 0.2,
+    completed_opacity : 0.3,
 
     lp_node_radius : 30,
     lp_node_spacer : 45,
@@ -56,12 +56,13 @@ var Map = (function(Map, $, undefined){
 	// prepare event listeners for the tab buttons
 	$("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
 	$("#node-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("node-stats-widget-content", "node-stats-tab-button")});
-	$("#student-stats-tab-button").on("click", function(){Map.GroupsWidget.displayTab("student-stats-widget-content", "student-stats-tab-button")});
-	
-	$("#side-widget-refresh-button").on("click", function(){Map.GroupsWidget.updateTabContent(null, true)});
 
 	// displays the group-widget-content by default
 	Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button");
+	
+	// prepare students list and toggle-button
+	Map.GroupsWidget.updateStudentsList();
+    $("#show-students-button").on("click", function(){Map.GroupsWidget.toggleStudentsList()});
 
     window.addEventListener('keydown', Map.winKeyDown, false);
     window.addEventListener('mousemove', Map.winMouseMove, false);
@@ -520,7 +521,10 @@ var Map = (function(Map, $, undefined){
     GroupsWidget.UnUsedColor = MAP_CONSTANTS.highlight_colors;
     GroupsWidget.NodeColors = {};
     GroupsWidget.BtnDefaultColor = null;
+	// current node to display stats about: set to the last node that was clicked
 	GroupsWidget.currentNodeId = null;
+	// list of student ids to display stats about: set to empty to start (which means all students will be displayed)
+	GroupsWidget.selectedStudentIds = null;
 
     GroupsWidget.update = function() {
       var url = '/graphs/'+ $("#graphData").attr("data-graph_id") +'/groups_widget';
@@ -615,6 +619,7 @@ var Map = (function(Map, $, undefined){
     }
     
     GroupsWidget.displayTab = function(strContent, strButton) {
+	  // displays tab that was just clicked on
       strContent = "#" + strContent;
       $(".side-widget-content").css("display", "none");
       $(strContent).css("display", "block");
@@ -626,10 +631,59 @@ var Map = (function(Map, $, undefined){
       $(".side-widget-tab-button").css("background-color", $(".side-widget-tab-button").data("original-background"));
       $(strButton).css("background-color",$("#groups-widget").css("background-color"));
     }
+
+    GroupsWidget.toggleStudentsList = function() {
+	    //display/undisplay student list
+	    strButtonName = "show-students-button"
+	    strContentName = "student-stats-widget-content"
+		strViewName = "student_stats_widget_content"
+		
+		strCurrentDisplay = $("#" + strContentName).css("display");
+		strNewDisplay = "";
+		strNewButtonColor = "";
+		
+		switch(strCurrentDisplay)
+		{
+		case "none":
+		    $("#" + strContentName).css("display", "block");
+			if ($("#" + strButtonName).data("original-background") == null) {
+			    $("#" + strButtonName).data("original-background", $("#" + strButtonName).css("background-color"));
+			}
+			$("#" + strButtonName).css("background-color", $("#groups-widget").css("background-color"));
+			break;
+		case "block":
+		    $("#" + strContentName).css("display", "none");
+			$("#" + strButtonName).css("background-color", $("#" + strButtonName).data("original-background"));
+		    break;
+		default:
+		}
+	}
 	
-	GroupsWidget.updateTabContent = function(intNodeId, boolForced) { 
-	  //inputs are intNodeID (for node-statistics updates) and boolForced (to force an update, even if there's already content)
-	  //intNodeId could be null, if the refresh-button is clicked instead of a node clicked, in which case use the last-recorded node-id.
+	GroupsWidget.updateStudentsList = function() {
+	  // fill students list with students from db, add event listeners to the buttons in the students-list page
+      contentName = "student-stats-widget-content";
+	  viewName = "student_stats_widget_content";
+		
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName;
+	  
+      $.ajax({
+        url: url,
+        dataType: 'html'
+      }).done(function(data) {
+		$("#" + contentName).html(data);
+		d3.select("#student-select-done-button").on("click",function(){Map.GroupsWidget.selectStudentsRefreshStats()});
+		d3.selectAll(".student-button")
+		  .attr("selected","true")
+		  .select("rect").style("fill","black");
+		  
+		d3.selectAll(".student-button").on("click",Map.GroupsWidget.clickStudent);
+      })
+	}
+	
+	GroupsWidget.updateStatsTab = function(intNodeId, boolForced) { 
+	  // update the stats with the new intNodeId, if boolForced
+	  contentName = "node-stats-widget-content";
+	  viewName = "node_stats_widget_content";
 	  
 	  if (intNodeId == null && GroupsWidget.currentNodeId == null) return;
 	 
@@ -638,45 +692,47 @@ var Map = (function(Map, $, undefined){
 	  }
 	 
 	  intNodeId = GroupsWidget.currentNodeId;
+	  intStudentIds = GroupsWidget.selectedStudentIds;
 	  
-	  strActiveTab = []
-	  $('.side-widget-content').each(function(i, obj) {
-	      if ($(this).css("display") != "none") {
-		    strActiveTab[0] = $(this).attr("id")
-	      }
-      });
+	  if (!boolForced) return;
 	  
-	  if (strActiveTab[0] == null) return;
-	  
-	  if (strActiveTab[0] == "groups-widget-content") return;
-	  
-	  if (!boolForced && $.trim($("#" + strActiveTab[0]).html()).length > 0) return;
-	  
-	  //parse the uri from the div-id of the tabContent we're trying to fill in
-	  contentIdArray = strActiveTab[0].split("-");
-	  viewName = "";
-	  index = contentIdArray.indexOf("content");
-	  for (i = 0; i < index; i++) {
-	    viewName = viewName + contentIdArray[i] + "_";
-	  }
-	  viewName = viewName + contentIdArray[index];
-	  
-	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName;
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId + "&students=" + intStudentIds;
 	  
       $.ajax({
         url: url,
         dataType: 'html'
       }).done(function(data) {
-		$("#" + strActiveTab[0]).html(data);
+		$("#" + contentName).html(data);
       })
 	  
-	  var url = '/nodes/'+ intNodeId +'/node_stats.json';
-	  $.ajax({
-	    url: url,
-		dataType: 'html',
-	  }).done(function(data) {
-	    console.log("got past ajax, return value was", data);
-	  })
+	}
+	
+	GroupsWidget.selectStudentsRefreshStats = function() {
+	    console.log("dummy refresh activated!");
+		GroupsWidget.selectedStudentIds = "";
+		d3.selectAll(".student-button")
+		.each(function(d){
+		    var g = d3.select(this);
+			if (g.attr("selected") == "true") {
+			    GroupsWidget.selectedStudentIds = GroupsWidget.selectedStudentIds + g.attr("id") + ",";
+			}
+		});
+		GroupsWidget.selectedStudentIds = GroupsWidget.selectedStudentIds.substring(0,GroupsWidget.selectedStudentIds.length-1);
+		console.log("student ids is now: " + GroupsWidget.selectedStudentIds);
+		GroupsWidget.updateStatsTab(null, true);
+	}
+	
+	GroupsWidget.clickStudent = function() {
+	    var btn = d3.select(this);
+        var btnRect = btn.select("rect");
+		if (btn.attr("selected") == "" || btn.attr("selected") == "true") {
+		    btnRect.style("fill", "white");
+			btn.attr("selected","false");
+		}
+		else {
+		    btnRect.style("fill", "black");
+			btn.attr("selected","true");
+		}
 	}
 	
 	return GroupsWidget;
@@ -857,7 +913,7 @@ var Map = (function(Map, $, undefined){
       node_id = this.__data__.id;
       Map.LearningPathWidget.update(node_id); // update LearningPath Widget
       Map.LearningPathWidget.expand(); // expand LearningPath Widget
-	  Map.GroupsWidget.updateTabContent(node_id, false); // update statistics tabs when in instructor mode
+	  Map.GroupsWidget.updateStatsTab(node_id, true); // update statistics tabs when in instructor mode
     }
     
     return Node;
