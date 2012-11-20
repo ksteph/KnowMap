@@ -3,43 +3,21 @@
 	<% abort("you do not have permissions to view this page") %>
 <% end %>
 
-<%#= @graph.course.students.map{ |rec| [rec.last.capitalize, rec.first.capitalize, rec.id] } %>
-<%# @stats = render :partial => 'graph_students', :formats => [:json], :locals => {:node => @node} %>
-<%# @statsJson = JSON.parse(@stats) %>
-<%#= @statsJson %>
+<% @stats = render :partial => 'graph_students', :formats => [:json], :locals => {:node => @node} %>
+<% @statsJson = JSON.parse(@stats) %>
 
+<div style="padding-bottom:5px"><b><%= @graph %> Students</b></div>
 
-<div style="padding:3px 0;">
-  <svg class="student-button" id="3"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> john doe
-</div>
+<% @statsJson.each do |key, value| %>
+    <div style="padding:3px 0;">
+         <svg class="student-button" id="<%= value %>">
+		     <polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect>
+	     </svg>
+		 <%= key %>
+    </div>
+<% end %>
 
-<div style="padding:3px 0;">
-  <svg class="student-button" id="2"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> jane bob
-</div>
-
-<div style="padding:3px 0;">
-  <svg class="student-button" id="9"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> foo bar
-</div>
-
-<div style="padding:3px 0;">
-  <svg class="student-button" id="11"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> jane doe
-</div>
-
-<div style="padding:3px 0;">
-  <svg class="student-button" id="40"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> john smith
-</div>
-
-<div style="padding:3px 0;">
-  <svg class="student-button" id="33"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> adam smith
-</div>
-
-<div style="padding:3px 0;">
-  <svg class="student-button" id="24"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> barbara boxer
-</div>
-
-<div style="padding:3px 0;">
-  <svg class="student-button" id="19"><polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect></svg> barbara hightower
-</div>
+<div style="padding: 3px"></div>
 
 <div id="student-select-done-button" style="width:100px;border:1px solid black;text-align:center;background-color:grey;cursor:pointer">
   refresh stats

@@ -673,8 +673,8 @@ var Map = (function(Map, $, undefined){
 		$("#" + contentName).html(data);
 		d3.select("#student-select-done-button").on("click",function(){Map.GroupsWidget.selectStudentsRefreshStats()});
 		d3.selectAll(".student-button")
-		  .attr("selected","true")
-		  .select("polygon").style("fill","black").style("stroke","black");
+		  .attr("selected","false")
+		  .select("polygon").style("fill", $("#student-stats-widget-content").css("background-color")).style("stroke", $("#student-stats-widget-content").css("background-color"));
 		  
 		d3.selectAll(".student-button").on("click",Map.GroupsWidget.clickStudent);
       })
@@ -696,7 +696,7 @@ var Map = (function(Map, $, undefined){
 	  
 	  if (!boolForced) return;
 	  
-	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId + "&students=" + intStudentIds;
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId + "&student_ids=" + intStudentIds;
 	  
       $.ajax({
         url: url,
