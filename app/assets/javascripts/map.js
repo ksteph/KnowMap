@@ -673,8 +673,8 @@ var Map = (function(Map, $, undefined){
 		$("#" + contentName).html(data);
 		d3.select("#student-select-done-button").on("click",function(){Map.GroupsWidget.selectStudentsRefreshStats()});
 		d3.selectAll(".student-button")
-		  .attr("selected","true")
-		  .select("rect").style("fill","black");
+		  .attr("selected","false")
+		  .select("polygon").style("fill", $("#student-stats-widget-content").css("background-color")).style("stroke", $("#student-stats-widget-content").css("background-color"));
 		  
 		d3.selectAll(".student-button").on("click",Map.GroupsWidget.clickStudent);
       })
@@ -696,7 +696,7 @@ var Map = (function(Map, $, undefined){
 	  
 	  if (!boolForced) return;
 	  
-	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId + "&students=" + intStudentIds;
+	  var url = '/graphs/'+ $("#graphData").attr("data-graph_id") + '/groups_widget' + "?contentType=" + viewName + "&node_id=" + intNodeId + "&student_ids=" + intStudentIds;
 	  
       $.ajax({
         url: url,
@@ -724,13 +724,15 @@ var Map = (function(Map, $, undefined){
 	
 	GroupsWidget.clickStudent = function() {
 	    var btn = d3.select(this);
-        var btnRect = btn.select("rect");
+        var btnCross = btn.select("polygon");
 		if (btn.attr("selected") == "" || btn.attr("selected") == "true") {
-		    btnRect.style("fill", "white");
+		    btnCross.style("fill", $("#student-stats-widget-content").css("background-color"));
+			btnCross.style("stroke", $("#student-stats-widget-content").css("background-color"));
 			btn.attr("selected","false");
 		}
 		else {
-		    btnRect.style("fill", "black");
+		    btnCross.style("fill", "black");
+			btnCross.style("stroke", "black");
 			btn.attr("selected","true");
 		}
 	}
