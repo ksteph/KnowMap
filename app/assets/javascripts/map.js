@@ -674,7 +674,7 @@ var Map = (function(Map, $, undefined){
 		d3.select("#student-select-done-button").on("click",function(){Map.GroupsWidget.selectStudentsRefreshStats()});
 		d3.selectAll(".student-button")
 		  .attr("selected","true")
-		  .select("rect").style("fill","black");
+		  .select("polygon").style("fill","black").style("stroke","black");
 		  
 		d3.selectAll(".student-button").on("click",Map.GroupsWidget.clickStudent);
       })
@@ -724,13 +724,15 @@ var Map = (function(Map, $, undefined){
 	
 	GroupsWidget.clickStudent = function() {
 	    var btn = d3.select(this);
-        var btnRect = btn.select("rect");
+        var btnCross = btn.select("polygon");
 		if (btn.attr("selected") == "" || btn.attr("selected") == "true") {
-		    btnRect.style("fill", "white");
+		    btnCross.style("fill", $("#student-stats-widget-content").css("background-color"));
+			btnCross.style("stroke", $("#student-stats-widget-content").css("background-color"));
 			btn.attr("selected","false");
 		}
 		else {
-		    btnRect.style("fill", "black");
+		    btnCross.style("fill", "black");
+			btnCross.style("stroke", "black");
 			btn.attr("selected","true");
 		}
 	}

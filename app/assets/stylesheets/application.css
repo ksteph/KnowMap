@@ -179,7 +179,7 @@ a {
   cursor:pointer;
 }
 
-.side-widget-content {
+.side-widget-content, #student-stats-widget-content {
   margin-left:18px;
   width:250px;
   float:right;
