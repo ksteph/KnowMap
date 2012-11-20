@@ -1,11 +1,6 @@
         {
-          <% student_records = Graph.find_by_id(graph_id).course.students.map{ |rec| [rec.last.capitalize, rec.first.capitalize, 
-                                                                                      rec.id] } %>
-          <% student.records.sort_by!{ |rec1, rec2| if (rec1[0] == rec2[0])
-                                                      rec1[1] <=> rec2[1]
-                                                    else
-                                                      rec1[0] <=> rec2[0]
-                                                    end } %>
+          <% student_records = Graph.find(params[:graph_id]).course.students.map{ |rec| [rec.last.capitalize, rec.first.capitalize, rec.id] } %>
+          <% student.records.sort %>
           <% student_records.each do |rec| %>
           <%= rec[0] + ", " + rec[1] %> : <%= rec[2] %>
           <% end %>
