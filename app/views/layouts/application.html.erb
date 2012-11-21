@@ -83,6 +83,17 @@
             <% end %>
           </div>
           <%= render 'graphs/graph_window' %>
+		  
+		  <div id="tips-widget">
+            <div id="tips-widget-button">Tips</div>
+			<div style="padding-bottom:5px;font-size:11px;">
+				<svg style="height:5px;width:5px;"><polygon fill="black" stroke="black" stroke-width="1" points="0,0  0,5 5,2.5"></polygon></svg>
+					Concepts are dimmed after you've shown mastery of the topic. Double click the node to see its contents.</div>
+			<div style="padding-bottom:5px;font-size:11px;">
+				<svg style="height:5px;width:5px;"><polygon fill="black" stroke="black" stroke-width="1" points="0,0  0,5 5,2.5"></polygon></svg>
+					Follow the green arrows to see which new topics you're ready for.</div>
+          </div>
+		  
         </div>
         
         <div id="node-widget"<% if params[:controller] != 'nodes' %>style="display:none"<% end %>><%= yield :node %></div>
