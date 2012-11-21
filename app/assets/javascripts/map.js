@@ -740,6 +740,7 @@ var Map = (function(Map, $, undefined){
 	
 	return GroupsWidget;
   })({});
+  
   Map.TipsWidget = (function(TipsWidget) {
     TipsWidget.toggle = function(event) {
         $("#tips-widget").animate({left: parseInt($("#tips-widget").css('left')) == 0 ? -$("#tips-widget").outerWidth() : 0},  function() {
