@@ -47,7 +47,7 @@
       <h3><%= q.title %></h3>
     </div>
     <%= q.text %>
-    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id), do |f| %>
+    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
       <% q.choices.each_with_index do |choice, index| %>  
         <% if q.answers.include?(index)%>
           <%= radio_button_tag("answer", index, true)%>
@@ -64,7 +64,7 @@
       <h3><%= q.title %></h3>
     </div>
     <%= q.text %>
-    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id), do |f| %>
+    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
       <% q.choices.each_with_index do |choice, index| %>  
         <%= radio_button_tag("answer", index) %>
         <%= label_tag(index, choice) %><br>

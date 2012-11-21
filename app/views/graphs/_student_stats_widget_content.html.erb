@@ -1,0 +1,24 @@
+<% require 'json' %>
+<% if !can?(:manage, Course) %>
+	<% abort("you do not have permissions to view this page") %>
+<% end %>
+
+<% @stats = render :partial => 'graph_students', :formats => [:json], :locals => {:node => @node} %>
+<% @statsJson = JSON.parse(@stats) %>
+
+<div style="padding-bottom:5px"><b><%= @graph %> Students</b></div>
+
+<% @statsJson.each do |key, value| %>
+    <div style="padding:3px 0;">
+         <svg class="student-button" id="<%= value %>">
+		     <polygon fill="black" stroke="black" stroke-width="1" points="0,0 1,0 5,4 9,0 10,0 10,1 6,5 10,9 10,10 9,10 5,6 1,10 0,10 0,9 4,5 0,1" /></rect>
+	     </svg>
+		 <%= key %>
+    </div>
+<% end %>
+
+<div style="padding: 3px"></div>
+
+<div id="student-select-done-button" style="width:100px;border:1px solid black;text-align:center;background-color:grey;cursor:pointer">
+  refresh stats
+</div>

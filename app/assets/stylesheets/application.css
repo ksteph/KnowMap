@@ -155,25 +155,3 @@ a {
 .clear {
   clear: both;
 }
-
-.side-widget-tab-button {
-  text-align:center;
-  display:inline-block;
-  width:25%;
-  border: 1px solid black;
-  border-bottom:0;
-  background-color:grey;
-  cursor:pointer;
-}
-
-.side-widget-content {
-  margin-left:18px;
-  width:250px;
-  float:right;
-  min-height:100px;
-  max-height:490px;
-  padding:5px;
-  overflow-y:scroll;
-}
-
-
