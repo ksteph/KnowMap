@@ -4,6 +4,14 @@
 
 <%= render 'form' %>
 
+<h2><%= t 'nodes.questions' %></h2>
+<ul>
+<% @node.questions.each do |question| %>
+  <li><%= question.title %> </li>
+<% end %>
+</ul>
+
+<%= link_to t('nodes.add_question'), new_node_question_path(@node) %> |
 <%= link_to t('actions.home'), :root, :remote => remote?, "data-type" => "html" %> |
 <%= link_to t('actions.show'), @node, :remote => remote?, "data-type" => "html" %> |
 <%= link_to t('actions.back'), :back, :onclick => "window.history.back(); return false;" %>

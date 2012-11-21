@@ -4,9 +4,29 @@
   <title>Know Map</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
+  <% #TODO host mathjax ourselves. %>
+  <%= javascript_include_tag "https://d3eoax9i5htok0.cloudfront.net/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" %>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    //extensions: ["tex2jax.js"],
+    tex2jax: {
+    //inlineMath: [ ['$','$'] ],
+    //displayMath: [],
+    processEscapes: true,
+    menuSettings: {
+    zoom: "None",
+    },
+    messageStyle: "none",
+    showProcessingMessages: false,
+    },
+    });
+  </script>
+  <%=  yield :javascript %>
+  
   <%= csrf_meta_tags %>
 </head>
-<body class="<%= extract_layout_classes(controller) %>"><div id="container">
+<!-- <body class="<%= extract_layout_classes(controller) %>"><div id="container"> -->
+<body "data-controller"=<%=controller_name%> "data-action"=<%=action_name%>><div id="container">
   <div id="header">
     <div class="title">
       <%= link_to 'Know Map', :root, :remote => remote? %>

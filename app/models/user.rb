@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   has_many :actions
   has_many :course_memberships
   has_many :courses, :through => :course_memberships 
+  has_many :question_submissions
   
   attr_accessor :password, :updating_password
   before_save :encrypt_password

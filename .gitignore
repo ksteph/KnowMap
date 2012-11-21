@@ -19,6 +19,7 @@
 
 # Other stuff
 *~
+*.sw
 *.rbc
 *.sassc
 .sass-cache
