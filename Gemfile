@@ -13,6 +13,11 @@ gem 'cancan'                            # Authorization
 gem 'paper_trail'                       # Active Record Versioning
 gem "rufus-scheduler", "~> 2.0.17"      # Background Task Scheduler
 
+<<<<<<< HEAD
+=======
+# Required for processing questions. Note that you need pandoc installed.
+gem 'pandoc-ruby'
+>>>>>>> initial import of coursharing questions
 
 group :test do
   gem 'cucumber-rails', :require => false
@@ -23,14 +28,25 @@ end
 
 group :development, :test do
   gem "rspec-rails", "~> 2.0"
+  ## For debugging
+  gem 'pry'
 end
+
+gem 'haml' #for questions
+gem 'haml-rails' #for questions
+gem 'jquery-rails' #for questions
+gem 'sass-rails',     '~> 3.2.3' #for questions
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
+  gem 'compass', '0.12' #for questions
+  gem 'compass-rails', '1.0.0' #for questions
+  gem 'bootstrap-sass', :git => 'https://github.com/thomas-mcdonald/bootstrap-sass.git', :branch => "2.0-stable" #for questions
+  gem 'font-awesome-sass-rails' #for questions
+  gem 'coffee-rails', '~> 3.2.1' #for questions
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', :platform => :ruby
-  gem 'uglifier', '>= 1.0.3'
+  gem 'therubyracer'
 end
 
 # To use ActiveModel has_secure_password

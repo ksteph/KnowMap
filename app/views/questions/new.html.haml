@@ -1,0 +1,19 @@
+-provide(:title, 'Create Question')
+
+- content_for :javascript do
+  %script{:type => "text/x-mathjax-config"}
+    MathJax.Hub.Config({
+    tex2jax: {
+    inlineMath: [ ['$','$'] ],
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+    });
+
+#question_form
+  %h1 New Question
+  %br
+  = form_for [@node, @question] do |f|
+    = render "shared/error_messages", :target => @question
+    = render :partial => "form", :object => f
+    .button_container
+      = submit_tag "Create Question", :id => "submit", :class => :good

@@ -58,6 +58,9 @@
     <%= render "outgoing_edge_fields", :f => builder %>
   <% end %>
   <%= link_to_add_fields t('nodes.add_next'), f, :outgoing_edges %>
+
+  <h2><%= t 'nodes.questions' %></h2>
+  <%= link_to t('nodes.add_question'), new_node_question_path(@node) %>
   
   <br /><br />
   <div class="actions">

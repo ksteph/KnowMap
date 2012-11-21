@@ -117,11 +117,13 @@ ActiveRecord::Schema.define(:version => 20121022153843) do
   create_table "questions", :force => true do |t|
     t.integer  "node_id",      :null => false
     t.string   "type"
-    t.text     "prompt",       :null => false
+    t.text     "text",         :null => false
     t.text     "choices"
     t.text     "answers",      :null => false
     t.text     "explanations"
     t.text     "hint"
+    t.text     "json"
+    t.string   "title"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
   end
