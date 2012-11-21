@@ -52,6 +52,7 @@ var Map = (function(Map, $, undefined){
   Map.setup = function() {
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
+    $("#tips-widget-button").on("click", Map.TipsWidget.toggle);
 	
 	// prepare event listeners for the tab buttons
 	$("#groups-tab-button").on("click", function(){Map.GroupsWidget.displayTab("groups-widget-content", "groups-tab-button")});
@@ -524,7 +525,7 @@ var Map = (function(Map, $, undefined){
 	// current node to display stats about: set to the last node that was clicked
 	GroupsWidget.currentNodeId = null;
 	// list of student ids to display stats about: set to empty to start (which means all students will be displayed)
-	GroupsWidget.selectedStudentIds = null;
+	GroupsWidget.selectedStudentIds = "";
 
     GroupsWidget.update = function() {
       var url = '/graphs/'+ $("#graphData").attr("data-graph_id") +'/groups_widget';
@@ -738,6 +739,13 @@ var Map = (function(Map, $, undefined){
 	}
 	
 	return GroupsWidget;
+  })({});
+  Map.TipsWidget = (function(TipsWidget) {
+    TipsWidget.toggle = function(event) {
+        $("#tips-widget").animate({left: parseInt($("#tips-widget").css('left')) == 0 ? -$("#tips-widget").outerWidth() : 0},  function() {
+      });
+    }
+    return TipsWidget;
   })({});
   
   Map.NodeWidget = (function(NodeWidget) {
