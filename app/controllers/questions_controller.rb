@@ -50,6 +50,7 @@ class QuestionsController < ApplicationController
     redirect_to course_questions_path
   end
 
+<<<<<<< HEAD
   def submit
     node_id = params[:node_id].to_i
     if !current_user  # SHOULD WE REQUIRE USERS TO LOG IN TO SUBMIT AN ANSWER??
@@ -87,4 +88,6 @@ class QuestionsController < ApplicationController
     end    
   end
 
+=======
+>>>>>>> f46d368
 end
