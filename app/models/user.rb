@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   has_many :actions
   has_many :course_memberships
   has_many :courses, :through => :course_memberships 
+  has_many :question_submissions
   
   attr_accessor :password, :updating_password
   before_save :encrypt_password
@@ -44,8 +45,13 @@ class User < ActiveRecord::Base
   end
 
   def completed?(node)
-    num = rand(10)
-    num>4
+    num_questions = node.questions.length
+    results = QuestionSubmission.connection.execute("SELECT QSubs.user_id
+                                                     FROM Question_Submissions QSubs
+                                                     WHERE QSubs.user_id = #{self.id} AND QSubs.correct = true
+                                                     GROUP BY QSubs.user_id
+                                                     HAVING COUNT(DISTINCT QSubs.question_id) = #{num_questions}")
+    !results.first.nil?
   end
   
   def validates_password?
