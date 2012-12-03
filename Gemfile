@@ -13,9 +13,6 @@ gem 'cancan'                            # Authorization
 gem 'paper_trail'                       # Active Record Versioning
 gem "rufus-scheduler", "~> 2.0.17"      # Background Task Scheduler
 
-# Required for processing questions. Note that you need pandoc installed.
-gem 'pandoc-ruby'
-
 group :test do
   gem 'cucumber-rails', :require => false
   gem 'cucumber-rails-training-wheels'
@@ -44,6 +41,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1' #for questions
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer'
+  gem 'uglifier'
 end
 
 # To use ActiveModel has_secure_password
