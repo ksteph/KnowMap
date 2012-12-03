@@ -60,6 +60,11 @@
   <%= link_to_add_fields t('nodes.add_next'), f, :outgoing_edges %>
 
   <h2><%= t 'nodes.questions' %></h2>
+  <ul>
+    <% @node.questions.each do |question| %>
+    <li><%= question.title %> </li>
+    <% end %>
+  </ul>
   <%= link_to t('nodes.add_question'), new_node_question_path(@node) %>
   
   <br /><br />
