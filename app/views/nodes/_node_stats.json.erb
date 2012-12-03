@@ -1,13 +1,109 @@
 {
-    "percent_complete": "<%= params[:graph_id] %>",
-    <% questions = [] %>
-    <% for i in 1..(1+rand(11)) %>
-    <% questions.push(rand(5)+1) %>
+    <% if params[:student_ids] %>
+    <%   student_ids = params[:student_ids].split(",").map{ |id| id.to_i }.sort %>
+    <% else %>
+    <%   student_ids = [] %>
     <% end %>
-    "average_number_of_retries": <%= questions %>,
-    <% students = [] %>
-    <% for i in 1..(1+rand(11)) %>
-    <% students.push(rand(5)+1) %>
+    <% percentage_complete = 0.0 %>
+    <% num_questions = Node.find(params[:node_id]).questions.length %>
+    <% average_retries = [0.0] * num_questions %>
+    <% unfinished_students = [] %>
+    <% results = QuestionSubmission.connection.execute("SELECT QSubs1.user_id AS id, QSubs1.question_id AS qid, 
+                                                               COUNT(*) AS retries
+                                                        FROM Question_Submissions QSubs1
+                                                        WHERE QSubs1.user_id IN (SELECT QSubs2.user_id
+                                                                                 FROM Question_Submissions QSubs2
+                                                                                 WHERE QSubs2.correct = true
+                                                                                 GROUP BY QSubs2.user_id
+                                                                                 HAVING COUNT(DISTINCT QSubs2.question_id) = 
+                                                                                        #{num_questions})
+                                                        GROUP BY QSubs1.user_id, QSubs1.question_id, QSubs1.correct
+                                                        ORDER BY QSubs1.user_id ASC, QSubs1.question_id ASC, QSubs1.correct DESC") %>
+    <% if results.count > 0 %>
+    <%   new_results = [] %>
+    <%   new_results.append({"id"=>results[0]["id"], "qid"=>results[1]["qid"], "retries"=>0}) %>
+    <%   new_rec_index = 0 %>
+    <%   (1..results.count-1).each do |i| %>
+    <%     prev_rec = results[i-1] %>
+    <%     cur_rec = results[i] %>
+    <%     if cur_rec["id"] == prev_rec["id"] && cur_rec["qid"] == prev_rec["qid"] %>
+    <%       new_results[new_rec_index]["retries"] += cur_rec["retries"].to_i %>
+    <%     else %>
+    <%       new_results.append({"id"=>cur_rec["id"], "qid"=>cur_rec["qid"], "retries"=>0}) %>
+    <%       new_rec_index += 1 %>
+    <%     end %>
+    <%   end %>
+    <%   results = new_results %>
     <% end %>
-    "incompleted_students" : <%= students %>
+    <% if student_ids.length > 0 %>
+    <%   if results.count > 0 %>
+    <%     cur_stud_index = 0 %>
+    <%     cur_rec = results[0] %>
+    <%     cur_rec_index = 1 %>
+    <%     while cur_stud_index < student_ids.length && cur_rec_index < results.count do %>
+    <%       cur_stud_id = student_ids[cur_stud_index] %>
+    <%       until cur_rec["id"].to_i >= cur_stud_id || cur_rec_index == results.count do %>
+    <%         cur_rec = results[cur_rec_index] %>
+    <%         cur_rec_index += 1 %> 
+    <%       end %>
+    <%       if cur_stud_id == cur_rec["id"].to_i %>
+    <%         percentage_complete += 1 %>
+    <%         i = 0 %>
+    <%         while i < num_questions %>
+    <%           average_retries[i] += cur_rec["retries"].to_i %>
+    <%           if cur_rec_index < results.count %>
+    <%             cur_rec = results[cur_rec_index] %>
+    <%             cur_rec_index += 1 %>
+    <%           end %>
+    <%           i += 1 %>
+    <%         end %>
+    <%       else %>
+    <%         unfinished_students.append(cur_stud_id) %>
+    <%       end %>
+    <%       cur_stud_index += 1 %>
+    <%     end %>
+    <%     if cur_stud_index < student_ids.length %>
+    <%       until cur_stud_index == student_ids.length do %>
+    <%         cur_stud_id = student_ids[cur_stud_index] %>
+    <%         unfinished_students.append(cur_stud_id) %>
+    <%         cur_stud_index += 1 %>
+    <%       end %>
+    <%     end %>
+    <%   else %>
+    <%     unfinished_students = student_ids %>
+    <%   end %>
+    <%   unfinished_students.map!{ |id| User.find(id) } %>
+    <% elsif results.count > 0 %>
+    <%   cur_rec_index = 0 %>
+    <%   while cur_rec_index < results.count %>
+    <%     i = 0 %>
+    <%     while i < num_questions && cur_rec_index < results.count %>
+    <%       cur_rec = results[cur_rec_index] %>
+    <%       average_retries[i] += cur_rec["retries"].to_i %>
+    <%       cur_rec_index += 1 %>
+    <%       i += 1 %>
+    <%     end %>
+    <%     percentage_complete += 1 %>
+    <%   end %>
+    <%   unfinished_students = Graph.find(params[:graph_id]).course.students.map{ |stud| stud["id"].to_i } - 
+                               results.map{ |rec| rec["id"].to_i } %>
+    <%   unfinished_students.map!{ |id| User.find(id) } %>
+    <% else %>
+    <%   unfinished_students = Graph.find(params[:graph_id]).course.students %>
+    <% end %>
+    "Unfinished Students" : "<%= unfinished_students.map!{ |rec| rec.last + ", " + rec.first } %>",
+    <% if student_ids.length > 0 %>
+    <%   if student_ids.length - unfinished_students.length > 0 %>
+    <%     average_retries.map!{ |num_tries| num_tries / (student_ids.length - unfinished_students.length) } %>
+    <%   end %>
+    <%   percentage_complete /= student_ids.length %>
+    <% else %>
+    <%   num_students = Graph.find(params[:graph_id]).course.students.length %>
+    <%   if num_students - unfinished_students.length > 0 %>
+    <%     average_retries.map!{ |num_tries| num_tries / (num_students - unfinished_students.length) } %>
+    <%   end %>
+    <%   percentage_complete /= num_students %>
+    <% end %>
+    "Average Retries per Question" : "<%= average_retries.map{ |num_retries| num_retries.to_s } %>",
+    "Percentage Completion" : "<%= (percentage_complete * 100).round(2) %>"
 }
