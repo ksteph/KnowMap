@@ -13,16 +13,24 @@
 <% @statsJson.each do |key, value| %>
     <div style="padding:3px 0;">
         <svg class="stats-arrow"><polygon fill="black" stroke="black" stroke-width="1" points="0,0  0,10 10,5" /></svg> <%= key.split('_').join(' ') %>:
-        <% if value.respond_to? :each %>
-            <% value.each_with_index do |val, index| %>
-    		    <div style="padding:3px 0;padding-left:20px">
-                    <%= index+1 %>: <%= val %>
+        <% if value[0] == "[" %>
+            <% if value == "[]" %>
+   	        <div style="padding:3px 0;padding-left:20px">
+                    N/A
+		</div>
+            <% else %>
+                <% value = value[1,value.length-2] %>
+                <% value = value.split("&quot;,") %>
+                <% value.each_with_index do |val, index| %>
+    		        <div style="padding:3px 0;padding-left:20px">
+                        <%= index+1 %>: <%= val.gsub("&quot;","") %>
 		    	</div>
+                <% end %>
             <% end %>
-	    <% else %>
+	<% else %>
             <div style="padding:3px 0;padding-left:20px">
                 <%= value %>
             </div>
-	    <% end %>
+	<% end %>
     </div>
 <% end %>
