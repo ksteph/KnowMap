@@ -1,5 +1,3 @@
-require 'pandoc-ruby'
-
 class Question < ActiveRecord::Base
   attr_accessible :answers, :choices, :explanations, :hint, :node_id, :type, :text, :json
 
@@ -48,7 +46,7 @@ class Question < ActiveRecord::Base
   protected
 
     def self.process_text(text)
-      return PandocRuby.convert(text, {:from => :markdown, :to => :html, :mathjax => nil})
+      text
     end
 
     def self.strip_paragraph(choice)
