@@ -3,31 +3,33 @@
   They will automatically be included in application.css.
 */
 
-body.nodes .field {
-  margin: 5px 0;
-}
+[data-controller="nodes"][data-action="new"], [data-controller="nodes"][data-action="edit"] {
+  .field {
+    margin: 5px 0;
+  }
 
-body.nodes .field .field-explanation{
-  font-size: 0.8em;
-  font-weight: bold;
-  color: #999;
-  float: right;
-  padding-top: 2px;
-}
+  .field .field-explanation{
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #999;
+    float: right;
+    padding-top: 2px;
+  }
 
-body.nodes .field.with-explanation { overflow: hidden }
+  .field.with-explanation { overflow: hidden }
 
-body.nodes .field.with-explanation label {
-  float: left;
-}
+  .field.with-explanation label {
+    float: left;
+  }
 
-body.nodes .field-explanation-wrapper {
-  float: left;
-}
+  .field-explanation-wrapper {
+    float: left;
+  }
 
-body.nodes .field-explanation-wrapper .input-field {
-  clear: both;
-  display: block;
+  .field-explanation-wrapper .input-field {
+    clear: both;
+    display: block;
+  }
 }
 
 .nodeslistTitle {
