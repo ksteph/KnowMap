@@ -30,6 +30,7 @@ en:
     related: "Related Nodes"
     previous: "Previous Nodes"
     next: "Next Nodes"
+    questions: "Questions"
     add_related: "Add related node"
     add_previous: "Add previous node"
     add_next: "Add next node"

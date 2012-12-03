@@ -12,6 +12,10 @@ class Node < ActiveRecord::Base
   has_many :next_nodes, :through => :outgoing_edges, :class_name => "Node", :source => "node_B"
   has_many :related_nodes_A, :through => :related_edges_A, :class_name => "Node", :source => "node_A"
   has_many :related_nodes_B, :through => :related_edges_B, :class_name => "Node", :source => "node_B"
+
+  # for Questions
+  has_many :questions
+  has_many :question_submissions
   
   accepts_nested_attributes_for :incoming_edges, :reject_if => lambda { |a| a[:node_id_A].blank? }, :allow_destroy => true
   accepts_nested_attributes_for :outgoing_edges, :reject_if => lambda { |a| a[:node_id_B].blank? }, :allow_destroy => true
