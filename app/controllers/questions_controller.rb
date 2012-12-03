@@ -10,7 +10,6 @@ class QuestionsController < ApplicationController
     @node = Node.find(params[:node_id])
     editor_data = ActiveSupport::JSON.decode(params[:question][:data])
     @question = Question.from_editor_data(editor_data, :node_id => params[:node_id])
-    binding.pry
     respond_to do |format|
       if @question
         format.json { render :json => {:redirectURL => edit_node_path(@node), :id => @question.id} }
