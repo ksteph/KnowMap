@@ -10,6 +10,30 @@ class Question < ActiveRecord::Base
 
   validates :node_id, :answers, :title, :presence => true
 
+  def update_from_editor_data(data, params={})
+    data = data.each_with_object({}){|(k,v), h| h[k.to_sym] = v}
+    type = data[:type]
+    case type
+      when "QuestionGroup", "SelectAllQuestion", "MultipleChoiceQuestion", "EssayQuestion"#, "CustomHTMLChooseAll", "CustomHTMLMultipleChoice"
+        self.node_id = params[:node_id]
+        self.json   = data.to_json
+        self.text   = Question.process_text(data[:description])
+        self.title  = Question.strip_paragraph(Question.process_text(data[:title]))
+        if data[:explanation] and data[:explanation].strip != ""
+          self.explanations     = Question.process_text(data[:explanation])
+        end
+      else
+        return nil
+    end
+    if self.process_editor_data(data) and self.save
+      binding.pry
+      return self
+    else
+      binding.pry
+      return nil
+    end
+  end
+
   def self.from_editor_data(data, params={})
 
     # Converts string keys to symbols
