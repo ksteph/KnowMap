@@ -3,10 +3,10 @@
   <%= @node.title %>
 </p>
 
-<p style="min-height:300px;">
+<div style="min-height:300px;">
   <b>Content:</b>
-  <%= @node.content %>
-</p>
+  <%= simple_format RedCloth.new(@node.content).to_html %>
+</div>
 
 <p>
   <b>Position:</b>
