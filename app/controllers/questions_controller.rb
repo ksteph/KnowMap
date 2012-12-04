@@ -19,6 +19,24 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def edit
+    @node = Node.find(params[:node_id])
+    @question = Question.find(params[:id])
+  end
+
+  def update
+    @node = Node.find(params[:node_id])
+    @question = Question.find params[:id]
+    editor_data = ActiveSupport::JSON.decode(params[:question][:data])
+    respond_to do |format|
+      if @question.update_from_editor_data(editor_data, :node_id => params[:node_id])
+        format.json { render :json => {:redirectURL => edit_node_path(@node), :id => @question.id} }
+      else
+        format.json { render :json => "There was a problem saving your question.", :status => :unprocessable_entity }
+      end
+    end
+  end
+
   def show
     show_points = params[:show_points]
     show_delete = params[:show_delete]
@@ -45,8 +63,10 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
+    @question = Question.find params[:id]
+    @node = Node.find params[:node_id]
     @question.destroy
-    redirect_to course_questions_path
+    redirect_to edit_node_path(@node)
   end
 
   def submit

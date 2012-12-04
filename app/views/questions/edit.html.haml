@@ -1,0 +1,46 @@
+-provide(:title, 'Edit Question')
+
+- content_for :javascript do
+  %script{:type => "text/x-mathjax-config"}
+    MathJax.Hub.Config({
+    tex2jax: {
+    inlineMath: [ ['$','$'] ],
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+    });
+
+:javascript
+  //reconstructs the question fields
+  var replace_qustion_data = function() {
+    var questionObj = JSON.parse( $('#question_form').attr('data-question-json') );
+    $('input.title').val(questionObj['title']);
+    $('textarea#element_0_description').val(questionObj['description']);
+    $('textarea#element_0_explanation').val(questionObj['explanation']);
+
+    //fill in the first answer
+    $('textarea#element_0_input_choice_text_0').val(questionObj['choices'][0]);
+    //fill in the rest of the answers
+    $.each(questionObj['choices'], function(index, choice) {
+      if(index != 0) {
+        $('a.btn_add_choice').click();
+        $('textarea#element_0_input_choice_text_' + index).val(questionObj['choices'][index]);
+      }
+    });
+    //select the previously chosen correct answer
+    $('input#element_0_input_choice_' + questionObj['answer'][0]).attr('checked', 'checked');
+    //refresh the live preview
+    $('textarea, input[type="text"]', '#question_form').trigger("keypress")
+  }
+  $(window).load(function() {
+    //slight timeout so that the form can draw itself first
+    setTimeout(function(){ replace_qustion_data() }, 200);
+  });
+
+#question_form{'data-submit-url' => node_question_path(@node, @question), 'data-question-json' => @question.json, 'data-type' => 'PUT'}
+  %h1 Edit Question
+  %br
+  = form_for [@node, @question], :url => node_question_path(@node, @question), :method => 'PUT' do |f|
+    = render "shared/error_messages", :target => @question
+    = render :partial => "form", :object => f
+    .button_container
+      = submit_tag "Update Question", :id => "submit", :class => :good

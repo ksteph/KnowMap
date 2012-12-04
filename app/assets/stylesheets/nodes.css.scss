@@ -30,6 +30,10 @@
     clear: both;
     display: block;
   }
+  table.questions-table {
+    margin-bottom: 10px;
+    td {padding-right: 10px}
+  }
 }
 
 .nodeslistTitle {
