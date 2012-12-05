@@ -55,20 +55,7 @@ class QuestionEditor
     @elements = []
 
     @rendermd = (text) ->
-      data = question_text: text
-      r = ""
-      $.ajax {
-        type: 'GET'
-        url: '/textile_to_html'
-        data: data
-        async: false
-        dataType: "json"
-        success: (data) ->
-          r = data
-        error: (data) ->
-          r = "error"
-      }
-      r
+      text
 
     @initRegExp()
     @initPanel()
