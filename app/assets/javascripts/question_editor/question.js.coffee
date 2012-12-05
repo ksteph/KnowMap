@@ -142,7 +142,7 @@ class Question
       if not renderer?
         error "renderer not found for preview id #{preview_field_id}"
         return
-      renderer @, previewField
+      renderer(@, previewField) unless field_id == 'description'
 
   buildInput: (element_id) ->
 

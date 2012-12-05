@@ -23,8 +23,7 @@
         }
       });
     }
-    //remove all event listeners so we can add out own live preview logic
-    questionTextField.unbind().bind('change keyup', function() {
+    questionTextField.bind('change keyup', function() {
       $.ajax({
         type: 'GET',
         url: '/textile_to_html',
@@ -32,6 +31,7 @@
         dataType: "json",
         success: function(data) {
           $('#preview_field_text').html(data);
+          $('#mathjax_delay_buffer').html(data);
         }
       });
     });
