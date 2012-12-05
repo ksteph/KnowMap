@@ -34,6 +34,12 @@
 
     //refresh the live preview
     $('textarea, input[type="text"]', '#question_form').trigger("keypress")
+
+    $('textarea, input[type="text"]', '#question_form').trigger("keypress")
+    $('textarea#element_0_explanation').keyup(function() {
+      if($(this).val() == "") 
+        $('#preview_field_explanation').text('');
+    });
   }
   $(window).load(function() {
     //slight timeout so that the form can draw itself first
