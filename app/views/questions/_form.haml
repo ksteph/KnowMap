@@ -3,10 +3,10 @@
   site['questions']['new']();
 
 :javascript
-  //workaround for redclot live preview
+  //workaround for redcloth live preview
   //need to use live because this field isn't present on the page initially
   $(window).load(function() {
-    window.old_text = ""
+    //slight timeout while the page is created
     setTimeout(function(){ watch_text_change() }, 1000);
   });
   var watch_text_change = function() {
