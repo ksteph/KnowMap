@@ -41,8 +41,7 @@
   });
 
 #question_form{'data-submit-url' => node_question_path(@node, @question), 'data-question-json' => @question.json, 'data-type' => 'PUT'}
-  %h1 Edit Question
-  %br
+  %h1 Edit Question for #{link_to @node.title, node_path(@node), :target => '_blank'}
   = form_for [@node, @question], :url => node_question_path(@node, @question), :method => 'PUT' do |f|
     = render "shared/error_messages", :target => @question
     = render :partial => "form", :object => f

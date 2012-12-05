@@ -10,7 +10,7 @@
     });
 
 #question_form{'data-submit-url' => node_questions_path(@node), 'data-type' => 'POST'}
-  %h1 New Question
+  %h1 New Question for #{link_to @node.title, node_path(@node), :target => '_blank'}
   = form_for [@node, @question] do |f|
     = render "shared/error_messages", :target => @question
     = render :partial => "form", :object => f
