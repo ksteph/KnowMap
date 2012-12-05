@@ -4,7 +4,6 @@
 
 #= require mathjax_delay_renderer.js
 #= require json2.js
-#= require showdown.js
 #= require sprintf.js
 #= require xregexp-min.js
 #= require question_editor/question_editor.js
