@@ -386,7 +386,7 @@ class StandardQuestion extends Question
             sectionName = if title? then "#{title}: Part" else "Part"
         else
           sectionName = if title? then "#{title}" else ""
-        field.html("#{sectionName} #{elem.section} (#{data["score"]} #{pointString})")
+        field.html("#{sectionName} #{elem.section}")
 
     text_mathjax_delay = new MathJaxDelayRenderer()
     @addPreviewField
