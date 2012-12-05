@@ -22,7 +22,7 @@
       <%=link_to"Questions", '#', :class => 'selectable', 'data-container-id' => 'questions-wrapper' %>
     </div>
     <div id="content-wrapper" class="container" style="min-height:300px;">
-      <%= simple_format RedCloth.new(@node.content).to_html %>
+      <%= simple_format(RedCloth.new(@node.content).to_html) if @node.content %>
     </div>
     <div id="questions-wrapper" class="container" style="display:none; min-height:300px;">
       <%= render :partial => 'questions' %>
