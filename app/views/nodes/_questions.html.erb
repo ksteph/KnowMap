@@ -1,0 +1,36 @@
+<% @node.questions.order("created_at").each do |q| %>
+  <% if q.correct? %>
+    <!-- CORRECT QUESTIONS -->
+    <div class="questions-title">
+      <%= image_tag("/images/checkmark.png", :class => "questions-correct") if q.correct? %>
+      <h3><%= q.title %></h3>
+    </div>
+    <%= simple_format RedCloth.new(q.text).to_html %>
+    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
+      <% q.choices.each_with_index do |choice, index| %>  
+        <% if q.answers.include?(index)%>
+          <%= radio_button_tag("answer", index, true)%>
+        <% else %>
+          <%= radio_button_tag("answer", index, false, :disabled => :true)%>
+        <% end %>
+        <%= label_tag(index, choice) %><br>
+      <% end %>
+      <!-- <%= f.submit "Submit", :disabled => "disabled" %> -->
+    <% end %>
+  <% else %>
+    <!-- INCORRECT QUESTIONS -->
+    <div class="questions-title">
+      <h3><%= q.title %></h3>
+    </div>
+    <%= simple_format RedCloth.new(q.text).to_html %>
+    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
+      <% q.choices.each_with_index do |choice, index| %>  
+        <%= radio_button_tag("answer", index) %>
+        <%= label_tag(index, choice) %><br>
+      <% end %>
+      <%= f.submit "Submit" %>
+    <% end %>
+  <% end %> <!-- end if else for correct question -->
+
+<% end %>
+

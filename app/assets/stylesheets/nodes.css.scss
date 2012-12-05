@@ -3,6 +3,24 @@
   They will automatically be included in application.css.
 */
 
+[data-controller="nodes"][data-action="show"] {
+  #content-questions {
+    .navigation {
+      a {
+        margin-right: 5px;
+        text-decoration: none;
+      }
+      a.active {
+        color: #000;
+        font-weight: bold;
+        &:hover {
+          cursor: default;
+        }
+      }
+    }
+  }
+}
+
 [data-controller="nodes"][data-action="new"], [data-controller="nodes"][data-action="edit"] {
   .field {
     margin: 5px 0;
