@@ -23,6 +23,8 @@ KnowledgeMap::Application.routes.draw do
     end
   end
 
+  match 'textile_to_html' => 'questions#textile_to_html'
+
   resources :courses do
     get "syllabus" => "courses#syllabus", :as => "syllabus"
   end

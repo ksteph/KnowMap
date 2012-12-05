@@ -105,4 +105,9 @@ class QuestionsController < ApplicationController
       redirect_to node_path(node_id) and return
     end    
   end
+
+  def textile_to_html
+    render :json => (RedCloth.new(params[:question_text]).to_html).to_json
+  end
+
 end
