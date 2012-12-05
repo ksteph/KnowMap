@@ -300,10 +300,10 @@ var Map = (function(Map, $, undefined){
           .data(lpLinks)
           .enter().append("path")
             .attr("class", function(d){ if (Map.Edge.MapNodeId2Node[d.source].completed == "true" && 
-			                                Map.Edge.MapNodeId2Node[d.target].completed != "true") 
-											{ return "lp-edge-completed"; } else { return "lp-edge"; }})
-			.attr("opacity", function(d){if (Map.Edge.MapNodeId2Node[d.target].completed == "true") 
-										    { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
+			                                      Map.Edge.MapNodeId2Node[d.target].completed != "true") 
+											                { return "lp-edge-completed"; } else { return "lp-edge"; }})
+			      .attr("opacity", function(d){ if (Map.Edge.MapNodeId2Node[d.target].completed == "true") 
+										                    { return MAP_CONSTANTS.completed_opacity; } else { return 1.0; }})
             .style("fill","none")
             .style("marker-end", function(d){
                var diff = lpNodesMap[d.target].pos - lpNodesMap[d.source].pos;
