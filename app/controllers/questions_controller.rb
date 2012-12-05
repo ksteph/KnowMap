@@ -107,7 +107,7 @@ class QuestionsController < ApplicationController
   end
 
   def textile_to_html
-    render :json => (RedCloth.new(params[:question_text]).to_html).to_json
+    render :json => (RedCloth.new(params[:text]).to_html).to_json
   end
 
 end

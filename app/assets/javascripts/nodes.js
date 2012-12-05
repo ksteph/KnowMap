@@ -1,2 +1,10 @@
-// Place all the behaviors and hooks related to the matching controller here.
-// All this logic will automatically be available in application.js.
+$(document).ready(function() {
+  console.log('hello1');
+  $('#content-questions .navigation a').click(function() {
+   console.log('hello');
+   if(!$(this).hasClass('active')) {
+     console.log('hello');
+     $(this).addClass('active').siblings().removeClass('active');
+   }
+  });  
+});

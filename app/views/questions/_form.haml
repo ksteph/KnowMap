@@ -2,5 +2,39 @@
 :javascript
   site['questions']['new']();
 
+:javascript
+  //workaround for redclot live preview
+  //need to use live because this field isn't present on the page initially
+  $(window).load(function() {
+    window.old_text = ""
+    setTimeout(function(){ watch_text_change() }, 1000);
+  });
+  var watch_text_change = function() {
+    //if the field is already populated (such as on the edit page), update the live preview with the proper interpretation
+    var questionTextField = $('#element_0_description');
+    if(questionTextField.val() != "") {
+      $.ajax({
+        type: 'GET',
+        url: '/textile_to_html',
+        data: {text: questionTextField.val()},
+        dataType: "json",
+        success: function(data) {
+          $('#preview_field_text').html(data);
+        }
+      });
+    }
+    //remove all event listeners so we can add out own live preview logic
+    questionTextField.unbind().bind('change keyup', function() {
+      $.ajax({
+        type: 'GET',
+        url: '/textile_to_html',
+        data: {text: $(this).val()},
+        dataType: "json",
+        success: function(data) {
+          $('#preview_field_text').html(data);
+        }
+      });
+    });
+  }
 .row-fluid
   #question_editor.question_editor.span10
