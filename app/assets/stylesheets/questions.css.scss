@@ -16,7 +16,7 @@
         display: block;
         margin-bottom: 1px;
       }
-      label.title_select_type, select.select_type, label.title_score, input.points {
+      label.title_score, input.points {
         display: none;
       }
 
@@ -54,7 +54,7 @@
         }
         .choice_wrapper {
           margin: 5px 0 5px -20px;
-          input[type="radio"] {
+          input[type="radio"], input[type="checkbox"] {
             position: relative;
             //top: -7px;
             top: -4px;

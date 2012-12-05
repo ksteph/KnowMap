@@ -8,10 +8,18 @@
   $(window).load(function() {
     //slight timeout while the page is created
     setTimeout(function(){ watch_text_change() }, 1000);
+    setTimeout(function(){ watch_type_change() }, 1000);
   });
+  var watch_type_change = function() {
+    $('#element_0_select_type').bind('change keyup', function() {
+      console.log('hello');
+      setTimeout(function(){ watch_text_change() }, 1000);
+    });
+  }
   var watch_text_change = function() {
     //if the field is already populated (such as on the edit page), update the live preview with the proper interpretation
     var questionTextField = $('#element_0_description');
+    console.log('hello1');
     if(questionTextField.val() != "") {
       $.ajax({
         type: 'GET',

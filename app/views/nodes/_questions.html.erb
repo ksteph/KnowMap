@@ -9,9 +9,17 @@
     <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
       <% q.choices.each_with_index do |choice, index| %>  
         <% if q.answers.include?(index)%>
-          <%= radio_button_tag("answer", index, true)%>
+          <% if q.class == MultipleChoiceQuestion %>
+            <%= radio_button_tag("answer", index, true)%>
+          <%else %>
+            <%= check_box_tag("answer[]", index, true) %>
+          <%end %>
         <% else %>
-          <%= radio_button_tag("answer", index, false, :disabled => :true)%>
+          <% if q.class == MultipleChoiceQuestion %>
+            <%= radio_button_tag("answer", index, false, :disabled => :true)%>
+          <% else %>
+            <%= check_box_tag("answer[]", index, false, :disabled => :true) %>
+          <% end %>
         <% end %>
         <%= label_tag(index, choice) %><br>
       <% end %>
@@ -25,8 +33,13 @@
     <%= simple_format RedCloth.new(q.text).to_html %>
     <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
       <% q.choices.each_with_index do |choice, index| %>  
-        <%= radio_button_tag("answer", index) %>
-        <%= label_tag(index, choice) %><br>
+        <% if q.class == MultipleChoiceQuestion %>
+          <%= radio_button_tag("answer", index) %>
+          <%= label_tag(index, choice) %><br>
+        <%else %>
+          <%= check_box_tag("answer[]", index) %>
+          <%= label_tag(index, choice) %><br>
+        <% end%>
       <% end %>
       <%= f.submit "Submit" %>
     <% end %>

@@ -85,9 +85,12 @@ class QuestionsController < ApplicationController
       flash[:error] = "Please select an answer"
       redirect_to node_path(node_id) and return 
     end 
-    submitted_answer = params[:answer].to_i    # index of submitted answer
-    is_correct = question.grade(submitted_answer)
-    
+    if question.class == MultipleChoiceQuestion
+      submitted_answer = params[:answer].to_i    # index of submitted answer
+      is_correct = question.grade(submitted_answer)
+    else
+      is_correct = question.is_correct?(params[:answer].map(&:to_i))
+    end
     submission = question.question_submissions.new
     submission.user_id = current_user.id
     submission.node_id = node_id
@@ -96,13 +99,13 @@ class QuestionsController < ApplicationController
     submission.correct = is_correct
     if !submission.save
       flash[:error] = "There was a problem with your submission, please try again"
-      redirect_to node_path(node_id) and return
+      redirect_to node_path(node_id, :show_questions => true) and return
     elsif is_correct
       flash[:notice] = "Correct!"
-      redirect_to node_path(node_id) and return
+      redirect_to node_path(node_id, :show_questions => true) and return
     else
       flash[:error] = "Incorrect!"
-      redirect_to node_path(node_id) and return
+      redirect_to node_path(node_id, :show_questions => true) and return
     end    
   end
 
