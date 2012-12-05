@@ -359,7 +359,6 @@ class StandardQuestion extends Question
       attrs:
         class: "preview_label"
       parent_element: preview
-      renderer: (elem, field) -> field.html("<h2>Live Preview</h2>")
 
     question = @addPreviewField
       id: "question"
@@ -454,7 +453,6 @@ class StandardQuestion extends Question
       type: "div"
       attrs:
         class: "section"
-      html: "<h2> Editor </h2>"
       parent_element: edit
 
     @addField
@@ -544,7 +542,7 @@ class StandardQuestion extends Question
     @addField
       id: "btn_done"
       type: "button"
-      html: "Done"
+      html: "Preview"
       attrs:
         class: "btn btn_done"
       parent_element: button_container

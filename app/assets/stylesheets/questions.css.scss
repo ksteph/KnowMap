@@ -1,0 +1,112 @@
+[data-controller="questions"][data-action="new"], [data-controller="questions"][data-action="edit"] {
+
+  #question_form {
+    a {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    h1 {
+      margin-bottom: 0;
+    }
+    .element_edit {
+      padding-top: 20px;
+      label {
+        display: block;
+        margin-bottom: 1px;
+      }
+      label.title_select_type, select.select_type, label.title_score, input.points {
+        display: none;
+      }
+
+      input[type="text"], textarea {
+        width: 600px;
+        height: 20px;
+        font-size: 16px;
+        padding: 3px 6px;
+        border: 1px solid #ccc;
+        &:focus {
+          border: 1px solid #000;
+          outline: none;
+        }
+      }
+
+      #element_0_title {
+        height: 27px;
+      }
+
+      textarea {
+        height: 80px;
+        padding: 3px 5px;
+        font-size: 12px;
+        width: 600px;
+      }
+      .text_wrapper {
+        margin: 10px 0;
+      }
+      .choices_wrapper {
+        margin-top: 20px;
+        textarea.input_choice_text {
+          width: 580px;
+          height: 17px;
+          padding-top: 5px;
+        }
+        .choice_wrapper {
+          margin: 5px 0 5px -20px;
+          input[type="radio"] {
+            position: relative;
+            //top: -7px;
+            top: -4px;
+          }
+          .delete_choice {
+            position: relative;
+            top: -2px;
+            left: 3px;
+          }
+         .choices_label {
+           margin-bottom: -4px;
+         }
+        }
+        #element_0_button_container {
+          width: 593px;
+          text-align: right;
+        }
+      }
+      #element_0_btn_done {
+        display: block;
+        margin-top: 5px;
+      }
+    }
+    input#submit {
+      margin-top: 10px;
+    }
+  }
+  .preview {
+    ol#preview_field_choice_wrapper {
+      li {
+        margin: 3px 0;
+        &.chosen {
+          span {
+            background-color: rgba(255, 255, 0, 0.6);
+            padding: 2px 5px;
+            margin-left: -5px;
+          }
+        }
+      }
+    }
+    #preview_field_explanation {
+      font-style: italic;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+  }
+
+
+
+}
+.questions-title img {
+  width:25px;
+  height:25px;
+  float: left;
+}
