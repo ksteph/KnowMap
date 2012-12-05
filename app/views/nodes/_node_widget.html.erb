@@ -13,6 +13,9 @@
       }
       return false;
     });
+    if(window.location.search == "?show_questions=true") {
+      $('a[data-container-id="questions-wrapper"]').click();
+    }
   });
 <% end %>
 <div id="content-questions">
