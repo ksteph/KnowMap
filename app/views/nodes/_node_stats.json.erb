@@ -13,7 +13,8 @@
                                                         FROM Question_Submissions QSubs1
                                                         WHERE QSubs1.user_id IN (SELECT QSubs2.user_id
                                                                                  FROM Question_Submissions QSubs2
-                                                                                 WHERE QSubs2.correct = true
+                                                                                 WHERE QSubs2.node_id = #{params[:node_id]} 
+                                                                                       AND QSubs2.correct = true
                                                                                  GROUP BY QSubs2.user_id
                                                                                  HAVING COUNT(DISTINCT QSubs2.question_id) = 
                                                                                         #{num_questions})
