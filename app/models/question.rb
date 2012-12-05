@@ -26,10 +26,8 @@ class Question < ActiveRecord::Base
         return nil
     end
     if self.process_editor_data(data) and self.save
-      binding.pry
       return self
     else
-      binding.pry
       return nil
     end
   end
