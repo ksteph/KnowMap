@@ -59,18 +59,20 @@
   <% end %>
   <%= link_to_add_fields t('nodes.add_next'), f, :outgoing_edges %>
 
-  <h2><%= t 'nodes.questions' %></h2>
-  <% if @node.questions.any? %>
-    <table class="questions-table">
-      <% @node.questions.each do |question| %>
-        <tr>
-          <td><%= link_to question.title, edit_node_question_path(@node, question) %> </td>
-          <td><%= link_to "remove", node_question_path(@node, question), :confirm => "Are you sure?!", :method => :delete %> </td>
-        </tr>
-      <% end %>
-    </table>
+  <% unless @node.new_record? %>
+    <h2><%= t 'nodes.questions' %></h2>
+    <% if @node.questions.any? %>
+      <table class="questions-table">
+        <% @node.questions.each do |question| %>
+          <tr>
+            <td><%= link_to question.title, edit_node_question_path(@node, question) %> </td>
+            <td><%= link_to "remove", node_question_path(@node, question), :confirm => "Are you sure?!", :method => :delete %> </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+    <%= link_to t('nodes.add_question'), new_node_question_path(@node) %>
   <% end %>
-  <%= link_to t('nodes.add_question'), new_node_question_path(@node) %>
   
   <br /><br />
   <div class="actions">
