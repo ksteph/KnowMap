@@ -28,6 +28,10 @@
     });
     //select the previously chosen correct answer
     $('input#element_0_input_choice_' + questionObj['answer'][0]).attr('checked', 'checked');
+    //ensure previously chosen correct answer is highlighted
+    $('#preview_field_choice_wrapper li').removeClass('chosen');
+    $('#preview_field_choice_wrapper li#preview_field_choice_status_' + questionObj['answer'][0]).addClass('chosen');
+
     //refresh the live preview
     $('textarea, input[type="text"]', '#question_form').trigger("keypress")
   }
