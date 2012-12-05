@@ -48,7 +48,8 @@ class User < ActiveRecord::Base
     num_questions = node.questions.length
     results = QuestionSubmission.connection.execute("SELECT QSubs.user_id
                                                      FROM Question_Submissions QSubs
-                                                     WHERE QSubs.user_id = #{self.id} AND QSubs.correct = true
+                                                     WHERE QSubs.user_id = #{self.id} AND QSubs.node_id = #{node.id}
+                                                           AND QSubs.correct = true
                                                      GROUP BY QSubs.user_id
                                                      HAVING COUNT(DISTINCT QSubs.question_id) = #{num_questions}")
     !results.first.nil?

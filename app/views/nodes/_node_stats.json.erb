@@ -11,9 +11,10 @@
     <% results = QuestionSubmission.connection.execute("SELECT QSubs1.user_id AS id, QSubs1.question_id AS qid, 
                                                                COUNT(*) AS retries
                                                         FROM Question_Submissions QSubs1
-                                                        WHERE QSubs1.user_id IN (SELECT QSubs2.user_id
+                                                        WHERE QSubs1.node_id = #{params[:node_id]} AND
+                                                              QSubs1.user_id IN (SELECT QSubs2.user_id
                                                                                  FROM Question_Submissions QSubs2
-                                                                                 WHERE QSubs2.node_id = #{params[:node_id]} 
+                                                                                 WHERE QSubs2.node_id = #{params[:node_id]}
                                                                                        AND QSubs2.correct = true
                                                                                  GROUP BY QSubs2.user_id
                                                                                  HAVING COUNT(DISTINCT QSubs2.question_id) = 
@@ -22,7 +23,7 @@
                                                         ORDER BY QSubs1.user_id ASC, QSubs1.question_id ASC, QSubs1.correct DESC") %>
     <% if results.count > 0 %>
     <%   new_results = [] %>
-    <%   new_results.append({"id"=>results[0]["id"], "qid"=>results[1]["qid"], "retries"=>0}) %>
+    <%   new_results.append({"id"=>results[0]["id"], "qid"=>results[0]["qid"], "retries"=>0}) %>
     <%   new_rec_index = 0 %>
     <%   (1..results.count-1).each do |i| %>
     <%     prev_rec = results[i-1] %>
