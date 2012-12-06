@@ -40,10 +40,10 @@
     <% if student_ids.length > 0 %>
     <%   if results.count > 0 %>
     <%     cur_stud_index = 0 %>
-    <%     cur_rec = results[0] %>
-    <%     cur_rec_index = 1 %>
+    <%     cur_rec_index = 0 %>
     <%     while cur_stud_index < student_ids.length && cur_rec_index < results.count do %>
     <%       cur_stud_id = student_ids[cur_stud_index] %>
+    <%       cur_rec = results[cur_rec_index] %>
     <%       until cur_rec["id"].to_i >= cur_stud_id || cur_rec_index == results.count do %>
     <%         cur_rec = results[cur_rec_index] %>
     <%         cur_rec_index += 1 %> 
