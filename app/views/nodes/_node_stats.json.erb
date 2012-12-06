@@ -93,7 +93,7 @@
     <% else %>
     <%   unfinished_students = Graph.find(params[:graph_id]).course.students %>
     <% end %>
-    "Unfinished Students" : "<%= unfinished_students.map!{ |rec| rec.last + ", " + rec.first } %>",
+    "Unfinished Students" : "<%= unfinished_students.map!{ |rec| rec.last.capitalize + ", " + rec.first.capitalize } %>",
     <% if student_ids.length > 0 %>
     <%   if student_ids.length - unfinished_students.length > 0 %>
     <%     average_retries.map!{ |num_tries| num_tries / (student_ids.length - unfinished_students.length) } %>
