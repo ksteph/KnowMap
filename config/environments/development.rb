@@ -34,4 +34,7 @@ KnowledgeMap::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # Prevents loading files from /public/assets which only need for prod
+  config.serve_static_assets = false
 end
