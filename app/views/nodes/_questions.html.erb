@@ -1,49 +1,53 @@
-<% @node.questions.order("created_at").each do |q| %>
-  <% if q.correct? %>
-    <!-- CORRECT QUESTIONS -->
-    <div class="questions-title">
-      <%= image_tag("/images/checkmark.png", :class => "questions-correct") if q.correct? %>
-      <h3><%= q.title %></h3>
-    </div>
-    <%= simple_format RedCloth.new(q.text).to_html %>
-    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
-      <% q.choices.each_with_index do |choice, index| %>  
-        <% if q.answers.include?(index)%>
-          <% if q.class == MultipleChoiceQuestion %>
-            <%= radio_button_tag("answer", index, true)%>
-          <%else %>
-            <%= check_box_tag("answer[]", index, true) %>
-          <%end %>
-        <% else %>
-          <% if q.class == MultipleChoiceQuestion %>
-            <%= radio_button_tag("answer", index, false, :disabled => :true)%>
+<% unless current_user.nil? %>
+  <% @node.questions.order("created_at").each do |q| %>
+    <% if q.correct? %>
+      <!-- CORRECT QUESTIONS -->
+      <div class="questions-title">
+        <%= image_tag("/images/checkmark.png", :class => "questions-correct") if q.correct? %>
+        <h3><%= q.title %></h3>
+      </div>
+      <%= simple_format RedCloth.new(q.text).to_html %>
+      <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
+        <% q.choices.each_with_index do |choice, index| %>  
+          <% if q.answers.include?(index)%>
+            <% if q.class == MultipleChoiceQuestion %>
+              <%= radio_button_tag("answer", index, true)%>
+            <%else %>
+              <%= check_box_tag("answer[]", index, true) %>
+            <%end %>
           <% else %>
-            <%= check_box_tag("answer[]", index, false, :disabled => :true) %>
+            <% if q.class == MultipleChoiceQuestion %>
+              <%= radio_button_tag("answer", index, false, :disabled => :true)%>
+            <% else %>
+              <%= check_box_tag("answer[]", index, false, :disabled => :true) %>
+            <% end %>
           <% end %>
+          <%= label_tag(index, choice) %><br>
         <% end %>
-        <%= label_tag(index, choice) %><br>
+        <!-- <%= f.submit "Submit", :disabled => "disabled" %> -->
       <% end %>
-      <!-- <%= f.submit "Submit", :disabled => "disabled" %> -->
-    <% end %>
-  <% else %>
-    <!-- INCORRECT QUESTIONS -->
-    <div class="questions-title">
-      <h3><%= q.title %></h3>
-    </div>
-    <%= simple_format RedCloth.new(q.text).to_html %>
-    <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
-      <% q.choices.each_with_index do |choice, index| %>  
-        <% if q.class == MultipleChoiceQuestion %>
-          <%= radio_button_tag("answer", index) %>
-          <%= label_tag(index, choice) %><br>
-        <%else %>
-          <%= check_box_tag("answer[]", index) %>
-          <%= label_tag(index, choice) %><br>
-        <% end%>
+    <% else %>
+      <!-- INCORRECT QUESTIONS -->
+      <div class="questions-title">
+        <h3><%= q.title %></h3>
+      </div>
+      <%= simple_format RedCloth.new(q.text).to_html %>
+      <%= form_for q, :url => node_question_question_submit_path(@node.id, q.id) do |f| %>
+        <% q.choices.each_with_index do |choice, index| %>  
+          <% if q.class == MultipleChoiceQuestion %>
+            <%= radio_button_tag("answer", index) %>
+            <%= label_tag(index, choice) %><br>
+          <%else %>
+            <%= check_box_tag("answer[]", index) %>
+            <%= label_tag(index, choice) %><br>
+          <% end%>
+        <% end %>
+        <%= f.submit "Submit" %>
       <% end %>
-      <%= f.submit "Submit" %>
-    <% end %>
-  <% end %> <!-- end if else for correct question -->
+    <% end %> <!-- end if else for correct question -->
 
+  <% end %>
+
+<% else %>
+  <p> Please <%= link_to "Sign Up", new_user_path %> or <%= link_to "Log In", login_path%> to test your knowledge. </p>
 <% end %>
-
