@@ -54,6 +54,10 @@ class User < ActiveRecord::Base
                                                      HAVING COUNT(DISTINCT QSubs.question_id) = #{num_questions}")
     !results.first.nil?
   end
+
+  def answered_correctly?(question)
+    question_submissions.where(:question_id => question.id, :correct => true).exists?
+  end
   
   def validates_password?
     password_changed?

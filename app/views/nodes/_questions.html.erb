@@ -1,9 +1,9 @@
 <% unless current_user.nil? %>
   <% @node.questions.order("created_at").each do |q| %>
-    <% if q.correct? %>
+    <% if current_user.answered_correctly?(q) %>
       <!-- CORRECT QUESTIONS -->
       <div class="questions-title">
-        <%= image_tag("/images/checkmark.png", :class => "questions-correct") if q.correct? %>
+        <%= image_tag("/images/checkmark.png", :class => "questions-correct") %>
         <h3><%= q.title %></h3>
       </div>
       <%= simple_format RedCloth.new(q.text).to_html %>
