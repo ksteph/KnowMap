@@ -3,8 +3,8 @@ default: &default
   encoding: unicode
   host: localhost
   pool: 5
-  username: postgres  # CHANGE THIS
-  password: postgres  # CHANGE THIS
+  username: jamesmaa  # CHANGE THIS
+  password: ihatemylife  # CHANGE THIS
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
