@@ -2,21 +2,23 @@ var MAP_CONSTANTS = {
     zoom_scale : 1.1,
     pan_step : 10,
 
-    node_radius : 8,
+    node_radius : 8, //Irrelevant to zoom
     node_shift_x : 100,
     node_shift_y : 0,
     node_text_line_char_limit : 15,
-    node_text_dy : 0.35,
+    node_text_dy : 0.35,//James: Huh?
 
-    edge_style_related : "1,2",
-    edge_style_dependent : "1,0",
+    edge_style_related : "1,2",//1,2
+    edge_style_dependent : "1,0",//1,0
 
     highlight_colors : ["#ff0000","#ff9900","#fff333","#00cc00","#3333ff"],
-    highlight_radius : 11,
+    highlight_radius : 10,//Determines how much wider the highlight of the circle.
+    //highlight_radius might be better at 10.
     highlight_opacity : 0.5,
 
+    //Learning Path Constants
     lp_node_radius : 30,
-    lp_node_spacer : 45,
+    lp_node_spacer : 30,//Spacing between nodes. Might be better at 30 instead of 45
     lp_scroller_height : 10,
     lp_scroller_min_width : 10,
     lp_scroller_padding : 5,
@@ -30,49 +32,62 @@ var MAP_CONSTANTS = {
 
 $(function() {
   // Code that should execute after the DOM is ready
+  //James: Seems to execute before the map is visible
 });
 
-
 var Map = (function(Map, $, undefined){
+    //James: What do  each of these constants mean?
+    /*ary = array
+      i = integer
+      win = Window
+    */
+    //James: Is there some significance attached to g?
   Map.TransMatrix = [1,0,0,1,0,0];
-  Map.MousePos = [0,0];
-  Map.WinMousePos = [0,0];
-  Map.BMouseDown = false;
+  Map.MousePos = [0,0];//Mouse Position in reference to $("#chart")
+  Map.WinMousePos = [0,0];//Mouse Position in reference to browser
+  Map.BMouseDown = false; //Boolean mouse is down
   Map.DragOldMousePos = [0,0];
   Map.DragStartMousePos = [0,0];
   Map.DragEndMousePos = [0,0];
 
-  Map.BLayoutIsSyllabus = false;
+  Map.BLayoutIsSyllabus = false; //Boolean Layout is Syllabus
+  
 
   Map.setup = function() {
+    //init widgets
     $("#learning-path-widget-button").on("click", Map.LearningPathWidget.toggle);
     $("#groups-widget-button").on("click", Map.GroupsWidget.toggle);
-
+    
+    //binds actionlisteners to Map functions
+    //Map.winKeyDown handles pan and zoom funcs at a high level
     window.addEventListener('keydown', Map.winKeyDown, false);
+    //Something to 
     window.addEventListener('mousemove', Map.winMouseMove, false);
     window.addEventListener('mouseup', Map.winMouseUp, false);
 
     $("#chart").on("mousewheel", Map.svgMouseWheel);
     $("#chart").on("mousedown", Map.svgMouseDown);
-
+    
     Map.Svg = d3.select("#chart").append("svg")
     .attr("id", "svg-chart")
     .attr("width", "100%")
     .attr("height", "100%")
     .on("mousemove", Map.mouseMove);
     
+    //chart group
     Map.SvgChartG = Map.Svg.append("g")
     .attr("id", "chart-group")
     .attr("transform", "matrix("+Map.TransMatrix.join(' ')+")");
 
     //Arrowhead Marker
+    //James: What is this marker? How did you make it?
     Map.SvgChartG.append("defs").append("marker")
-      .attr("id", "arrowhead")
+      .attr("id", "arrowhead") //id used to referent arrowhead
       .attr("viewBox", "0 0 10 10")
-      .attr("refX", MAP_CONSTANTS.node_radius*4.35)
+      .attr("refX", MAP_CONSTANTS.node_radius*4.35) //significance of 4.35?
       .attr("refY", "5")
       .attr("markerUnits", "strokeWidth")
-      .attr("markerWidth", 6)
+      .attr("markerWidth", 6) 
       .attr("markerHeight", 4)
       .attr("orient", "auto")
       .append("path")
@@ -102,25 +117,29 @@ var Map = (function(Map, $, undefined){
   }
   
   Map.update = function() {
+      //If graph id exists
     if ( $("#graphData").attr("data-graph_id") && $("#graphData").attr("data-graph_id") !== "" ) {
       Map.show();
       Map.GroupsWidget.update();
 
       // Draw nodes, links, and the zoom/pan widget
       var url = "../data.json?id=";
-      node_ids = $("#graphData").attr("data-all_graph_nodes");
+      node_ids = $("#graphData").attr("data-all_graph_nodes"); //array of node_ids
       node_ids = node_ids.substr(1, node_ids.length-2);
       if(node_ids) { url = url + node_ids; }
+      //d3.json calls url to retrieve json data, then visualizes it
       d3.json(url, function(json) {
 
               console.log(json);
         Map.Node.update(json.nodes);
         Map.Edge.update(json.lines, Map.Node.MapId2Data);
+        //Map.Node.MapId2Data is an object that contains all the nodes like Title, Label, x, and y
       });
 
       Map.Container.show();
       Map.LearningPathWidget.collapse();
     } else if ( $("#graphData").attr("data-node_id") && $("#graphData").attr("data-node_id") !== "" ) {
+        //else if node_id exist
       Map.NodeWidget.update();
       Map.LearningPathWidget.update();
       Map.NodeWidget.show();
@@ -180,14 +199,16 @@ var Map = (function(Map, $, undefined){
       //Get height here so get height of style not
       // actual height while expanding the div
       var lpHeight = parseInt(d3.select("#learning-path-widget-content")
-                              .style("height"));
+      .style("height"));
+    //James: Why is this not a constant?
       
       LearningPathWidget.Svg.style("height", lpHeight);
 
       // Clear old learning path stuff
       LearningPathWidget.SvgG.selectAll("g").remove();
-      LearningPathWidget.TransMatrix = [1,0,0,1,0,0,];
+      LearningPathWidget.TransMatrix = [1,0,0,1,0,0,]; //James: What is the TransMatrix?
       var matrix = "matrix("+LearningPathWidget.TransMatrix.join(' ')+")";
+      //outputs "matrix(1 0 0 1 0 0)"
       LearningPathWidget.SvgG.attr("transform", matrix);
       d3.selectAll(".map-node-highlighted").attr("class","map-node");
 
@@ -220,10 +241,10 @@ var Map = (function(Map, $, undefined){
         for(var i=0; i < lpNodes.length; i++) {
           lpNodes[i].aryLabel = Map.Node.getAryLabel(lpNodes[i].title);
           lpNodes[i].pos = i;
-          lpNodesMap[lpNodes[i].id] = lpNodes[i];
+          lpNodesMap[lpNodes[i].id] = lpNodes[i];//James: What's the purpose of this?
 
           d3.select("#node-"+lpNodes[i].id).select(".map-node")
-            .attr("class","map-node-highlighted");
+            .attr("class","map-node-highlighted"); //CSS file causes this to be highlighted
         }
 
         for (var i=0; i<json.lines.length; i++) {
@@ -233,7 +254,7 @@ var Map = (function(Map, $, undefined){
 
           var nodeS = lpNodesMap[json.lines[i].source];
           var nodeT = lpNodesMap[json.lines[i].target];
-
+            //James: Huh? what is maxPosDiff and minPosDiff?
           var diff = nodeT.pos - nodeS.pos;
           if (diff > maxPosDiff)
             maxPosDiff = diff;
@@ -277,6 +298,8 @@ var Map = (function(Map, $, undefined){
             .attr("orient", angle+45*(mult/4.5))
             .append("path")
               .attr("d", "M 0 0 L 10 5 L 0 10 Z");
+              
+            
         }
 
         //Add Edges
@@ -311,9 +334,9 @@ var Map = (function(Map, $, undefined){
                }
 
             var pathStr = "M"+x1+","+y1+" ";
-            pathStr += "A"+rX+","+rY+" 0 0,1 "+x2+","+y2;
+            pathStr += "A"+rX+","+rY+" 0 0,1 "+x2+","+y2;//James:What is this?
 
-            return pathStr;
+            return pathStr;//James: d tied to path string. what is pathStr?
             });
 
         //Add nodes
@@ -326,12 +349,13 @@ var Map = (function(Map, $, undefined){
             .attr("transform",function(d){
                return "translate("+
                  LearningPathWidget.getNodePosX(d.pos)+","+nodeY+")";
-            });
-
+            });//adds g tag group
+        //adds the circle
         nodeGNode.append("circle")
           .attr("class", "lp-node")
           .attr("r", MAP_CONSTANTS.lp_node_radius);
-
+        
+        //adds the label
         nodeGNode.append("g")
           .attr("id","lp-node-label")
           .each(function(d) {
@@ -344,10 +368,13 @@ var Map = (function(Map, $, undefined){
                  .attr("dy",(startDY+parseInt(i))+"em");
              }
            });
+         //Double click on node to view content
+         $("g.lp-node-g").on("dblclick",Map.LearningPathWidget.Clicked);
       });
     }
 
     LearningPathWidget.getNodePosX = function(pos) {
+        //James: What is pos?
       return MAP_CONSTANTS.lp_node_spacer + MAP_CONSTANTS.lp_node_radius +
           pos*(MAP_CONSTANTS.lp_node_radius*2 + MAP_CONSTANTS.lp_node_spacer);
     }
@@ -492,8 +519,22 @@ var Map = (function(Map, $, undefined){
       }
     }
     
+    LearningPathWidget.Clicked = function(){
+            console.log("lpClicked");
+            var id = parseInt(d3.select(this).attr("node-id"));
+              var url = '/nodes/' + id;
+
+              updateView(url);
+              Map.NodeWidget.show();
+              Map.LearningPathWidget.expand();//Don't Show Learning Path
+
+              // save history
+              history.pushState({'node_id': id, search:search_term()}, document.title, url);
+        }
+    
     return LearningPathWidget;
   })({});
+  
   
   Map.GroupsWidget = (function(GroupsWidget) {
     GroupsWidget.UsedColor = [];
@@ -603,6 +644,7 @@ var Map = (function(Map, $, undefined){
     
     
     NodeWidget.update = function() {
+        console.log("Node Widget Update");
       var url = '/nodes/'+ $("#graphData").attr("data-node_id") +'/node_widget';
       $.ajax({
         url: url,
@@ -650,12 +692,12 @@ var Map = (function(Map, $, undefined){
           .on("click", Map.Node.click);
 
       Node.SvgNodes.append("g")
-        .attr("id","map-node-outer");
+        .attr("id","map-node-outer"); //refers to the point of a node. 1 x 1px
 
       Node.SvgNodesInner = Node.SvgNodes.append("g")
-        .attr("id","map-node-inner");
+        .attr("id","map-node-inner"); // refers to the box of the outer circle.
 
-      Node.SvgNodesInner.append("circle")
+      Node.SvgNodesInner.append("circle") //nest an svg circle
         .attr("class", "map-node")
         .attr("r", MAP_CONSTANTS.node_radius);
 
@@ -674,9 +716,11 @@ var Map = (function(Map, $, undefined){
     }
 
     Node.getAryLabel = function(label) {
+        /*Fits the given text into the node by using node_text_line_char_limit
+        and checking if a word exceeds the limit or not*/
       if (label.length > MAP_CONSTANTS.node_text_line_char_limit) {
         var aryStr = label.split(' ');
-        var aryLabel = [aryStr.shift()];
+        var aryLabel = [aryStr.shift()]; //shift() equivalent to pop()
         var iLabel = 0;
         var currLineLen = aryLabel[iLabel].length;
         for (i in aryStr) {
@@ -743,23 +787,25 @@ var Map = (function(Map, $, undefined){
             });
       }
     }
-
+    //Change Action Listener to single click
     Node.dblClick = function() {
       var id = parseInt(d3.select(this).attr("node-id"));
       var url = '/nodes/' + id;
 
       updateView(url);
       Map.NodeWidget.show();
-      Map.LearningPathWidget.expand();
+      Map.LearningPathWidget.expand();//Don't Show Learning Path
     
       // save history
       history.pushState({'node_id': id, search:search_term()}, document.title, url);
 
     }
-
+    //Change EventListener to hover
+    //Somehow cannot just change to Node.hover
     Node.click = function() {
       if (((Map.DragStartMousePos[0]-Map.DragEndMousePos[0]) != 0) ||
           ((Map.DragStartMousePos[1]-Map.DragEndMousePos[1]) != 0))
+          //if dx & dy are both nonzera, it is panning
         return;
 
       node_id = this.__data__.id;
@@ -877,7 +923,7 @@ var Map = (function(Map, $, undefined){
 
     return ZoomPanWidget;
   })({});
-
+  //What is syllabus view?
   Map.SyllabusView = (function(SyllabusView) {
     SyllabusView.Grid = null;
     SyllabusView.Coord = null;
@@ -1118,7 +1164,12 @@ var Map = (function(Map, $, undefined){
   }
 
   Map.mouseMove = function(event) {
+      //On mousemove inside $("#chart")
     Map.MousePos = d3.mouse(this);
+    //console.log("Mouse Position" + Map.MousePos);
+    //d3.mouse returns the x and y coordinates of the d3.event
+    //, relative to the container
+    
   }
 
   Map.svgMouseWheel = function(event, delta, deltaX, deltaY) {
@@ -1151,6 +1202,7 @@ var Map = (function(Map, $, undefined){
 
   Map.winMouseMove = function(e) {
     Map.WinMousePos = [e.clientX,e.clientY];
+    //console.log("Window Map Position" + Map.WinMousePos);
     if (Map.BMouseDown || Map.LearningPathWidget.BMouseActive) {
       var dx = -1*(Map.DragOldMousePos[0]-Map.WinMousePos[0]);
       var dy = -1*(Map.DragOldMousePos[1]-Map.WinMousePos[1]);
@@ -1163,7 +1215,7 @@ var Map = (function(Map, $, undefined){
     }
   }
 
-
+  //Panning widget
   Map.winKeyDown = function(event) {
     switch(event.keyCode) {
       case 37: // left arrow
@@ -1191,6 +1243,7 @@ var Map = (function(Map, $, undefined){
         break; // Do nothing
     }
   }
+  
 
   return Map;
 })({}, jQuery);
