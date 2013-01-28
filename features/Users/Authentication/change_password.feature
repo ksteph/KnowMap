@@ -36,7 +36,7 @@ Feature: Change password
     And I should not see "Password successfully updated."
     
   @javascript @user @authentication
-  Scenario: Change password with non matching new passworda
+  Scenario: Change password with non matching new password
     Given I am on the change password page
     And I fill in "Current password" with "password"
     And I fill in "New password" with "password2"
